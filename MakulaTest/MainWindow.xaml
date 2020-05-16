@@ -1,0 +1,31 @@
+﻿<Window x:Class="MakulaTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MakulaTest"
+        mc:Ignorable="d" Loaded="Window_Loaded" KeyDown="Window_KeyDown"
+        Title="MainWindow" Height="700" Width="700" Background="LightGray" MinWidth="550" MinHeight="250">
+
+    <Grid>
+    <Canvas Visibility="Collapsed" Background="Yellow" Margin="20" x:Name="MyCanvas" SizeChanged="MyCanvas_SizeChanged" >
+        <Rectangle x:Name="MyRectangle" Margin="50" Stroke="Black" Fill="White" Width="500" Height="500"></Rectangle>
+    </Canvas>
+
+
+        <Border Margin="20" BorderBrush="Black" BorderThickness="1" >
+            <Border Width="500" Height="200" Background="White" BorderBrush="Black" BorderThickness="1" >
+                <StackPanel Orientation="Vertical"   >
+
+                    <TextBlock Margin="5" TextWrapping="Wrap" FontSize="20">
+                        Bringen Sie das Fenster in eine für Sie optimale Größe. Achten Sie darauf, dass das Makula-Raster quadratisch ist und sich daher seine
+                        Größte an der geringeren Größe (Lange und Breite) orientieren muss. Drücken Sie auf OK, um die Fenstergröße zu fixieren.
+                    </TextBlock>
+
+                    <Button FontSize="20" Margin="0,20,0,0" Width="100">OK</Button>
+
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
+</Window>
