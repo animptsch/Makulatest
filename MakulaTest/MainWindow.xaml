@@ -8,12 +8,12 @@
         Title="MainWindow" Height="700" Width="700" Background="LightGray" MinWidth="550" MinHeight="250">
 
     <Grid>
-    <Canvas Visibility="Collapsed" Background="Yellow" Margin="20" x:Name="MyCanvas" SizeChanged="MyCanvas_SizeChanged" >
+    <Canvas Visibility="Visible"  Margin="20" x:Name="MyCanvas" SizeChanged="MyCanvas_SizeChanged" >
         <Rectangle x:Name="MyRectangle" Margin="50" Stroke="Black" Fill="White" Width="500" Height="500"></Rectangle>
     </Canvas>
 
 
-        <Border Margin="20" BorderBrush="Black" BorderThickness="1" >
+        <Border Visibility="Collapsed" Margin="20" BorderBrush="Black" BorderThickness="1" >
             <Border Width="500" Height="200" Background="White" BorderBrush="Black" BorderThickness="1" >
                 <StackPanel Orientation="Vertical"   >
 
