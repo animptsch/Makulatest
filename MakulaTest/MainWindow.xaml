@@ -8,24 +8,34 @@
         Title="MainWindow" Height="700" Width="700" Background="LightGray" MinWidth="550" MinHeight="250">
 
     <Grid>
-    <Canvas Visibility="Visible"  Margin="20" x:Name="MyCanvas" SizeChanged="MyCanvas_SizeChanged" >
-        <Rectangle x:Name="MyRectangle" Margin="50" Stroke="Black" Fill="White" Width="500" Height="500"></Rectangle>
-    </Canvas>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+            <Canvas Visibility="Visible"  Margin="20" x:Name="MyCanvas" SizeChanged="MyCanvas_SizeChanged" >
+                <Rectangle x:Name="MyRectangle" Margin="50" Stroke="Black" Fill="White" Width="500" Height="500"></Rectangle>
+            </Canvas>
 
 
-        <Border Visibility="Collapsed" Margin="20" BorderBrush="Black" BorderThickness="1" >
-            <Border Width="500" Height="200" Background="White" BorderBrush="Black" BorderThickness="1" >
-                <StackPanel Orientation="Vertical"   >
+            <Border Visibility="Collapsed" Margin="20" BorderBrush="Black" BorderThickness="1" >
+                <Border Width="500" Height="200" Background="White" BorderBrush="Black" BorderThickness="1" >
+                    <StackPanel Orientation="Vertical"   >
 
-                    <TextBlock Margin="5" TextWrapping="Wrap" FontSize="20">
-                        Bringen Sie das Fenster in eine für Sie optimale Größe. Achten Sie darauf, dass das Makula-Raster quadratisch ist und sich daher seine
-                        Größte an der geringeren Größe (Lange und Breite) orientieren muss. Drücken Sie auf OK, um die Fenstergröße zu fixieren.
-                    </TextBlock>
+                        <TextBlock Margin="5" TextWrapping="Wrap" FontSize="20">
+                                Bringen Sie das Fenster in eine für Sie optimale Größe. Achten Sie darauf, dass das Makula-Raster quadratisch ist und sich daher seine
+                                Größte an der geringeren Größe (Lange und Breite) orientieren muss. Drücken Sie auf OK, um die Fenstergröße zu fixieren.
+                        </TextBlock>
 
-                    <Button FontSize="20" Margin="0,20,0,0" Width="100">OK</Button>
+                        <Button FontSize="20" Margin="0,20,0,0" Width="100">OK</Button>
 
-                </StackPanel>
+                    </StackPanel>
+                </Border>
             </Border>
-        </Border>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1" >
+            <Button x:Name="btnAnalyse" Content="Analyse" Margin="10" FontSize="20" Padding="5" Click="BtnAnalyse_Click" />
+            <Button x:Name="btnSettingSize" Content="Größe anpassen" Margin="10" FontSize="20" Padding="10"/>
+            <Button x:Name="btnStartMacularDiagnosis" Content="Makuladiagnose starten" Margin="10" FontSize="20" Padding="5"/>
+        </StackPanel>
     </Grid>
 </Window>

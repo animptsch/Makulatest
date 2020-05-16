@@ -311,5 +311,11 @@ namespace MakulaTest
         {
             int o = 0;
         }
+
+        private void BtnAnalyse_Click(object sender, RoutedEventArgs e)
+        {
+            var analyse = new Analyse();
+            analyse.Beginn();
+        }
     }
 }
