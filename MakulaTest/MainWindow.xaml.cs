@@ -314,8 +314,8 @@ namespace MakulaTest
 
         private void BtnAnalyse_Click(object sender, RoutedEventArgs e)
         {
-            var analyse = new Analyse();
-            analyse.Beginn();
+            MyAnalyse.Visibility = Visibility.Visible;
+            MyCanvas.Visibility = Visibility.Collapsed;            
         }
     }
 }
