@@ -27,17 +27,28 @@ namespace MakulaTest
         public MacularDiagnosisControl()
         {
             InitializeComponent();
-            
+
+            drawLines();
+            drawCenterCircle();
         }
+
+
+
+        public double MinSize
+        {
+            get { return (double)GetValue(MinSizeProperty); }
+            set { SetValue(MinSizeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MinSize.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MinSizeProperty =
+            DependencyProperty.Register("MinSize", typeof(double), typeof(MacularDiagnosisControl), new PropertyMetadata(0.0));
+        
 
         public void StartDiagnosis()
         {
             _session = new MakulaSession();
-
-            drawLines(out _centerX, out _centerY);
-            drawCenterCircle();
-            //drawOuterCircle();
-
+            
             _removeTimer = new DispatcherTimer();
             _removeTimer.Interval = new TimeSpan(0, 0, 10);
             _removeTimer.Tick += new EventHandler(_removeTimer_Tick);
@@ -146,7 +157,7 @@ namespace MakulaTest
             {
                 MyCanvas.Children.Remove(_ellipse);
             }
-            drawLines(out _centerX, out _centerY);
+            drawLines();
             drawCenterCircle();
 
             double lineLength = 10.0;
@@ -226,14 +237,15 @@ namespace MakulaTest
         }
 
 
-        private void drawLines(out double centerX, out double centerY)
+        private void drawLines()
         {
-            double width = MyRectangle.Width;
-            double height = MyRectangle.Height;
-            double x = 50.0;
-            double y = 50.0;
-            centerY = centerX = 0.0;
+            double width = MinSize;
+            double height = MinSize;
+            double x = MyRectangle.Margin.Left;
+            double y = MyRectangle.Margin.Top;
+            _centerY = _centerX = 0.0;
 
+            clearCanvas();
             double deltaHorz = width / LineNumber;
             double deltaVert = height / LineNumber;
 
@@ -256,7 +268,7 @@ namespace MakulaTest
 
                 if (centerIndex == i)
                 {
-                    centerX = lineHeight - 10;
+                    _centerX = lineHeight - 10;
                 }
 
                 MyCanvas.Children.Add(line);
@@ -278,15 +290,21 @@ namespace MakulaTest
 
                 if (centerIndex == i)
                 {
-                    centerY = lineWidth - 10;
+                    _centerY = lineWidth - 10;
                 }
 
                 MyCanvas.Children.Add(line);
                 lineWidth += deltaHorz;
 
-                EllipseGeometry geo = new EllipseGeometry(new Point(centerX, centerY), 354, 354);
+                EllipseGeometry geo = new EllipseGeometry(new Point(_centerX, _centerY), 354, 354);
                 _pathGeo = geo.GetFlattenedPathGeometry();
             }
+        }
+
+        private void clearCanvas()
+        {
+            MyCanvas.Children.Clear();
+            MyCanvas.Children.Add(MyRectangle);
         }
 
         private void drawCenterCircle()
@@ -302,6 +320,22 @@ namespace MakulaTest
             ellipse.SetValue(Canvas.LeftProperty, _centerX);
             ellipse.SetValue(Canvas.TopProperty, _centerY);
             MyCanvas.Children.Add(ellipse);
+        }
+
+        private void MyCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width < e.NewSize.Height)
+            {
+                MinSize = e.NewSize.Width - (MyRectangle.Margin.Left +MyRectangle.Margin.Right);
+            }
+            else
+            {
+                MinSize = e.NewSize.Height - (MyRectangle.Margin.Bottom + MyRectangle.Margin.Top);
+            }
+
+            drawLines();
+            drawCenterCircle(); 
+            
         }
     }
 }

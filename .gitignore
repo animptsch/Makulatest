@@ -152,3 +152,4 @@ log-*.txt
 /.vs/MakulaTest/v15/Server/sqlite3/storage.ide
 /.vs/MakulaTest/v15/Server/sqlite3/storage.ide-shm
 /.vs/MakulaTest/v15/Server/sqlite3/storage.ide-wal
+/MakulaTest/Model/SerializedRect.cs

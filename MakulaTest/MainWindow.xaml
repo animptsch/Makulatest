@@ -15,11 +15,11 @@
 
         <local:MacularDiagnosisControl x:Name="DiagnoseControl" />
         <local:AnalyseControl x:Name="MyAnalyse" Visibility="Collapsed" />
-        <local:SizingControl x:Name="SizingControl" Visibility="Collapsed"/>
-
+        
         <StackPanel Orientation="Horizontal" Grid.Row="1" >
             <Button x:Name="btnAnalyse" Content="Analyse" Margin="10" FontSize="20" Padding="5" Click="BtnAnalyse_Click" />
-            <Button x:Name="btnSettingSize" Content="Größe anpassen" Margin="10" FontSize="20" Padding="10" Click="BtnSettingSize_Click"/>
+            <Button x:Name="btnDiagnose" Content="Diagnose" Click="BtnDiagnose_Click" />
+            <Button x:Name="btnSettingSize" Content="Größe speichern" Margin="10" FontSize="20" Padding="10" Click="BtnSettingSize_Click"/>
             <Button x:Name="btnStartMacularDiagnosis" Content="Makuladiagnose starten" Margin="10" FontSize="20" Padding="5" Click="BtnStartMacularDiagnosis_Click"/>
         </StackPanel>
     </Grid>
