@@ -18,9 +18,10 @@
         
         <StackPanel Orientation="Horizontal" Grid.Row="1" >
             <Button x:Name="btnAnalyse" Content="Analyse" Margin="10" FontSize="20" Padding="5" Click="BtnAnalyse_Click" />
-            <Button x:Name="btnDiagnose" Content="Diagnose" Click="BtnDiagnose_Click" />
+            <Button x:Name="btnDiagnose" Content="Diagnose" Click="BtnDiagnose_Click" FontSize="20" Padding="5" Margin="10" />
             <Button x:Name="btnSettingSize" Content="Größe speichern" Margin="10" FontSize="20" Padding="10" Click="BtnSettingSize_Click"/>
-            <Button x:Name="btnStartMacularDiagnosis" Content="Makuladiagnose starten" Margin="10" FontSize="20" Padding="5" Click="BtnStartMacularDiagnosis_Click"/>
+            <Button x:Name="btnStartMacularDiagnosis" Content="Start" Margin="10" FontSize="20" Padding="5" Click="BtnStartMacularDiagnosis_Click"/>
+            <Button x:Name="btnSettings" Content="Einstellungen" Margin="10" FontSize="20" Padding="5" Click="BtnSettings_Click"/>
         </StackPanel>
     </Grid>
 </Window>

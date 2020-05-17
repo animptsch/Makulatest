@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Windows.Media;
 
 namespace MakulaTest
 {
@@ -132,10 +133,23 @@ namespace MakulaTest
                 Application.Current.MainWindow.Left = rect.Left;
                 Application.Current.MainWindow.Top = rect.Top;
                 Application.Current.MainWindow.Width = rect.Width;
+
             }
 
         }
 
-        
+        private void BtnSettings_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsViewModel vm = new SettingsViewModel();
+            Settings settings = new Settings(vm);
+
+            bool? result = settings.ShowDialog();
+            if (result == true)
+            {
+                DiagnoseControl.CircleColor = (SolidColorBrush)(new BrushConverter().ConvertFrom(vm.Model.Color));
+                DiagnoseControl.CircleSize = vm.Model.CircleSize;
+                DiagnoseControl.Duration = vm.Model.Duration;
+            }
+        }
     }
 }
