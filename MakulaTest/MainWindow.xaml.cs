@@ -53,7 +53,8 @@ namespace MakulaTest
         private void BtnAnalyse_Click(object sender, RoutedEventArgs e)
         {
             MyAnalyse.Visibility = Visibility.Visible;
-            DiagnoseControl.Visibility = Visibility.Collapsed;              
+            DiagnoseControl.Visibility = Visibility.Collapsed;
+            MyAnalyse.Start();
         }
 
         private void BtnSettingSize_Click(object sender, RoutedEventArgs e)
