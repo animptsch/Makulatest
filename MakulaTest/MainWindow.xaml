@@ -12,11 +12,9 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-            <Canvas Visibility="Visible"  Margin="20" x:Name="MyCanvas" SizeChanged="MyCanvas_SizeChanged" >
-                <Rectangle x:Name="MyRectangle" Margin="50" Stroke="Black" Fill="White" Width="500" Height="500"></Rectangle>
-            </Canvas>
 
-        <local:AnalyseControl  x:Name="MyAnalyse" Visibility="Collapsed" />
+        <local:MacularDiagnosisControl x:Name="DiagnoseControl" />
+        <local:AnalyseControl x:Name="MyAnalyse" Visibility="Collapsed" />
 
 
         <Border Visibility="Collapsed" Margin="20" BorderBrush="Black" BorderThickness="1" >
