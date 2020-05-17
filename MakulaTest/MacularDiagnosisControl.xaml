@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MakulaTest"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" x:Name="MyUserControl" 
              d:DesignHeight="700" d:DesignWidth="700">
     <Grid>
-        <Canvas Visibility="Visible"  Margin="20" x:Name="MyCanvas"  >
-            <Rectangle x:Name="MyRectangle" Margin="50" Stroke="Black" Fill="White" Width="500" Height="500"></Rectangle>
+        <Canvas Visibility="Visible" Background="White"  Margin="20" x:Name="MyCanvas" SizeChanged="MyCanvas_SizeChanged"  >
+            <Rectangle x:Name="MyRectangle" Margin="50" Stroke="Black" Fill="White" Width="{Binding ElementName=MyUserControl, Path=MinSize}" Height="{Binding ElementName=MyUserControl, Path=MinSize}"></Rectangle>
         </Canvas>
     </Grid>
 </UserControl>
