@@ -17,12 +17,14 @@ namespace MakulaTest
         private Ellipse _ellipse;
         private PathGeometry _pathGeo;
         private const int LineNumber = 17;
+        private const int Duration = 3;
         private DispatcherTimer _moveTimer;
         private DispatcherTimer _removeTimer;
         private double _centerX;
         private double _centerY;
         private Storyboard _sbTranslate;
         private MakulaSession _session;
+        private double _lastPos;
 
         public MacularDiagnosisControl()
         {
@@ -50,14 +52,15 @@ namespace MakulaTest
             _session = new MakulaSession();
             
             _removeTimer = new DispatcherTimer();
-            _removeTimer.Interval = new TimeSpan(0, 0, 10);
+            _removeTimer.Interval = new TimeSpan(0, 0, Duration);
             _removeTimer.Tick += new EventHandler(_removeTimer_Tick);
             _removeTimer.Start();
 
             _moveTimer = new DispatcherTimer();
-            _moveTimer.Interval = new TimeSpan(0, 0, 12);
+            _moveTimer.Interval = new TimeSpan(0, 0, Duration+2);
             _moveTimer.Tick += new EventHandler(_timer_Tick);
             _moveTimer.Start();
+            _lastPos = 0.0;
 
             Point pt = getPointInOuterCircle();
             _ellipse = moveCircle(pt);
@@ -111,7 +114,7 @@ namespace MakulaTest
             _sbTranslate = new Storyboard();
             var daTranslateX = new DoubleAnimation();
             var daTranslateY = new DoubleAnimation();
-            var duration = new Duration(TimeSpan.FromSeconds(10));
+            var duration = new Duration(TimeSpan.FromSeconds(Duration));
 
             daTranslateX.Duration = duration;
             daTranslateY.Duration = duration;
@@ -162,33 +165,12 @@ namespace MakulaTest
 
             double lineLength = 10.0;
 
-            foreach (var point in _session.Points)
-            {
-                var line1 = new Line()
-                {
-                    Stroke = new SolidColorBrush(Colors.CornflowerBlue),
-                    Fill = new SolidColorBrush(Colors.CornflowerBlue),
-                    StrokeThickness = 2.0,
-                    X1 = point.X - lineLength,
-                    X2 = point.X + lineLength,
-                    Y1 = point.Y - lineLength,
-                    Y2 = point.Y + lineLength
-                };
+            var polygon = new Polygon();
+            polygon.Points = new PointCollection( _session.Points);
+            polygon.Stroke = Brushes.Blue;
+            polygon.Fill = Brushes.White;
 
-                var line2 = new Line()
-                {
-                    Stroke = new SolidColorBrush(Colors.CornflowerBlue),
-                    Fill = new SolidColorBrush(Colors.CornflowerBlue),
-                    StrokeThickness = 2.0,
-                    X1 = point.X - lineLength,
-                    X2 = point.X + lineLength,
-                    Y2 = point.Y - lineLength,
-                    Y1 = point.Y + lineLength
-                };
-
-                MyCanvas.Children.Add(line1);
-                MyCanvas.Children.Add(line2);
-            }
+            MyCanvas.Children.Add(polygon);           
         }
 
         private void drawCircle(Point pt)
@@ -210,17 +192,17 @@ namespace MakulaTest
         {
             double width = MyRectangle.Width;
             double height = MyRectangle.Height;
-            double x = 50.0;
-            double y = 50.0;
-
+      
             Point pt, ptTan;
-
             var rnd = new Random();
 
-            double pos = rnd.NextDouble();
-            _pathGeo.GetPointAtFractionLength(pos, out pt, out ptTan);
+            double pos = rnd.NextDouble() / 20.0;
+            _lastPos += pos;
+            _pathGeo.GetPointAtFractionLength(_lastPos, out pt, out ptTan);
             return pt;
         }
+
+        
 
         private void drawOuterCircle()
         {
