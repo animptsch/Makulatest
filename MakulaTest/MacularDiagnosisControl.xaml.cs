@@ -79,12 +79,15 @@ namespace MakulaTest
                 {                 
                     Stroke = new SolidColorBrush(Colors.Red),
                     Fill = new SolidColorBrush(Colors.Red),
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center,
                     StrokeThickness = 5,
-                    X1 = pt.X + CircleSize / 2.0,
-                    X2 = _centerX + CircleSize / 2.0,
-                    Y1 = pt.Y + CircleSize / 2.0,
-                    Y2 = _centerY + CircleSize / 2.0
+                    X1 = pt.X ,
+                    X2 = _centerX ,
+                    Y1 = pt.Y ,
+                    Y2 = _centerY 
                 };
+       
                 line.MouseDown += Line_MouseDown;
                 MyCanvas.Children.Add(line);
             }
@@ -98,11 +101,22 @@ namespace MakulaTest
             Point p = Mouse.GetPosition(MyCanvas);
             var line = sender as Line;
             line.Stroke = Brushes.Blue;
-            line.X2 = p.X;
-            line.Y2 = p.Y;
-        }
 
-        private void resetTimer()
+            double m = (line.Y1 - _centerY) / (_centerX - line.X1);
+            if (Math.Abs(m) < 10)
+            { //Console.WriteLine("m=" + m.ToString());
+              line.Y2 = _centerY - (p.X - _centerX) * m;
+              line.X2 = p.X;
+            }
+            else
+            { m = (_centerX - line.X1) / (line.Y1 - _centerY);
+              //Console.WriteLine("m=" + m.ToString());
+              line.X2 = (_centerY - p.Y) * m + _centerX;
+              line.Y2 = p.Y;
+            }
+    }
+
+    private void resetTimer()
         {
             _moveTimer.Stop();
             _removeTimer.Stop();
@@ -143,8 +157,8 @@ namespace MakulaTest
             };
 
             Point end = new Point(_centerX, _centerY);
-            ellipse.SetValue(Canvas.LeftProperty, begin.X - CircleSize / 2.0);
-            ellipse.SetValue(Canvas.TopProperty, begin.Y - CircleSize / 2.0);
+            ellipse.SetValue(Canvas.LeftProperty, begin.X );
+            ellipse.SetValue(Canvas.TopProperty, begin.Y );
             MyCanvas.Children.Add(ellipse);
 
             _sbTranslate = new Storyboard();
@@ -168,8 +182,8 @@ namespace MakulaTest
             Storyboard.SetTargetProperty(daTranslateY, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.Y)"));
 
             //animate the item to the center of the screen
-            daTranslateX.To = end.X - begin.X + CircleSize / 2.0;
-            daTranslateY.To = end.Y - begin.Y + CircleSize / 2.0;
+            daTranslateX.To = end.X - begin.X ;
+            daTranslateY.To = end.Y - begin.Y ;
 
             _sbTranslate.Begin();
 
@@ -222,8 +236,8 @@ namespace MakulaTest
                 Fill = CircleColor
             };
 
-            ellipse.SetValue(Canvas.LeftProperty, pt.X - CircleSize / 2.0);
-            ellipse.SetValue(Canvas.TopProperty, pt.Y - CircleSize / 2.0);
+            ellipse.SetValue(Canvas.LeftProperty, pt.X );
+            ellipse.SetValue(Canvas.TopProperty, pt.Y);
             MyCanvas.Children.Add(ellipse);
         }
 
@@ -280,7 +294,7 @@ namespace MakulaTest
                 double thickness;
                 if (centerIndex == i)
                 {
-                    _centerX = lineHeight - CircleSize / 2.0;
+                    _centerX = lineHeight;
                     thickness = 3;
                 }
                 else
@@ -311,7 +325,7 @@ namespace MakulaTest
 
                 if (centerIndex == i)
                 {
-                    _centerY = lineWidth - CircleSize / 2.0;
+                    _centerY = lineWidth ;
                     thickness = 3;
                 }
                 else
@@ -352,11 +366,13 @@ namespace MakulaTest
                 Width = CircleSize,
                 Height = CircleSize,
                 Stroke = new SolidColorBrush(Colors.Black),
-                Fill = new SolidColorBrush(Colors.Black)
+                Fill = new SolidColorBrush(Colors.Black),
+                //HorizontalAlignment = HorizontalAlignment.Center,
+                //VerticalAlignment = VerticalAlignment.Center,
             };
-
-            ellipse.SetValue(Canvas.LeftProperty, _centerX );
-            ellipse.SetValue(Canvas.TopProperty, _centerY );
+ 
+            ellipse.SetValue(Canvas.LeftProperty, _centerX- CircleSize / 2.0);
+            ellipse.SetValue(Canvas.TopProperty, _centerY - CircleSize / 2.0);
             MyCanvas.Children.Add(ellipse);
         }
 
