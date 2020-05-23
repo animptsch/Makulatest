@@ -6,17 +6,47 @@
              xmlns:local="clr-namespace:MakulaTest"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Border BorderBrush="Black" BorderThickness="1">
-            <Canvas x:Name="MyCanvas" />
-        </Border>
+  
+  <DockPanel>
+    <Button x:Name="BtnBack"
+      Background="Transparent"
+      BorderBrush="Transparent"
+      ToolTip="Zurück zur Hauptseite" 
+      Click="BtnBack_Click"
+      HorizontalAlignment="Left"
+      Height="40"
+       DockPanel.Dock="Bottom"
+      Padding="20"
+      Margin ="20">
+      
+      <Button.Style>
+        <Style TargetType="{x:Type Button}">
+          <Setter Property="Background" Value="Transparent"/>
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="{x:Type Button}">
+                <Border Background="{TemplateBinding Background}">
+                  <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+          <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter Property="Background" Value="Black"/>
+              <Setter Property="Foreground" Value="White"/>
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </Button.Style>
+      <Image Source="Images/back.png" />
+    </Button>
+    
+    <Label>
+      <Canvas x:Name="MyCanvas"></Canvas>
+    </Label>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="1" >
-            <Button x:Name="btnBack" Content="Zurück" Margin="10" FontSize="20" Padding="5" />
-        </StackPanel>
-    </Grid>
+  </DockPanel>
+
+
 </UserControl>
