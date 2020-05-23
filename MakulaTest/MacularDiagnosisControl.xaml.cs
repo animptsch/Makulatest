@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Windows.Input;
 
 namespace MakulaTest
 {
@@ -177,10 +178,13 @@ namespace MakulaTest
             polygon.Stroke = Brushes.Blue;
             polygon.Fill = Brushes.White;
 
-            MyCanvas.Children.Add(polygon);           
-        }
+            MyCanvas.Children.Add(polygon);
 
-        private void drawCircle(Point pt)
+            MakulaDataSet mds = new MakulaDataSet(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MakulaData.csv"));
+            mds.SaveData(_session.Points, 22, 10, true); // size, intensity, rightEye
+    }
+
+    private void drawCircle(Point pt)
         {
             var ellipse = new Ellipse()
             {
@@ -343,5 +347,11 @@ namespace MakulaTest
             drawCenterCircle(); 
             
         }
-    }
+
+        private void MyCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+          MarkPoint();
+        }
+
+  }
 }
