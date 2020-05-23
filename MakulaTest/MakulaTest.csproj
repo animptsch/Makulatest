@@ -53,6 +53,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\MakulaDataSet.cs" />
     <Compile Include="Model\SerializedWindowsState.cs" />
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Model\SettingsViewModel.cs" />

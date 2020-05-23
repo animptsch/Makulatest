@@ -35,7 +35,7 @@ namespace MakulaTest
             drawCenterCircle();
             Duration = 10;
             CircleColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#ffaacc"));
-            CircleSize = 15;
+            CircleSize = 15;            
         }
 
 
@@ -59,19 +59,47 @@ namespace MakulaTest
         {
             _session = new MakulaSession();
             
-            _removeTimer = new DispatcherTimer();
-            _removeTimer.Interval = new TimeSpan(0, 0, Duration);
-            _removeTimer.Tick += new EventHandler(_removeTimer_Tick);
-            _removeTimer.Start();
+            //_removeTimer = new DispatcherTimer();
+            //_removeTimer.Interval = new TimeSpan(0, 0, Duration);
+            //_removeTimer.Tick += new EventHandler(_removeTimer_Tick);
+            //_removeTimer.Start();
 
-            _moveTimer = new DispatcherTimer();
-            _moveTimer.Interval = new TimeSpan(0, 0, Duration+2);
-            _moveTimer.Tick += new EventHandler(_timer_Tick);
-            _moveTimer.Start();
+            //_moveTimer = new DispatcherTimer();
+            //_moveTimer.Interval = new TimeSpan(0, 0, Duration+2);
+            //_moveTimer.Tick += new EventHandler(_timer_Tick);
+            //_moveTimer.Start();
             _lastPos = 0.0;
 
-            Point pt = getPointInOuterCircle();
-            _ellipse = moveCircle(pt);
+            
+
+            while (_lastPos <= 1.0)
+            {
+                Point pt = getPointInOuterCircle();                
+                var line = new Line()
+                {                 
+                    Stroke = new SolidColorBrush(Colors.Red),
+                    Fill = new SolidColorBrush(Colors.Red),
+                    StrokeThickness = 5,
+                    X1 = pt.X + CircleSize / 2.0,
+                    X2 = _centerX + CircleSize / 2.0,
+                    Y1 = pt.Y + CircleSize / 2.0,
+                    Y2 = _centerY + CircleSize / 2.0
+                };
+                line.MouseDown += Line_MouseDown;
+                MyCanvas.Children.Add(line);
+            }
+
+            //
+            //_ellipse = moveCircle(pt);
+        }
+
+        private void Line_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Point p = Mouse.GetPosition(MyCanvas);
+            var line = sender as Line;
+            line.Stroke = Brushes.Blue;
+            line.X2 = p.X;
+            line.Y2 = p.Y;
         }
 
         private void resetTimer()
@@ -207,7 +235,7 @@ namespace MakulaTest
             Point pt, ptTan;
             var rnd = new Random();
 
-            double pos = rnd.NextDouble() / 20.0;
+            double pos = 1/20.0;
             _lastPos += pos;
             _pathGeo.GetPointAtFractionLength(_lastPos, out pt, out ptTan);
             return pt;
