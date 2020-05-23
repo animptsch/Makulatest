@@ -42,13 +42,7 @@ namespace MakulaTest
             if (e.Key == Key.Space)
             {
                 DiagnoseControl.MarkPoint();
-            }
-
-            if (e.Key == Key.Enter)
-            {
-                DiagnoseControl.StopDiagnosis();
-            }
-         
+            }         
         }
         
         private void BtnAnalyse_Click(object sender, RoutedEventArgs e)

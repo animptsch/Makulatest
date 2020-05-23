@@ -48,13 +48,15 @@ namespace MakulaTest
       data = new MakulaDataSetInternal();
 
       InitializeComponent();
+
+      //comment
     }
 
 
 
-    public void Start(Window window)
+    public void Start()
     {
-      windowSize = new Size(window.Width, window.Height);
+      //windowSize = new Size(window.Width, window.Height);
 
       var steps = 12;
       var radius = 100;
@@ -118,7 +120,7 @@ namespace MakulaTest
     private void BtnBack_Click(object sender, RoutedEventArgs e)
     {
       //Console.WriteLine("btnBack_Click");
-      MainWindow.MainWindowClass.AnalyseStop();
+      //MainWindow.AnalyseStop();
     }
 
 
@@ -146,8 +148,8 @@ namespace MakulaTest
       */
 
 
-      Console.WriteLine(" window.Width=" + windowSize.Width.ToString());
-      Console.WriteLine(" window.Height=" + windowSize.Height.ToString());
+      //Console.WriteLine(" window.Width=" + windowSize.Width.ToString());
+      //Console.WriteLine(" window.Height=" + windowSize.Height.ToString());
 
 
       DrawNGon(100, 100);
