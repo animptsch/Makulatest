@@ -42,10 +42,26 @@ namespace MakulaTest
             if (e.Key == Key.Space)
             {
                 DiagnoseControl.MarkPoint();
-            }         
-        }
-        
-        private void BtnAnalyse_Click(object sender, RoutedEventArgs e)
+            }
+
+            if (e.Key == Key.Enter)
+            {
+              DiagnoseControl.StopDiagnosis();
+            }
+
+            if (e.Key == Key.Left && MyAnalyse.Visibility == Visibility.Visible)
+            {
+              MyAnalyse.GoBackInTime();
+            }
+
+            if (e.Key == Key.Right && MyAnalyse.Visibility == Visibility.Visible)
+            {
+              MyAnalyse.GoForwardInTime();
+            }
+
+    }
+
+    private void BtnAnalyse_Click(object sender, RoutedEventArgs e)
         {
             MyAnalyse.Visibility = Visibility.Visible;
             DiagnoseControl.Visibility = Visibility.Collapsed;
