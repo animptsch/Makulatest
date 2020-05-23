@@ -7,7 +7,7 @@
              mc:Ignorable="d" x:Name="MyUserControl" 
              d:DesignHeight="700" d:DesignWidth="700">
     <Grid>
-        <Canvas Visibility="Visible" Background="White"  Margin="20" x:Name="MyCanvas" SizeChanged="MyCanvas_SizeChanged"  >
+    <Canvas Visibility="Visible" Background="White"  Margin="20" x:Name="MyCanvas" SizeChanged="MyCanvas_SizeChanged"  MouseDown="MyCanvas_MouseDown">
             <Rectangle x:Name="MyRectangle" Margin="50" Stroke="Black" Fill="White" Width="{Binding ElementName=MyUserControl, Path=MinSize}" Height="{Binding ElementName=MyUserControl, Path=MinSize}"></Rectangle>
         </Canvas>
     </Grid>
