@@ -8,16 +8,17 @@ namespace MakulaTest.Model
 {
     public class Settings
     {
-        public double CircleSize { get; set; }
-        public string Color { get; set; }
+        public int Steps { get; set; }
 
         public int Duration { get; set; }
 
+        public bool Backward { get; set; }
+
         public Settings()
-        {
-            CircleSize = 15;
-            Color = "#FFFF0000";
+        {                        
             Duration = 10;
+            Steps = 20;
+            Backward = true;
         }
     }
 

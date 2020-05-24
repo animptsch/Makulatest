@@ -22,116 +22,38 @@ namespace MakulaTest.Model
                     OnPropertyChanged(nameof(Duration));
                 }
             }
-        }        
-
-        public bool FullColor
-        {
-            get { return Model.Color == "#FFFF0000"; }
-            set
-            {
-                if(value)
-                {
-                    Model.Color = "#FFFF0000";
-                }
-                OnPropertyChanged(nameof(FullColor));                
-            }
         }
-
-
-
-        public bool HalfColor
-        {
-            get { return Model.Color == "#80FF0000"; }
-            set
-            {
-                if (value)
-                {
-                    Model.Color = "#80FF0000";
-                }
-                OnPropertyChanged(nameof(HalfColor));
-            }
-        }
-
-        public bool QuaterColor
-        {
-            get { return Model.Color == "#40FF0000"; }
-            set
-            {
-                if (value)
-                {
-                    Model.Color = "#40FF0000";
-                }
-                OnPropertyChanged(nameof(QuaterColor));
-            }
-        }
-
         
-        public bool SmallSize
+
+        public string Steps
         {
-            get
-            {
-                return Model.CircleSize == 10;
-            }
+            get { return Model.Steps.ToString(); }
             set
             {
-                if (value)
+                int steps;
+
+                if (int.TryParse(value, out steps))
                 {
-                    Model.CircleSize = 10;
+                    Model.Steps = steps;
+                    OnPropertyChanged(nameof(Steps));
                 }
-                OnPropertyChanged(nameof(SmallSize));
+            }
+        }
+
+        private bool backwards;
+
+        public bool Backwards
+        {
+            get { return Model.Backward; }
+            set
+            {
+                backwards = value;
+                OnPropertyChanged(nameof(Backwards));
             }
         }
 
 
-        public bool MiddleSize
-        {
-            get
-            {
-                return Model.CircleSize == 15;
-            }
-            set
-            {
-                if (value)
-                {
-                    Model.CircleSize = 15;
-                }
-                OnPropertyChanged(nameof(MiddleSize));
-            }
-        }
 
-
-        public bool LargeSize
-        {
-            get
-            {
-                return Model.CircleSize == 20;
-            }
-            set
-            {
-                if (value)
-                {
-                    Model.CircleSize = 20;
-                }
-                OnPropertyChanged(nameof(LargeSize));
-            }
-        }
-
-
-        public bool GiantSize
-        {
-            get
-            {
-                return Model.CircleSize == 30;
-            }
-            set
-            {
-                if (value)
-                {
-                    Model.CircleSize = 30;
-                }
-                OnPropertyChanged(nameof(GiantSize));
-            }
-        }
 
         public Settings Model { get; }
 

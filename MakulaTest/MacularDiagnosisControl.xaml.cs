@@ -30,19 +30,22 @@ namespace MakulaTest
         public MacularDiagnosisControl()
         {
             InitializeComponent();
+            SettingsModel = new Model.Settings()
+            {
+                Duration = 10,
+                Steps = 20,
+                Backward = false
+            };
 
             drawLines();
-            drawCenterCircle();
-            Duration = 10;
-            CircleColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#ffaacc"));
-            CircleSize = 15;            
+            drawCenterCircle();            
         }
 
 
-        public double CircleSize { get; set; }
-        public Brush CircleColor { get; set; }
+        public const int CircleSize = 6;
+        public readonly Brush CircleColor = new SolidColorBrush(Colors.Red);
 
-        public int Duration { get; set; }
+        public Model.Settings SettingsModel { get; set; }
 
         public double MinSize
         {
@@ -59,41 +62,19 @@ namespace MakulaTest
         {
             _session = new MakulaSession();
             
-            //_removeTimer = new DispatcherTimer();
-            //_removeTimer.Interval = new TimeSpan(0, 0, Duration);
-            //_removeTimer.Tick += new EventHandler(_removeTimer_Tick);
-            //_removeTimer.Start();
+            _removeTimer = new DispatcherTimer();
+            _removeTimer.Interval = new TimeSpan(0, 0, SettingsModel.Duration);
+            _removeTimer.Tick += new EventHandler(_removeTimer_Tick);
+            _removeTimer.Start();
 
-            //_moveTimer = new DispatcherTimer();
-            //_moveTimer.Interval = new TimeSpan(0, 0, Duration+2);
-            //_moveTimer.Tick += new EventHandler(_timer_Tick);
-            //_moveTimer.Start();
+            _moveTimer = new DispatcherTimer();
+            _moveTimer.Interval = new TimeSpan(0, 0, SettingsModel.Duration+2);
+            _moveTimer.Tick += new EventHandler(_timer_Tick);
+            _moveTimer.Start();
             _lastPos = 0.0;
 
-            
-
-            while (_lastPos <= 1.0)
-            {
-                Point pt = getPointInOuterCircle();                
-                var line = new Line()
-                {                 
-                    Stroke = new SolidColorBrush(Colors.Red),
-                    Fill = new SolidColorBrush(Colors.Red),
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    StrokeThickness = 5,
-                    X1 = pt.X ,
-                    X2 = _centerX ,
-                    Y1 = pt.Y ,
-                    Y2 = _centerY 
-                };
-       
-                line.MouseDown += Line_MouseDown;
-                MyCanvas.Children.Add(line);
-            }
-
-            //
-            //_ellipse = moveCircle(pt);
+            Point pt = getPointInOuterCircle();            
+            _ellipse = moveCircle(pt, SettingsModel.Backward);
         }
 
         private void Line_MouseDown(object sender, MouseButtonEventArgs e)
@@ -124,14 +105,19 @@ namespace MakulaTest
             _moveTimer.Start();
 
             Point pt = getPointInOuterCircle();
-            _ellipse = moveCircle(pt);
+            _ellipse = moveCircle(pt, SettingsModel.Backward);
         }
 
 
         private void _timer_Tick(object sender, EventArgs e)
         {
+            cancelMovement();
+        }
+
+        private void cancelMovement()
+        {
             Point pt = getPointInOuterCircle();
-            _ellipse = moveCircle(pt);
+            _ellipse = moveCircle(pt, SettingsModel.Backward);
             _removeTimer.Stop();
             _removeTimer.Start();
         }
@@ -146,7 +132,7 @@ namespace MakulaTest
         }
 
 
-        private Ellipse moveCircle(Point begin)
+        private Ellipse moveCircle(Point begin, bool backward)
         {
             var ellipse = new Ellipse()
             {
@@ -156,7 +142,17 @@ namespace MakulaTest
                 Fill = CircleColor
             };
 
-            Point end = new Point(_centerX, _centerY);
+            Point end;
+            if (!backward)
+            {
+                end = new Point(_centerX, _centerY);
+            }
+            else
+            {
+                end = begin;
+                begin = new Point(_centerX, _centerY);
+            }
+            
             ellipse.SetValue(Canvas.LeftProperty, begin.X );
             ellipse.SetValue(Canvas.TopProperty, begin.Y );
             MyCanvas.Children.Add(ellipse);
@@ -164,7 +160,7 @@ namespace MakulaTest
             _sbTranslate = new Storyboard();
             var daTranslateX = new DoubleAnimation();
             var daTranslateY = new DoubleAnimation();
-            var duration = new Duration(TimeSpan.FromSeconds(Duration));
+            var duration = new Duration(TimeSpan.FromSeconds(SettingsModel.Duration));
 
             daTranslateX.Duration = duration;
             daTranslateY.Duration = duration;
@@ -192,7 +188,7 @@ namespace MakulaTest
 
         public void MarkPoint()
         {
-            if (_sbTranslate != null)
+            if (_sbTranslate != null && _ellipse != null)
             {
                 Point relativePoint = _ellipse.TransformToAncestor(MyCanvas)
                                               .Transform(new Point(CircleSize / 2.0, CircleSize / 2.0));
@@ -249,7 +245,7 @@ namespace MakulaTest
             Point pt, ptTan;
             var rnd = new Random();
 
-            double pos = 1/20.0;
+            double pos = 1.0 / (double)SettingsModel.Steps;
             _lastPos += pos;
             _pathGeo.GetPointAtFractionLength(_lastPos, out pt, out ptTan);
             return pt;
@@ -394,7 +390,21 @@ namespace MakulaTest
 
         private void MyCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-          MarkPoint();
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                MarkPoint();
+            }
+
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                if (_ellipse != null)
+                {
+                    MyCanvas.Children.Remove(_ellipse);
+                    _ellipse = null;
+                }
+                cancelMovement();
+            }
+          
         }
 
   }

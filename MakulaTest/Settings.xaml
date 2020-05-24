@@ -20,61 +20,10 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Label Content="Farbintensität:" />
-        <StackPanel Margin="10" Grid.Column="1" Orientation="Vertical">
-            <RadioButton Margin="5" IsChecked="{Binding Path=FullColor}">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Width="50" Text="100%"/>
-                    <Ellipse Width="15" Height="15" Stroke="#FFFF0000" Fill="#FFFF0000" />
-                </StackPanel>
-            </RadioButton>
+        <Label Content="Anzahl der Schritte:" Grid.Row="0" />
+        <TextBox Margin="5" Width="100" Height="20" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Steps}"/>
 
-            <RadioButton Margin="5" IsChecked="{Binding Path=HalfColor}" >
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Width="50" Text="50%"/>
-                    <Ellipse Width="15" Height="15" Stroke="#80FF0000" Fill="#80FF0000" />
-                </StackPanel>
-            </RadioButton>
-
-            <RadioButton Margin="5" IsChecked="{Binding Path=QuaterColor}" >
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Width="50" Text="25%"/>
-                    <Ellipse Width="15" Height="15" Stroke="#40FF0000" Fill="#40FF0000" />
-                </StackPanel>
-            </RadioButton>
-        </StackPanel>
-
-        <Label Grid.Row="1" Grid.Column="0" Content="Größe der Kreise" />
-
-        <StackPanel Margin="10" Grid.Column="1" Grid.Row="1" Orientation="Vertical">
-            <RadioButton Margin="5" IsChecked="{Binding Path=SmallSize}">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Width="50" Text="Klein"/>
-                    <Ellipse Width="10" Height="10" Stroke="Black" Fill="#FF0000" />
-                </StackPanel>
-            </RadioButton>
-
-            <RadioButton Margin="5" IsChecked="{Binding Path=MiddleSize}">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Width="50" Text="Mittel"/>
-                    <Ellipse Width="15" Height="15" Stroke="Black" Fill="#FF0000" />
-                </StackPanel>
-            </RadioButton>
-
-            <RadioButton Margin="5" IsChecked="{Binding Path=LargeSize}" >
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Width="50" Text="Gross"/>
-                    <Ellipse Width="20" Height="20" Stroke="Black" Fill="#FF0000" />
-                </StackPanel>
-            </RadioButton>
-
-            <RadioButton Margin="5" IsChecked="{Binding Path=GiantSize}" >
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Width="50" Text="Riesig"/>
-                    <Ellipse Width="30" Height="30" Stroke="Black" Fill="#FF0000" />
-                </StackPanel>
-            </RadioButton>
-        </StackPanel>
+        <CheckBox Margin="5" Content="Rückwärts" IsChecked="{Binding Path=Backwards}" Grid.Row="1" Grid.Column="1"/>
 
         <Label Content="Dauer der Animation:" Grid.Row="2" />
         <TextBox Margin="5" Width="100" Height="20" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1" Text="{Binding Path=Duration}"/>

@@ -53,6 +53,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="MakulaNorm.xaml.cs">
+      <DependentUpon>MakulaNorm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Model\MakulaDataSet.cs" />
     <Compile Include="Model\SerializedWindowsState.cs" />
     <Compile Include="Model\Settings.cs" />
@@ -86,6 +89,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MakulaNorm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

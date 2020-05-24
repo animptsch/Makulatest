@@ -155,10 +155,8 @@ namespace MakulaTest
 
             bool? result = settings.ShowDialog();
             if (result == true)
-            {
-                DiagnoseControl.CircleColor = (SolidColorBrush)(new BrushConverter().ConvertFrom(vm.Model.Color));
-                DiagnoseControl.CircleSize = vm.Model.CircleSize;
-                DiagnoseControl.Duration = vm.Model.Duration;
+            {                
+                DiagnoseControl.SettingsModel = vm.Model;
             }
         }
     }
