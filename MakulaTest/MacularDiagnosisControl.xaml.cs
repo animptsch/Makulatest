@@ -30,12 +30,7 @@ namespace MakulaTest
         public MacularDiagnosisControl()
         {
             InitializeComponent();
-            SettingsModel = new Model.Settings()
-            {
-                Duration = 10,
-                Steps = 20,
-                Backward = false
-            };
+            SettingsModel = new Model.Settings();
 
             drawLines();
             drawCenterCircle();            
