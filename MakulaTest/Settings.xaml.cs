@@ -23,6 +23,11 @@ namespace MakulaTest
         public Settings(SettingsViewModel viewModel)
         {
             InitializeComponent();
+
+            // place the new window in the middle of the screen
+            wndSettings.Left = SystemParameters.PrimaryScreenWidth / 2 - wndSettings.Width;
+            wndSettings.Top = SystemParameters.PrimaryScreenHeight / 2 - wndSettings.Height / 2;
+
             _vm = viewModel;
             this.DataContext = _vm;
         }
