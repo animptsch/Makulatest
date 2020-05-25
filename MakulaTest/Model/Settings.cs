@@ -18,7 +18,7 @@ namespace MakulaTest.Model
         {                        
             Duration = 10;
             Steps = 20;
-            Backward = true;
+            Backward = false;
         }
     }
 
