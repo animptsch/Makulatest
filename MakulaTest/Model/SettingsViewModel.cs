@@ -40,15 +40,14 @@ namespace MakulaTest.Model
             }
         }
 
-        private bool backwards;
 
-        public bool Backwards
+        public bool Backward
         {
             get { return Model.Backward; }
             set
             {
-                backwards = value;
-                OnPropertyChanged(nameof(Backwards));
+                Model.Backward = value;
+                OnPropertyChanged(nameof(Backward));
             }
         }
 
