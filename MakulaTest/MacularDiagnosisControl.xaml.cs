@@ -90,21 +90,23 @@ namespace MakulaTest
               line.X2 = (_centerY - p.Y) * m + _centerX;
               line.Y2 = p.Y;
             }
-    }
+        }
 
-    private void resetTimer()
+        private void resetTimer()
         {
-            _moveTimer.Stop();
-            _removeTimer.Stop();
-            _removeTimer.Start();
-            _moveTimer.Start();
+           if (_moveTimer != null && _removeTimer != null)
+           { _moveTimer.Stop();
+             _removeTimer.Stop();
+             _removeTimer.Start();
+             _moveTimer.Start();
 
-            Point pt = getPointInOuterCircle();
-            _ellipse = moveCircle(pt, SettingsModel.Backward);
+             Point pt = getPointInOuterCircle();
+             _ellipse = moveCircle(pt, SettingsModel.Backward);
+           }
         }
 
 
-        private void _timer_Tick(object sender, EventArgs e)
+    private void _timer_Tick(object sender, EventArgs e)
         {
             cancelMovement();
         }
@@ -148,8 +150,8 @@ namespace MakulaTest
                 begin = new Point(_centerX, _centerY);
             }
             
-            ellipse.SetValue(Canvas.LeftProperty, begin.X );
-            ellipse.SetValue(Canvas.TopProperty, begin.Y );
+            ellipse.SetValue(Canvas.LeftProperty, begin.X - CircleSize/2);
+            ellipse.SetValue(Canvas.TopProperty, begin.Y - CircleSize / 2);
             MyCanvas.Children.Add(ellipse);
 
             _sbTranslate = new Storyboard();
@@ -197,10 +199,18 @@ namespace MakulaTest
 
         public void StopDiagnosis()
         {
+            _moveTimer.Stop();
+            _removeTimer.Stop();
+            _sbTranslate.Stop();
+            _sbTranslate = null;
+            _moveTimer = null;
+            _removeTimer = null;
+      
             if (_ellipse != null)
             {
                 MyCanvas.Children.Remove(_ellipse);
             }
+
             drawLines();
             drawCenterCircle();
 
@@ -214,7 +224,7 @@ namespace MakulaTest
             MyCanvas.Children.Add(polygon);
 
             MakulaDataSet mds = new MakulaDataSet(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MakulaData.csv"));
-            mds.SaveData(_session.Points, 22, 10, true); // size, intensity, rightEye
+            mds.SaveData(_session.Points, SettingsModel.Backward, true, CircleSize, 354, 354, 527, 298); // direction, rightEye, CircleSize, midX, midY, monitorWidth (mm), monitorHeight (mm)
     }
 
     private void drawCircle(Point pt)
@@ -241,8 +251,11 @@ namespace MakulaTest
             var rnd = new Random();
 
             double pos = 1.0 / (double)SettingsModel.Steps;
-            _lastPos += pos;
             _pathGeo.GetPointAtFractionLength(_lastPos, out pt, out ptTan);
+            _lastPos += pos;
+            if (_lastPos >= 1.0+pos)
+              StopDiagnosis();
+
             return pt;
         }
 
