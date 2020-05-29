@@ -40,6 +40,8 @@ namespace MakulaTest
     private string path;
     private MakulaDataSetInternal data;
     private Size windowSize;
+    private bool timeMeasure = false; // stop watch control 
+
 
 
     public AnalyseControl()
@@ -48,16 +50,12 @@ namespace MakulaTest
       data = new MakulaDataSetInternal();
 
       InitializeComponent();
-
-      //comment
     }
 
 
-
+ 
     public void Start()
     {
-      //windowSize = new Size(window.Width, window.Height);
-
       var steps = 12;
       var radius = 100;
       Vector center = new Vector(radius, radius);
@@ -73,19 +71,18 @@ namespace MakulaTest
   
       maxSequenceId = GetMaxSequenceId();
       data.actualSequenceId = maxSequenceId;
-      
+
+      ReadData();
+
       /*
       _moveTimer = new DispatcherTimer();
       _moveTimer.Interval = new TimeSpan(0, 0, 0, 0, 20);
       _moveTimer.Tick += new EventHandler(_timer_Tick);
       _moveTimer.Start();
       */
-      
-      TimeMeasureStart();
- 
-      RefreshScreen();
+
       //GenerateTestData();
-      TimeMeasureStop("Dialog Ende");
+
     }
 
     private int GetMaxSequenceId()
@@ -124,8 +121,22 @@ namespace MakulaTest
     }
 
 
+
+    private void RefreshScreen_xxx()
+    {
+      MyCanvas.Children.Clear();
+      DrawTestfield(40, 40);
+    }
+
+
     private void RefreshScreen()
     {
+      TimeMeasureStart();
+
+
+      //Console.WriteLine("*********** Analyse.MyCanvas.Width (new): " + windowSize.Width.ToString());
+      //Console.WriteLine("*********** Analyse.MyCanvas.Height (new): " + windowSize.Height.ToString());
+
       cursor_x = 30; // used for text lines
       cursor_y = 50;
 
@@ -138,7 +149,6 @@ namespace MakulaTest
       //DrawString("", 24);
       //DrawString("Es ist alles in Ordnung.", 36);
 
-      ReadData();
 
       /*
       foreach (var point in data.Points)
@@ -147,42 +157,69 @@ namespace MakulaTest
       }
       */
 
-
-      //Console.WriteLine(" window.Width=" + windowSize.Width.ToString());
-      //Console.WriteLine(" window.Height=" + windowSize.Height.ToString());
-
-
-      DrawNGon(100, 100);
-      DrawTestPolygon(100, 100);
-
+   
+      DrawTestfield(40, 40);
+      DrawTestPolygon(40, 40);
+      DrawMidPoint(40, 40);
 
       var a = CalculatePolygonArea();
+      var pct1 = Math.Round(a * 100 / 69528.8237343631, 2);
+      var pct2 = 100 - pct1;
+
+      DrawLegend(80, 20, "Sehfeld:", pct2, "außerhalb:", pct1);
+
       cursor_y = 420;
 
       //Console.WriteLine("Die Fläche des Polygons beträgt: " + a.ToString());
 
-      var pct1 = Math.Round(a * 100 / 69528.8237343631, 2);
-      var pct2 = 100 - pct1;
-
+    
       var y_off = 220;
-      DrawRectangle(450, y_off, 40, 20, Colors.LightGreen);
-      DrawStringAtPos("Sehfeld:", 500, y_off, 16);
-      DrawStringAtPos(pct2.ToString() + "%", 580, y_off, 16);
-
-      DrawRectangle(450, y_off + 30, 40, 20, Colors.LightPink);
-      DrawStringAtPos("außerhalb:", 500, y_off + 30, 16);
-      DrawStringAtPos(pct1.ToString() + "%", 580, y_off + 30, 16);
-
-      DrawStringAtPos(data.actualDate.ToString(), 180, 400, 16);
-
+    
       //DrawXAxis(20, 400, cursor_y + 150, 50);
       //DrawCheckMark(450, 100);
+
+      TimeMeasureStop("Dialog Ende");
     }
+
+    
+    private void DrawLegend(int xOffset, int yOffset, string text1, double pct2, string text2, double pct1)
+    {
+      double radius = GetRadius(40, 40);
+      Vector center = new Vector(radius, radius);
+
+      var x_pos  = Convert.ToInt32(radius) * 2 + xOffset;
+      var y_pos1 = Convert.ToInt32(center.Y + 30 - yOffset);
+      var y_pos2 = Convert.ToInt32(center.Y + 30 + yOffset);
+
+      DrawRectangle(x_pos, y_pos1, 40, 20, Colors.LightGreen);
+      DrawStringAtPos("Sehfeld:", x_pos + 50, y_pos1, 16);
+      DrawStringAtPos(pct2.ToString() + "%", x_pos + 140, y_pos1, 16);
+
+      DrawRectangle(x_pos, y_pos2, 40, 20, Colors.LightPink);
+      DrawStringAtPos("außerhalb:", x_pos + 50, y_pos2, 16);
+      DrawStringAtPos(pct1.ToString() + "%", x_pos + 140, y_pos2, 16);
+      
+      DrawStringAtPos(data.actualDate.ToString(), Convert.ToInt32(radius)+40, Convert.ToInt32(radius)*2 + 60, 16, TextAlignment.Center);
+      //DrawBlackLine(0, Convert.ToInt32(center.Y)+40,1000, Convert.ToInt32(center.Y)+40, 2);
+    }
+
+
+
+    private void MyCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+    { if (e.NewSize.Width == 0.0 && e.NewSize.Height == 0.0)
+        windowSize = e.PreviousSize;
+      else
+        windowSize = e.NewSize;
+
+      RefreshScreen();
+    }
+
 
     public void GoBackInTime()
     {
       if (data.actualSequenceId > 1)
       { data.actualSequenceId--;
+        ReadData();
         RefreshScreen();
       }
 
@@ -192,6 +229,7 @@ namespace MakulaTest
     {
       if (data.actualSequenceId < maxSequenceId)
       { data.actualSequenceId++;
+        ReadData();
         RefreshScreen();
       }
     }
@@ -252,7 +290,8 @@ namespace MakulaTest
     private void TimeMeasureStop(string what)
     {
       stopwatch.Stop();
-      Console.WriteLine(what + " Ticks: " + stopwatch.ElapsedTicks + " Real time: " + stopwatch.ElapsedMilliseconds + " ms");
+      if (timeMeasure)
+        Console.WriteLine(what + " Ticks: " + stopwatch.ElapsedTicks + " Real time: " + stopwatch.ElapsedMilliseconds + " ms");
     }
 
     private void DrawBlackLine(int px1, int py1, int px2, int py2, int thickness)
@@ -278,18 +317,46 @@ namespace MakulaTest
 
 
 
+    private double GetRadius(int xOffset, int yOffset)
+    { double radius;
 
-    private void DrawNGon(int x, int y)
+      if (windowSize.Width - xOffset > windowSize.Height - yOffset - 50)
+        radius = (windowSize.Height - yOffset - 50) / 2.0;
+      else
+        radius = (windowSize.Width - xOffset) / 2.0;
+
+      if (radius * 2.0 > (windowSize.Width - xOffset) - 200.0)
+        radius = ((windowSize.Width - xOffset) - 200.0) / 2.0;
+
+      return radius;
+    }
+
+    private void DrawMidPoint(int x, int y)
     {
+      double radius = GetRadius(40, 40);
+      Vector center = new Vector(radius, radius);
+
+      var ellipse = new Ellipse()
+      {
+        Width = 15,
+        Height = 15,
+        Stroke = new SolidColorBrush(Colors.Black),
+        Fill = new SolidColorBrush(Colors.Black),
+      };
+
+      ellipse.SetValue(Canvas.LeftProperty, x+center.X - 7.5);
+      ellipse.SetValue(Canvas.TopProperty, y+center.Y - 7.5);
+      MyCanvas.Children.Add(ellipse);
+    }
 
 
-
-      Console.WriteLine(" window.Width=" + windowSize.Width.ToString());
-      Console.WriteLine(" window.Height=" + windowSize.Height.ToString());
-
-
+    private void DrawTestfield(int x, int y)
+    {
       int[,] intPoints = new int[20, 2];
-      double radius = 150;
+
+      var minWinExtend = Math.Min(windowSize.Width, windowSize.Height);
+
+      double radius = GetRadius(40,40);
       int steps = 20;
 
       Vector center = new Vector(radius, radius);
@@ -311,13 +378,16 @@ namespace MakulaTest
     private void DrawTestPolygon(int x, int y)
     {
 
+      double radius = GetRadius(40, 40);
+      double scaleFactor = radius / data.Points[0].X;
+
       int[,] intPoints = new int[20, 2];
 
       int count = 0;
       foreach (var point in data.Points)
       {
-        intPoints[count, 0] = Convert.ToInt32(point.X);
-        intPoints[count, 1] = Convert.ToInt32(point.Y);
+        intPoints[count, 0] = Convert.ToInt32(point.X * scaleFactor);
+        intPoints[count, 1] = Convert.ToInt32(point.Y * scaleFactor);
         count++;
        }
 
