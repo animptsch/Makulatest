@@ -4,49 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MakulaTest"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-  
-  <DockPanel>
-    <Button x:Name="BtnBack"
-      Background="Transparent"
-      BorderBrush="Transparent"
-      ToolTip="Zurück zur Hauptseite" 
-      Click="BtnBack_Click"
-      HorizontalAlignment="Left"
-      Height="40"
-       DockPanel.Dock="Bottom"
-      Padding="20"
-      Margin ="20">
-      
-      <Button.Style>
-        <Style TargetType="{x:Type Button}">
-          <Setter Property="Background" Value="Transparent"/>
-          <Setter Property="Template">
-            <Setter.Value>
-              <ControlTemplate TargetType="{x:Type Button}">
-                <Border Background="{TemplateBinding Background}">
-                  <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Border>
-              </ControlTemplate>
-            </Setter.Value>
-          </Setter>
-          <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-              <Setter Property="Background" Value="Black"/>
-              <Setter Property="Foreground" Value="White"/>
-            </Trigger>
-          </Style.Triggers>
-        </Style>
-      </Button.Style>
-      <Image Source="Images/back.png" />
-    </Button>
-    
-    <Label>
-      <Canvas x:Name="MyCanvas"></Canvas>
-    </Label>
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="400"
+             SizeChanged="MyCanvas_SizeChanged">
+   
+      <Canvas Visibility="Visible" Background="White" HorizontalAlignment="Left" x:Name="MyCanvas">
 
-  </DockPanel>
+      </Canvas>
+
+ 
 
 
 </UserControl>
