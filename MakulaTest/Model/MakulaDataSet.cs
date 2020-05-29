@@ -15,8 +15,7 @@ namespace MakulaTest.Model
       pathInternal = path;
     }
 
-
-    public void SaveData(List<Point> Points, int size, int intensity, bool rightEye)
+    public void SaveData(List<Point> Points, bool backward, bool rightEye, int circleSize, int midX, int midY, int monitorWidth, int monitorHeight)
     {
       var day = DateTime.Now;
       var maxSequenceId = GetMaxSequenceId();
@@ -26,7 +25,14 @@ namespace MakulaTest.Model
 
       foreach (var point in Points)
       {
-        WriteCSV(fs, maxSequenceId + 1, entryId, day, size, intensity, rightEye, point);
+        var realPoint = point;
+
+        var relX = Convert.ToInt32(point.X) + circleSize / 2 - midX;
+        var relY = Convert.ToInt32(point.Y) + circleSize / 2 - midY;
+        realPoint.X = relX * monitorWidth / SystemParameters.PrimaryScreenWidth;
+        realPoint.Y = relY * monitorHeight / SystemParameters.PrimaryScreenHeight;
+
+        WriteCSV(fs, maxSequenceId + 1, entryId, day, backward, rightEye, realPoint);
         entryId++;
       }
 
@@ -63,11 +69,11 @@ namespace MakulaTest.Model
       return sequenceIdMax;
     }
 
-    private void WriteCSV(FileStream fs, int sequenceId, int entryId, DateTime day, int size, int intensity, bool rightEye, Point point)
+    private void WriteCSV(FileStream fs, int sequenceId, int entryId, DateTime day, bool backward, bool rightEye, Point point)
     {
       string csv_line = sequenceId.ToString() + ";" + entryId.ToString() + ";" + day.ToString() + ";" +
-                        size.ToString() + ";" + intensity.ToString() + ";" + rightEye.ToString() + ";" +
-                        point.X.ToString() + ";" + point.Y.ToString() + "\n";
+                        backward.ToString() + ";" + rightEye.ToString() + ";" +
+                        Math.Round(point.X).ToString() + ";" + Math.Round(point.Y).ToString() + "\n";
       byte[] bytes = Encoding.UTF8.GetBytes(csv_line);
       fs.Write(bytes, 0, bytes.Length);
     }
