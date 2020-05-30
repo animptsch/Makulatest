@@ -34,6 +34,7 @@ namespace MakulaTest
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {            
             LoadSettings();
+            MyAnalyse.Parent = this;
         }
 
 
@@ -65,6 +66,7 @@ namespace MakulaTest
         {
             MyAnalyse.Visibility = Visibility.Visible;
             DiagnoseControl.Visibility = Visibility.Collapsed;
+            MainWindowToolbar.Visibility = Visibility.Collapsed;
             MyAnalyse.Start();
         }
 

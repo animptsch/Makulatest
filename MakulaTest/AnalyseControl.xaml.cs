@@ -42,9 +42,9 @@ namespace MakulaTest
     private Size windowSize;
     private bool timeMeasure = false; // stop watch control 
 
+    public MainWindow Parent { get; set; }
 
-
-    public AnalyseControl()
+        public AnalyseControl()
     {
       stopwatch = new Stopwatch();
       data = new MakulaDataSetInternal();
