@@ -124,6 +124,14 @@ namespace MakulaTest
 
         private string _windowsSettingsFile;
 
+
+        public void AnalyseStop()
+        {
+            MyAnalyse.Visibility = Visibility.Collapsed;
+            DiagnoseControl.Visibility = Visibility.Visible;
+            MainWindowToolbar.Visibility = Visibility.Visible;
+        }
+
         public void LoadSettings()
         {
             SerializedWindowsState rect = null;

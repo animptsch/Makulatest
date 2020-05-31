@@ -815,7 +815,10 @@ namespace MakulaTest
       return new Size(ft.Width, ft.Height);
     }
 
-
-  }
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Parent.AnalyseStop();            
+        }
+    }
 
 }
