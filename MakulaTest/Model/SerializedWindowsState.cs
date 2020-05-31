@@ -14,5 +14,8 @@ namespace MakulaTest.Model
         public double Width { get; set; }
         public double Height { get; set; }
         public bool IsMaximized { get; set; }
+
+        public double CanvasHeight { get; set; }
+        public double CanvasWidth { get; set; }
     }
 }

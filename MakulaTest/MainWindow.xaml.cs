@@ -34,6 +34,10 @@ namespace MakulaTest
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {            
             LoadSettings();
+            if(_canvasHeight != 0.0 && _canvasWidth != 0.0)
+            {
+                DiagnoseControl.SetSize(_canvasWidth, _canvasHeight);
+            }
             MyAnalyse.Parent = this;
         }
 
@@ -96,7 +100,10 @@ namespace MakulaTest
                 Top = Application.Current.MainWindow.Top,
                 Width = Application.Current.MainWindow.Width,
                 Height = Application.Current.MainWindow.Height,
-                IsMaximized = Application.Current.MainWindow.WindowState == WindowState.Maximized
+                IsMaximized = Application.Current.MainWindow.WindowState == WindowState.Maximized,
+                CanvasHeight = _canvasHeight,
+                CanvasWidth = _canvasWidth
+                
             };
 
             var xmlserializer = new XmlSerializer(typeof(SerializedWindowsState));
@@ -145,7 +152,8 @@ namespace MakulaTest
                 Application.Current.MainWindow.Left = rect.Left;
                 Application.Current.MainWindow.Top = rect.Top;
                 Application.Current.MainWindow.Width = rect.Width;
-
+                _canvasHeight = rect.CanvasHeight;
+                _canvasWidth = rect.CanvasWidth;
             }
 
         }
@@ -161,5 +169,19 @@ namespace MakulaTest
                 DiagnoseControl.SettingsModel = vm.Model;
             }
         }
+
+        private void BtnScreenCalib_Click(object sender, RoutedEventArgs e)
+        {
+            var calibDlg = new JustifyGridSize();
+
+            calibDlg.ShowDialog();
+
+            _canvasHeight = calibDlg.MyCanvas.ActualHeight;
+            _canvasWidth = calibDlg.MyCanvas.ActualWidth;            
+            this.DiagnoseControl.SetSize(_canvasWidth, _canvasHeight);
+        }
+
+        private double _canvasHeight;
+        private double _canvasWidth;
     }
 }

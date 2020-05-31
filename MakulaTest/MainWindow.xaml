@@ -7,13 +7,13 @@
         mc:Ignorable="d" Loaded="Window_Loaded" KeyDown="Window_KeyDown"
         Title="MainWindow" Height="700" Width="700" Background="LightGray" MinWidth="550" MinHeight="250">
 
-    <Grid>
+    <Grid Margin="0,14,0.333,-14.333">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <local:MacularDiagnosisControl x:Name="DiagnoseControl" />
+        <local:MacularDiagnosisControl x:Name="DiagnoseControl" Visibility="Collapsed" />
         <local:AnalyseControl x:Name="MyAnalyse" Visibility="Collapsed" />
         
         <StackPanel x:Name="MainWindowToolbar" Orientation="Horizontal" Grid.Row="1" >
@@ -22,6 +22,7 @@
             <Button x:Name="btnSettingSize" Content="Größe speichern" Margin="10" FontSize="20" Padding="10" Click="BtnSettingSize_Click"/>
             <Button x:Name="btnStartMacularDiagnosis" Content="Start" Margin="10" FontSize="20" Padding="5" Click="BtnStartMacularDiagnosis_Click"/>
             <Button x:Name="btnSettings" Content="Einstellungen" Margin="10" FontSize="20" Padding="5" Click="BtnSettings_Click"/>
+            <Button x:Name="btnScreenCalib" Content="Kalibrieren" Click="BtnScreenCalib_Click"/>
         </StackPanel>
     </Grid>
 </Window>

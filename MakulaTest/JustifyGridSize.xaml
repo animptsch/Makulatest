@@ -1,0 +1,20 @@
+﻿<Window x:Class="MakulaTest.JustifyGridSize"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MakulaTest"
+        mc:Ignorable="d" 
+        Title="JustifyGridSize" Height="800" Width="800" Background="LightGray">
+    <Grid>
+        
+        <TextBlock TextWrapping="Wrap" Margin="10" VerticalAlignment="Top" FontSize="15" TextAlignment="Center" HorizontalAlignment="Center">Vergrößern Sie das Fenster so, das beide Linien eine genaue Länge von 13 Centimetern haben.</TextBlock>
+
+        <Border Margin="60" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Canvas x:Name="MyCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" SizeChanged="Window_SizeChanged" >
+               
+            </Canvas>
+        </Border>
+        <Button IsDefault="True" Click="Button_Click" VerticalAlignment="Bottom" Content="OK" HorizontalAlignment="Center" Padding="10,5,10,5" Margin="0,0,0,20" />
+    </Grid>
+</Window>

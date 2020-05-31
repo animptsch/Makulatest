@@ -30,23 +30,28 @@ namespace MakulaTest
         public MacularDiagnosisControl()
         {
             InitializeComponent();
-            SettingsModel = new Model.Settings();
+            SettingsModel = new Model.Settings();            
+        }
+
+        public void SetSize(double width, double height)
+        {
+            Visibility = Visibility.Visible;
+            MyCanvas.Width = width;
+            MyCanvas.Height = height;
+
+            MyRectangle.Height = height - MyRectangle.Margin.Top - MyRectangle.Margin.Bottom;
+            MyRectangle.Width = width - MyRectangle.Margin.Left - MyRectangle.Margin.Right;
 
             drawLines();
-            drawCenterCircle();            
+            drawCenterCircle();
+            
         }
 
 
-        public const int CircleSize = 6;
+        public const int CircleSize = 8;
         public readonly Brush CircleColor = new SolidColorBrush(Colors.Red);
 
         public Model.Settings SettingsModel { get; set; }
-
-        public double MinSize
-        {
-            get { return (double)GetValue(MinSizeProperty); }
-            set { SetValue(MinSizeProperty, value); }
-        }
 
         // Using a DependencyProperty as the backing store for MinSize.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MinSizeProperty =
@@ -278,8 +283,8 @@ namespace MakulaTest
 
         private void drawLines()
         {
-            double width = MinSize;
-            double height = MinSize;
+            double width = MyRectangle.Width;
+            double height = MyRectangle.Height;
             double x = MyRectangle.Margin.Left;
             double y = MyRectangle.Margin.Top;
             _centerY = _centerX = 0.0;
@@ -298,7 +303,7 @@ namespace MakulaTest
                 double thickness;
                 if (centerIndex == i)
                 {
-                    _centerX = lineHeight;
+                    _centerY = lineHeight;
                     thickness = 3;
                 }
                 else
@@ -329,7 +334,7 @@ namespace MakulaTest
 
                 if (centerIndex == i)
                 {
-                    _centerY = lineWidth ;
+                    _centerX = lineWidth;
                     thickness = 3;
                 }
                 else
@@ -378,22 +383,6 @@ namespace MakulaTest
             ellipse.SetValue(Canvas.LeftProperty, _centerX- CircleSize / 2.0);
             ellipse.SetValue(Canvas.TopProperty, _centerY - CircleSize / 2.0);
             MyCanvas.Children.Add(ellipse);
-        }
-
-        private void MyCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (e.NewSize.Width < e.NewSize.Height)
-            {
-                MinSize = e.NewSize.Width - (MyRectangle.Margin.Left +MyRectangle.Margin.Right);
-            }
-            else
-            {
-                MinSize = e.NewSize.Height - (MyRectangle.Margin.Bottom + MyRectangle.Margin.Top);
-            }
-
-            drawLines();
-            drawCenterCircle(); 
-            
         }
 
         private void MyCanvas_MouseDown(object sender, MouseButtonEventArgs e)
