@@ -153,3 +153,7 @@ log-*.txt
 /.vs/MakulaTest/v15/Server/sqlite3/storage.ide-shm
 /.vs/MakulaTest/v15/Server/sqlite3/storage.ide-wal
 /MakulaTest/Model/SerializedRect.cs
+/Lineal/.vs/Lineal/v15/Server/sqlite3/db.lock
+/Lineal/.vs/Lineal/v15/Server/sqlite3/storage.ide
+/Lineal/.vs/Lineal/v15/Server/sqlite3/storage.ide-shm
+/Lineal/.vs/Lineal/v15/Server/sqlite3/storage.ide-wal
