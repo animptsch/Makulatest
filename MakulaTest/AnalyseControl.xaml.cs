@@ -40,14 +40,21 @@ namespace MakulaTest
     private string path;
     private MakulaDataSetInternal data;
     private Size windowSize;
-    private bool timeMeasure = false; // stop watch control 
+    private bool timeMeasure = false;
+    private bool _showGrid = true;
+    
 
-    public MainWindow Parent { get; set; }
+    public new MainWindow Parent { get; set; }
 
-        public AnalyseControl()
+    
+
+
+    public AnalyseControl()
     {
       stopwatch = new Stopwatch();
       data = new MakulaDataSetInternal();
+      timeMeasure = false; // stop watch control 
+      _showGrid = true; // toggle grid display
 
       InitializeComponent();
     }
@@ -117,9 +124,16 @@ namespace MakulaTest
     private void BtnBack_Click(object sender, RoutedEventArgs e)
     {
       //Console.WriteLine("btnBack_Click");
-      //MainWindow.AnalyseStop();
+      Parent.AnalyseStop();
+      
     }
 
+
+    private void BtnGrid_Click(object sender, RoutedEventArgs e)
+    {
+      _showGrid = !_showGrid;
+      RefreshScreen();
+    }
 
 
     private void RefreshScreen_xxx()
@@ -161,6 +175,7 @@ namespace MakulaTest
       DrawTestfield(40, 40);
       DrawTestPolygon(40, 40);
       DrawMidPoint(40, 40);
+      if (_showGrid) DrawGrid(40,40);
 
       var a = CalculatePolygonArea();
       var pct1 = Math.Round(a * 100 / 69528.8237343631, 2);
@@ -206,11 +221,17 @@ namespace MakulaTest
 
 
     private void MyCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
-    { if (e.NewSize.Width == 0.0 && e.NewSize.Height == 0.0)
-        windowSize = e.PreviousSize;
+    {
+      Vector v;
+      if (e.NewSize.Width == 0.0 && e.NewSize.Height == 0.0)
+        v = new Vector(e.PreviousSize.Width, e.PreviousSize.Height);
       else
-        windowSize = e.NewSize;
+        v = new Vector(e.NewSize.Width, e.NewSize.Height);
+    
+      v -= new Vector(BtnBack.ActualWidth, BtnBack.ActualHeight);
 
+      windowSize = new Size(v.X,v.Y);
+      
       RefreshScreen();
     }
 
@@ -445,14 +466,20 @@ namespace MakulaTest
 
       MyCanvas.Children.Add(polygon);
     }
-    
+
+
     private Rectangle DrawRectangle(int x, int y, int x_size, int y_size, Color fillColor)
+    {
+      return DrawRectangle(x, y, x_size, y_size, fillColor, 2);
+    }
+
+    private Rectangle DrawRectangle(int x, int y, int x_size, int y_size, Color fillColor, int thickness)
     {
       var MyStroke = new SolidColorBrush(fillColor);
      
       var myRect = new Rectangle
       { Stroke = System.Windows.Media.Brushes.Black,
-        StrokeThickness = 2,
+        StrokeThickness = thickness,
         Fill = MyStroke,
         HorizontalAlignment = HorizontalAlignment.Left,
         VerticalAlignment = VerticalAlignment.Center,
@@ -463,6 +490,44 @@ namespace MakulaTest
       Canvas.SetLeft(myRect, x);
       Canvas.SetTop(myRect, y);
       return myRect;
+    }
+
+
+
+    private void DrawGrid(int x, int y)
+    {
+      int LineNumber = 20;
+
+      double radius = GetRadius(x, y);
+      int width = Convert.ToInt32(radius);
+      int height = Convert.ToInt32(radius);
+
+   
+   
+      int centerIndex = LineNumber / 2;
+
+
+      double deltaHorz = width*2.0 / LineNumber;
+      double deltaVert = height*2.0 / LineNumber;
+
+      int xLoop = x + width - Convert.ToInt32(centerIndex * deltaHorz);
+      int yLoop = y + height - Convert.ToInt32(centerIndex * deltaVert);
+
+      int lineHeight = yLoop, lineWidth = xLoop;
+
+      //draw frame
+      DrawRectangle(x, y, width*2, height*2, Colors.Transparent,1);
+
+      //draw Lines
+      for (int i = 0; i < LineNumber; i++)
+      {
+        int thickness = 1;
+        if (centerIndex == i) thickness = 3;
+
+        DrawBlackLine(x, Convert.ToInt32(yLoop + i * deltaVert), x + width * 2, Convert.ToInt32(yLoop + i * deltaVert), thickness);
+        DrawBlackLine(Convert.ToInt32(xLoop + i * deltaHorz), y, Convert.ToInt32(xLoop + i * deltaHorz), y + height * 2, thickness);
+      }
+
     }
 
 
@@ -815,10 +880,7 @@ namespace MakulaTest
       return new Size(ft.Width, ft.Height);
     }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Parent.AnalyseStop();            
-        }
+    
     }
 
 }
