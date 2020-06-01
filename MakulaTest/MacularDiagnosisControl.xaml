@@ -7,8 +7,15 @@
              mc:Ignorable="d" x:Name="MyUserControl" 
              d:DesignHeight="700" d:DesignWidth="700">
     <Grid>
-        <Canvas Visibility="Visible" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Height="300" Width="300" x:Name="MyCanvas"  MouseDown="MyCanvas_MouseDown">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <Canvas Visibility="Visible" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Height="300" Width="300" x:Name="MyCanvas"  MouseDown="MyCanvas_MouseDown" PreviewMouseWheel="MyCanvas_PreviewMouseWheel">
             <Rectangle x:Name="MyRectangle" Stroke="Black" Fill="White" Width="200" Height="200"  Margin="50" />
         </Canvas>
+
+        <TextBox x:Name="txtPointList" Grid.Column="1" Width="200" VerticalAlignment="Stretch" TextWrapping="Wrap"/>
+
     </Grid>
 </UserControl>

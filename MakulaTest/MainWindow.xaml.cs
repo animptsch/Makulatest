@@ -15,7 +15,7 @@ namespace MakulaTest
     /// </summary>
     public partial class MainWindow : Window
     {
-        
+
         public MainWindow()
         {
             InitializeComponent();
@@ -29,16 +29,17 @@ namespace MakulaTest
 
             _windowsSettingsFile = System.IO.Path.Combine(baseDir, "windowsSettings.xml");
         }
-               
-        
+
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
-        {            
+        {
             LoadSettings();
-            if(_canvasHeight != 0.0 && _canvasWidth != 0.0)
+            if (_canvasHeight != 0.0 && _canvasWidth != 0.0)
             {
                 DiagnoseControl.SetSize(_canvasWidth, _canvasHeight);
             }
             MyAnalyse.Parent = this;
+            DiagnoseControl.Parent = this;
         }
 
 
@@ -51,22 +52,22 @@ namespace MakulaTest
 
             if (e.Key == Key.Enter)
             {
-              DiagnoseControl.StopDiagnosis();
+                DiagnoseControl.StopDiagnosis();
             }
 
             if (e.Key == Key.Left && MyAnalyse.Visibility == Visibility.Visible)
             {
-              MyAnalyse.GoBackInTime();
+                MyAnalyse.GoBackInTime();
             }
 
             if (e.Key == Key.Right && MyAnalyse.Visibility == Visibility.Visible)
             {
-              MyAnalyse.GoForwardInTime();
+                MyAnalyse.GoForwardInTime();
             }
 
-    }
+        }
 
-    private void BtnAnalyse_Click(object sender, RoutedEventArgs e)
+        private void BtnAnalyse_Click(object sender, RoutedEventArgs e)
         {
             MyAnalyse.Visibility = Visibility.Visible;
             DiagnoseControl.Visibility = Visibility.Collapsed;
@@ -91,7 +92,7 @@ namespace MakulaTest
             btnStartMacularDiagnosis.IsEnabled = false;
             DiagnoseControl.StartDiagnosis();
         }
-        
+
         public void SaveWindowSettings()
         {
             SerializedWindowsState rect = new SerializedWindowsState()
@@ -103,7 +104,7 @@ namespace MakulaTest
                 IsMaximized = Application.Current.MainWindow.WindowState == WindowState.Maximized,
                 CanvasHeight = _canvasHeight,
                 CanvasWidth = _canvasWidth
-                
+
             };
 
             var xmlserializer = new XmlSerializer(typeof(SerializedWindowsState));
@@ -173,7 +174,7 @@ namespace MakulaTest
 
             bool? result = settings.ShowDialog();
             if (result == true)
-            {                
+            {
                 DiagnoseControl.SettingsModel = vm.Model;
             }
         }
@@ -185,7 +186,7 @@ namespace MakulaTest
             calibDlg.ShowDialog();
 
             _canvasHeight = calibDlg.MyCanvas.ActualHeight;
-            _canvasWidth = calibDlg.MyCanvas.ActualWidth;            
+            _canvasWidth = calibDlg.MyCanvas.ActualWidth;
             this.DiagnoseControl.SetSize(_canvasWidth, _canvasHeight);
         }
 
