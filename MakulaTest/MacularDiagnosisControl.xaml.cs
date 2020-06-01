@@ -31,7 +31,7 @@ namespace MakulaTest
         private double _centerY;
         private Storyboard _sbTranslate;
         private MakulaSession _session;
-        private double _lastPos;
+        
         private bool _isMeasureStarted;        
 
         public MacularDiagnosisControl()
@@ -51,9 +51,21 @@ namespace MakulaTest
             MyRectangle.Width = width - MyRectangle.Margin.Left - MyRectangle.Margin.Right;
 
             drawLines();
-            drawCenterCircle();
-            
+            drawCenterCircle();            
         }
+
+        private double _lastPos;
+
+        public double LastPos
+        {
+            get { return _lastPos; }
+            set
+            {
+                _lastPos = value;
+                txtLastPos.AppendText(string.Format("{0:00.00}\n", value));
+            }
+        }
+
 
 
         public const int CircleSize = 8;
@@ -135,7 +147,7 @@ namespace MakulaTest
 
         private void cancelMovement()
         {
-            Point pt = getPointInOuterCircle();
+            //Point pt = getPointInOuterCircle();
 
             _session.Points.Add(new Point(EmptyValue, EmptyValue));
             UpdateTextBox();
@@ -485,10 +497,10 @@ namespace MakulaTest
 
         private void MyCanvas_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (e.Delta < 0 && _lastPos > _offset )
+            if (e.Delta < 0 && LastPos > _offset )
             {
                 double pos = 2.0 / (double)SettingsModel.Steps;
-                _lastPos -= pos;
+                LastPos -= pos;
                 
                 var lastPoint = _session.Points.Last();
                 if (lastPoint != null)
