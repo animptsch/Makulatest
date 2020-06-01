@@ -15,6 +15,7 @@
             <Rectangle x:Name="MyRectangle" Stroke="Black" Fill="White" Width="200" Height="200"  Margin="50" />
         </Canvas>
 
-        <TextBlock Margin="50" FontSize="30" Grid.Column="1" Text="0" x:Name="txtDelta"/>
+        <TextBox x:Name="txtPointList" Grid.Column="1" Width="200" VerticalAlignment="Stretch" TextWrapping="Wrap"/>
+
     </Grid>
 </UserControl>

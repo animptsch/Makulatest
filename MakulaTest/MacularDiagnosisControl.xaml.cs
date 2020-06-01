@@ -8,6 +8,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Windows.Input;
+using System.Collections.Generic;
+using System.Text;
 
 namespace MakulaTest
 {
@@ -19,9 +21,10 @@ namespace MakulaTest
         private Ellipse _ellipse;
         private PathGeometry _pathGeo;
         private const int LineNumber = 17;
+        private const double EmptyValue = -1;
         private const double _offset = 0.03;
+        private Polygon _polygon;
 
-        
         private DispatcherTimer _moveTimer;
         private DispatcherTimer _removeTimer;
         private double _centerX;
@@ -29,13 +32,13 @@ namespace MakulaTest
         private Storyboard _sbTranslate;
         private MakulaSession _session;
         private double _lastPos;
-        private bool _isMeasureStarted;
+        private bool _isMeasureStarted;        
 
         public MacularDiagnosisControl()
         {
             InitializeComponent();
             SettingsModel = new Model.Settings();
-            _isMeasureStarted = false;
+            _isMeasureStarted = false;            
         }
 
         public void SetSize(double width, double height)
@@ -58,10 +61,6 @@ namespace MakulaTest
 
         public Model.Settings SettingsModel { get; set; }
         public MainWindow Parent { get; set; }
-
-        // Using a DependencyProperty as the backing store for MinSize.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty MinSizeProperty =
-            DependencyProperty.Register("MinSize", typeof(double), typeof(MacularDiagnosisControl), new PropertyMetadata(0.0));
         
 
         public void StartDiagnosis()
@@ -81,6 +80,12 @@ namespace MakulaTest
                 _moveTimer.Tick += new EventHandler(_timer_Tick);
                 _moveTimer.Start();
                 _lastPos = _offset;
+
+                if (_polygon != null)
+                {
+                    MyCanvas.Children.Remove(_polygon);
+                    _polygon = null;
+                }
 
                 Point pt = getPointInOuterCircle();
                 _ellipse = moveCircle(pt, SettingsModel.Backward);
@@ -132,23 +137,26 @@ namespace MakulaTest
         {
             Point pt = getPointInOuterCircle();
 
+            _session.Points.Add(new Point(EmptyValue, EmptyValue));
+            UpdateTextBox();
+            
+            resetAnimation();
+            resetTimer();
+        }
 
+        private void resetAnimation()
+        {
             if (_sbTranslate != null)
             {
                 _sbTranslate.Stop();
+                _sbTranslate = null;
             }
 
             if (_ellipse != null)
             {
                 MyCanvas.Children.Remove(_ellipse);
             }
-
-            _ellipse = moveCircle(pt, SettingsModel.Backward);
-            if (_removeTimer != null && _isMeasureStarted)
-            {
-                _removeTimer.Stop();
-                _removeTimer.Start(); 
-            }
+            
         }
 
         private void _removeTimer_Tick(object sender, EventArgs e)
@@ -227,8 +235,10 @@ namespace MakulaTest
             if (_sbTranslate != null && _ellipse != null)
             {
                 Point relativePoint = _ellipse.TransformToAncestor(MyCanvas)
-                                              .Transform(new Point(CircleSize / 2.0, CircleSize / 2.0));
+                                              .Transform(new Point(CircleSize / 2.0, CircleSize / 2.0));                
+                
                 _session.Points.Add(relativePoint);
+                UpdateTextBox();
                 _sbTranslate.Stop();
 
                 MyCanvas.Children.Remove(_ellipse);
@@ -247,9 +257,12 @@ namespace MakulaTest
             
             _moveTimer = null;
             _removeTimer = null;
-      
-            _sbTranslate.Stop();
-            _sbTranslate = null;
+
+            if (_sbTranslate != null)
+            {
+                _sbTranslate.Stop();
+                _sbTranslate = null;
+            }
 
             if (_ellipse != null)
             {
@@ -259,19 +272,30 @@ namespace MakulaTest
             drawLines();
             drawCenterCircle();
             
-            var polygon = new Polygon();
-            polygon.Points = new PointCollection( _session.Points);
-            polygon.Stroke = Brushes.Blue;
-            polygon.Fill = Brushes.White;
+            _polygon = new Polygon();
 
-            MyCanvas.Children.Add(polygon);
+            var removedPoints = (from p in _session.Points
+                                where p.X == EmptyValue && p.Y == EmptyValue
+                                select p).ToList();
+
+            foreach (var p in removedPoints)
+            {
+                _session.Points.Remove(p);
+            }
+
+            _polygon.Points = new PointCollection(_session.Points);
+            _polygon.Stroke = Brushes.Blue;
+            _polygon.Fill = Brushes.White;
+
+            MyCanvas.Children.Add(_polygon);
 
             MakulaDataSet mds = new MakulaDataSet(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MakulaData.csv"));
             mds.SaveData(_session.Points, SettingsModel.Backward, true, CircleSize, 354, 354, (int)MyCanvas.Width, (int)MyCanvas.Height); // direction, rightEye, CircleSize, midX, midY, monitorWidth (mm), monitorHeight (mm)            
             Parent.btnStartMacularDiagnosis.IsEnabled = true;
+            _session.Points.Clear();
         }
 
-    private void drawCircle(Point pt)
+         private void drawCircle(Point pt)
         {
             var ellipse = new Ellipse()
             {
@@ -402,7 +426,7 @@ namespace MakulaTest
                               
                 lineWidth += deltaHorz;
 
-                EllipseGeometry geo = new EllipseGeometry(new Point(_centerX, _centerY), 354, 354);
+                EllipseGeometry geo = new EllipseGeometry(new Point(_centerX, _centerY), width/2+30, height/2+30);
                 _pathGeo = geo.GetFlattenedPathGeometry();
             }
         }
@@ -449,21 +473,33 @@ namespace MakulaTest
           
         }
 
+        private void UpdateTextBox()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in _session.Points)
+            {
+                sb.AppendLine(string.Format("{0:000.00}, {1:000.00}", item.X, item.Y));
+            }
+            txtPointList.Text = sb.ToString();
+        }
+
         private void MyCanvas_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (e.Delta < 0 && _lastPos > _offset )
             {
                 double pos = 2.0 / (double)SettingsModel.Steps;
                 _lastPos -= pos;
-
-                txtDelta.Text = _lastPos.ToString();
+                
                 var lastPoint = _session.Points.Last();
                 if (lastPoint != null)
                 {
                     _session.Points.Remove(lastPoint);
+                    UpdateTextBox();
                 }
             }
-            cancelMovement();
+            
+            resetAnimation();
+            resetTimer();
                         
             e.Handled = true;
         }
