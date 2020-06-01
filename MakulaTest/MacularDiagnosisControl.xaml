@@ -13,7 +13,7 @@
                 <Setter Property="Height" Value="250"/>
                 <Setter Property="VerticalAlignment" Value="Stretch"/>
                 <Setter Property="TextWrapping" Value="Wrap"/>
-                <Setter Property="FontSize" Value="10"/>
+                <Setter Property="FontSize" Value="20"/>
             </Style>
         </Grid.Resources>
         <Grid.ColumnDefinitions>

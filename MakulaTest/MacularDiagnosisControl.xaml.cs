@@ -62,7 +62,8 @@ namespace MakulaTest
             set
             {
                 _lastPos = value;
-                txtLastPos.AppendText(string.Format("{0:00.00}\n", value));
+                txtLastPos.AppendText(string.Format("{0:00.00}\n", value));                
+                txtLastPos.ScrollToEnd();
             }
         }
 
@@ -91,7 +92,7 @@ namespace MakulaTest
                 _moveTimer.Interval = new TimeSpan(0, 0, SettingsModel.Duration + 2);
                 _moveTimer.Tick += new EventHandler(_timer_Tick);
                 _moveTimer.Start();
-                _lastPos = _offset;
+                LastPos = _offset;
 
                 if (_polygon != null)
                 {
@@ -331,9 +332,9 @@ namespace MakulaTest
             var rnd = new Random();
 
             double pos = 1.0 / (double)SettingsModel.Steps;
-            _pathGeo.GetPointAtFractionLength(_lastPos, out pt, out ptTan);
-            _lastPos += pos;
-            if (_lastPos >= 1.0 +_offset + pos)
+            _pathGeo.GetPointAtFractionLength(LastPos, out pt, out ptTan);
+            LastPos += pos;
+            if (LastPos >= 1.0 +_offset + pos)
               StopDiagnosis();
 
             return pt;
@@ -493,6 +494,7 @@ namespace MakulaTest
                 sb.AppendLine(string.Format("{0:000.00}, {1:000.00}", item.X, item.Y));
             }
             txtPointList.Text = sb.ToString();
+            txtPointList.ScrollToEnd();
         }
 
         private void MyCanvas_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
