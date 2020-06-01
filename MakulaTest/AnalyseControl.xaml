@@ -6,14 +6,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MakulaTest"
              mc:Ignorable="d"
-             d:DesignHeight="400" d:DesignWidth="400"
-            SizeChanged="MyCanvas_SizeChanged" >
+       d:DesignHeight="700" d:DesignWidth="700"
+                                   SizeChanged="MyCanvas_SizeChanged" >
 
-   <DockPanel>
-    <StackPanel x:Name="AnylseToolbar"    DockPanel.Dock="Bottom"
-    Orientation="Horizontal"  Height="50"
-    
-      Margin ="20" >
+  <DockPanel>
+
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Height="50">
 
       <Button x:Name="BtnBack"
       Background="Transparent"
@@ -21,7 +19,8 @@
       ToolTip="Zurück zur Hauptseite" 
       Click="BtnBack_Click"
       HorizontalAlignment="Left"
-              Width="70">
+              Width="70"
+                DockPanel.Dock="Bottom">
 
       <Button.Style>
         <Style TargetType="{x:Type Button}">
@@ -53,7 +52,8 @@
       ToolTip="Raster an/aus" 
       Click="BtnGrid_Click"
       HorizontalAlignment="Right"
-      Width="70">
+      Width="70"
+              DockPanel.Dock="Bottom">
 
 
       <Button.Style>
@@ -80,13 +80,11 @@
       <Image Source="Images/grid.png" />
     </Button>
     </StackPanel>
-     
-   
+
     <Canvas Visibility="Visible" 
-            Background="White" 
-            HorizontalAlignment="Left" 
-         x:Name="MyCanvas" 
-              >
+          
+            Height="650"
+                    x:Name="MyCanvas">
 
     </Canvas>
 
