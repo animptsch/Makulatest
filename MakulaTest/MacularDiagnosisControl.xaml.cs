@@ -1,5 +1,6 @@
 ﻿using MakulaTest.Model;
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -18,6 +19,8 @@ namespace MakulaTest
         private Ellipse _ellipse;
         private PathGeometry _pathGeo;
         private const int LineNumber = 17;
+        private const double _offset = 0.03;
+
         
         private DispatcherTimer _moveTimer;
         private DispatcherTimer _removeTimer;
@@ -26,11 +29,13 @@ namespace MakulaTest
         private Storyboard _sbTranslate;
         private MakulaSession _session;
         private double _lastPos;
+        private bool _isMeasureStarted;
 
         public MacularDiagnosisControl()
         {
             InitializeComponent();
-            SettingsModel = new Model.Settings();            
+            SettingsModel = new Model.Settings();
+            _isMeasureStarted = false;
         }
 
         public void SetSize(double width, double height)
@@ -52,6 +57,7 @@ namespace MakulaTest
         public readonly Brush CircleColor = new SolidColorBrush(Colors.Red);
 
         public Model.Settings SettingsModel { get; set; }
+        public MainWindow Parent { get; set; }
 
         // Using a DependencyProperty as the backing store for MinSize.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MinSizeProperty =
@@ -60,21 +66,25 @@ namespace MakulaTest
 
         public void StartDiagnosis()
         {
-            _session = new MakulaSession();
-            
-            _removeTimer = new DispatcherTimer();
-            _removeTimer.Interval = new TimeSpan(0, 0, SettingsModel.Duration);
-            _removeTimer.Tick += new EventHandler(_removeTimer_Tick);
-            _removeTimer.Start();
+            if (!_isMeasureStarted)
+            {
+                _isMeasureStarted = true;
+                _session = new MakulaSession();
 
-            _moveTimer = new DispatcherTimer();
-            _moveTimer.Interval = new TimeSpan(0, 0, SettingsModel.Duration+2);
-            _moveTimer.Tick += new EventHandler(_timer_Tick);
-            _moveTimer.Start();
-            _lastPos = 0.0;
+                _removeTimer = new DispatcherTimer();
+                _removeTimer.Interval = new TimeSpan(0, 0, SettingsModel.Duration);
+                _removeTimer.Tick += new EventHandler(_removeTimer_Tick);
+                _removeTimer.Start();
 
-            Point pt = getPointInOuterCircle();            
-            _ellipse = moveCircle(pt, SettingsModel.Backward);
+                _moveTimer = new DispatcherTimer();
+                _moveTimer.Interval = new TimeSpan(0, 0, SettingsModel.Duration + 2);
+                _moveTimer.Tick += new EventHandler(_timer_Tick);
+                _moveTimer.Start();
+                _lastPos = _offset;
+
+                Point pt = getPointInOuterCircle();
+                _ellipse = moveCircle(pt, SettingsModel.Backward);
+            }           
         }
 
         private void Line_MouseDown(object sender, MouseButtonEventArgs e)
@@ -99,19 +109,21 @@ namespace MakulaTest
 
         private void resetTimer()
         {
-           if (_moveTimer != null && _removeTimer != null)
-           { _moveTimer.Stop();
+            Point pt = getPointInOuterCircle();
+
+            if (_moveTimer != null && _removeTimer != null && _isMeasureStarted)
+           {
+             _moveTimer.Stop();
              _removeTimer.Stop();
              _removeTimer.Start();
              _moveTimer.Start();
-
-             Point pt = getPointInOuterCircle();
+             
              _ellipse = moveCircle(pt, SettingsModel.Backward);
            }
         }
 
 
-    private void _timer_Tick(object sender, EventArgs e)
+        private void _timer_Tick(object sender, EventArgs e)
         {
             cancelMovement();
         }
@@ -119,9 +131,24 @@ namespace MakulaTest
         private void cancelMovement()
         {
             Point pt = getPointInOuterCircle();
+
+
+            if (_sbTranslate != null)
+            {
+                _sbTranslate.Stop();
+            }
+
+            if (_ellipse != null)
+            {
+                MyCanvas.Children.Remove(_ellipse);
+            }
+
             _ellipse = moveCircle(pt, SettingsModel.Backward);
-            _removeTimer.Stop();
-            _removeTimer.Start();
+            if (_removeTimer != null && _isMeasureStarted)
+            {
+                _removeTimer.Stop();
+                _removeTimer.Start(); 
+            }
         }
 
         private void _removeTimer_Tick(object sender, EventArgs e)
@@ -183,8 +210,15 @@ namespace MakulaTest
             daTranslateX.To = end.X - begin.X ;
             daTranslateY.To = end.Y - begin.Y ;
 
-            _sbTranslate.Begin();
-
+            if (_isMeasureStarted)
+            {
+                _sbTranslate.Begin();
+            }
+            else
+            {
+                int i = 0;
+            }
+           
             return ellipse;
         }
 
@@ -198,19 +232,25 @@ namespace MakulaTest
                 _sbTranslate.Stop();
 
                 MyCanvas.Children.Remove(_ellipse);
-                resetTimer(); 
+                if (_isMeasureStarted)
+                {
+                    resetTimer();
+                }
             }
         }
 
         public void StopDiagnosis()
         {
+            _isMeasureStarted = false;
             _moveTimer.Stop();
-            _removeTimer.Stop();
-            _sbTranslate.Stop();
-            _sbTranslate = null;
+            _removeTimer.Stop();            
+            
             _moveTimer = null;
             _removeTimer = null;
       
+            _sbTranslate.Stop();
+            _sbTranslate = null;
+
             if (_ellipse != null)
             {
                 MyCanvas.Children.Remove(_ellipse);
@@ -218,9 +258,7 @@ namespace MakulaTest
 
             drawLines();
             drawCenterCircle();
-
-            double lineLength = 10.0;
-
+            
             var polygon = new Polygon();
             polygon.Points = new PointCollection( _session.Points);
             polygon.Stroke = Brushes.Blue;
@@ -229,8 +267,9 @@ namespace MakulaTest
             MyCanvas.Children.Add(polygon);
 
             MakulaDataSet mds = new MakulaDataSet(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MakulaData.csv"));
-            mds.SaveData(_session.Points, SettingsModel.Backward, true, CircleSize, 354, 354, 527, 298); // direction, rightEye, CircleSize, midX, midY, monitorWidth (mm), monitorHeight (mm)
-    }
+            mds.SaveData(_session.Points, SettingsModel.Backward, true, CircleSize, 354, 354, (int)MyCanvas.Width, (int)MyCanvas.Height); // direction, rightEye, CircleSize, midX, midY, monitorWidth (mm), monitorHeight (mm)            
+            Parent.btnStartMacularDiagnosis.IsEnabled = true;
+        }
 
     private void drawCircle(Point pt)
         {
@@ -258,7 +297,7 @@ namespace MakulaTest
             double pos = 1.0 / (double)SettingsModel.Steps;
             _pathGeo.GetPointAtFractionLength(_lastPos, out pt, out ptTan);
             _lastPos += pos;
-            if (_lastPos >= 1.0+pos)
+            if (_lastPos >= 1.0 +_offset + pos)
               StopDiagnosis();
 
             return pt;
@@ -281,7 +320,7 @@ namespace MakulaTest
         }
 
 
-        private void drawLines()
+        private void drawLines(bool isDrawAmselGrid = false)
         {
             double width = MyRectangle.Width;
             double height = MyRectangle.Height;
@@ -311,19 +350,22 @@ namespace MakulaTest
                     thickness = 1;
                 }
 
-                var line = new Line()
+                if (isDrawAmselGrid || centerIndex ==i)
                 {
-                    Stroke = new SolidColorBrush(Colors.Black),
-                    Fill = new SolidColorBrush(Colors.Black),
-                    StrokeThickness = thickness,
-                    X1 = x,
-                    X2 = width + x,
-                    Y1 = lineHeight,
-                    Y2 = lineHeight
-                };
+                    var line = new Line()
+                    {
+                        Stroke = new SolidColorBrush(Colors.Black),
+                        Fill = new SolidColorBrush(Colors.Black),
+                        StrokeThickness = thickness,
+                        X1 = x,
+                        X2 = width + x,
+                        Y1 = lineHeight,
+                        Y2 = lineHeight
+                    };
 
-
-                MyCanvas.Children.Add(line);
+                    MyCanvas.Children.Add(line);
+                }
+                
                 lineHeight += deltaVert;
             }
 
@@ -342,19 +384,22 @@ namespace MakulaTest
                     thickness = 1;
                 }
 
-                var line = new Line()
+                if (isDrawAmselGrid || centerIndex == i)
                 {
-                    Stroke = new SolidColorBrush(Colors.Black),
-                    StrokeThickness = thickness,
-                    Fill = new SolidColorBrush(Colors.Black),
-                    X1 = lineWidth,
-                    X2 = lineWidth,
-                    Y1 = y,
-                    Y2 = height + y
-                };
+                    var line = new Line()
+                    {
+                        Stroke = new SolidColorBrush(Colors.Black),
+                        StrokeThickness = thickness,
+                        Fill = new SolidColorBrush(Colors.Black),
+                        X1 = lineWidth,
+                        X2 = lineWidth,
+                        Y1 = y,
+                        Y2 = height + y
+                    };
 
-                
-                MyCanvas.Children.Add(line);
+                    MyCanvas.Children.Add(line);
+                }
+                              
                 lineWidth += deltaHorz;
 
                 EllipseGeometry geo = new EllipseGeometry(new Point(_centerX, _centerY), 354, 354);
@@ -404,5 +449,25 @@ namespace MakulaTest
           
         }
 
-  }
+        private void MyCanvas_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (e.Delta < 0 && _lastPos > _offset )
+            {
+                double pos = 2.0 / (double)SettingsModel.Steps;
+                _lastPos -= pos;
+
+                txtDelta.Text = _lastPos.ToString();
+                var lastPoint = _session.Points.Last();
+                if (lastPoint != null)
+                {
+                    _session.Points.Remove(lastPoint);
+                }
+            }
+            cancelMovement();
+                        
+            e.Handled = true;
+        }
+
+        
+    }
 }

@@ -8,20 +8,27 @@
         Title="MainWindow" Height="700" Width="700" Background="LightGray" MinWidth="550" MinHeight="250">
 
     <Grid Margin="0,14,0.333,-14.333">
+        <Grid.Resources>
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="Padding" Value="5"/>
+            </Style>
+        </Grid.Resources>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
         <local:MacularDiagnosisControl x:Name="DiagnoseControl" Visibility="Collapsed" />
         <local:AnalyseControl x:Name="MyAnalyse" Visibility="Collapsed" />
         
-        <StackPanel x:Name="MainWindowToolbar" Orientation="Horizontal" Grid.Row="1" >
-            <Button x:Name="btnAnalyse" Content="Analyse" Margin="10" FontSize="20" Padding="5" Click="BtnAnalyse_Click" />
-            <Button x:Name="btnDiagnose" Content="Diagnose" Click="BtnDiagnose_Click" FontSize="20" Padding="5" Margin="10" />
-            <Button x:Name="btnSettingSize" Content="Größe speichern" Margin="10" FontSize="20" Padding="10" Click="BtnSettingSize_Click"/>
-            <Button x:Name="btnStartMacularDiagnosis" Content="Start" Margin="10" FontSize="20" Padding="5" Click="BtnStartMacularDiagnosis_Click"/>
-            <Button x:Name="btnSettings" Content="Einstellungen" Margin="10" FontSize="20" Padding="5" Click="BtnSettings_Click"/>
+        <StackPanel Margin="10" x:Name="MainWindowToolbar" Orientation="Horizontal" Grid.Row="1" >
+            <Button x:Name="btnAnalyse" Content="Analyse" Click="BtnAnalyse_Click" />
+            <Button x:Name="btnDiagnose" Content="Diagnose" Click="BtnDiagnose_Click"  />
+            <Button x:Name="btnSettingSize" Content="Größe speichern" Click="BtnSettingSize_Click"/>
+            <Button x:Name="btnStartMacularDiagnosis" Content="Start"  Click="BtnStartMacularDiagnosis_Click"/>
+            <Button x:Name="btnSettings" Content="Einstellungen" Click="BtnSettings_Click"/>
             <Button x:Name="btnScreenCalib" Content="Kalibrieren" Click="BtnScreenCalib_Click"/>
         </StackPanel>
     </Grid>
