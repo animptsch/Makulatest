@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.IO;
+using System.Windows.Shapes;
 
 namespace MakulaTest.Model
 {
@@ -15,8 +16,11 @@ namespace MakulaTest.Model
       pathInternal = path;
     }
 
-    public void SaveData(List<Point> Points, bool backward, bool rightEye, int circleSize, int midX, int midY, int monitorWidth, int monitorHeight)
+    public void SaveData(List<Point> Points, bool backward, bool rightEye, int circleSize, Rectangle MyRectangle)
     {
+      double midX = MyRectangle.Width / 2.0 + MyRectangle.Margin.Left + circleSize / 2.0;
+      double midY = MyRectangle.Height / 2.0 + MyRectangle.Margin.Top + circleSize / 2.0;
+
       var day = DateTime.Now;
       var maxSequenceId = GetMaxSequenceId();
       var entryId = 0;
@@ -27,11 +31,12 @@ namespace MakulaTest.Model
       {
         var realPoint = point;
 
-        var relX = Convert.ToInt32(point.X) + circleSize / 2 - midX;
-        var relY = Convert.ToInt32(point.Y) + circleSize / 2 - midY;
-        realPoint.X = relX * monitorWidth / SystemParameters.PrimaryScreenWidth;
-        realPoint.Y = relY * monitorHeight / SystemParameters.PrimaryScreenHeight;
+        var relX = point.X + circleSize / 2 - midX;
+        var relY = point.Y + circleSize / 2 - midY;
 
+        realPoint.X = relX * 130.0 / MyRectangle.Width;
+        realPoint.Y = relY * 130.0 / MyRectangle.Height;
+      
         WriteCSV(fs, maxSequenceId + 1, entryId, day, backward, rightEye, realPoint);
         entryId++;
       }
@@ -73,7 +78,7 @@ namespace MakulaTest.Model
     {
       string csv_line = sequenceId.ToString() + ";" + entryId.ToString() + ";" + day.ToString() + ";" +
                         backward.ToString() + ";" + rightEye.ToString() + ";" +
-                        Math.Round(point.X).ToString() + ";" + Math.Round(point.Y).ToString() + "\n";
+                        Math.Round(point.X,1).ToString() + ";" + Math.Round(point.Y,1).ToString() + "\n";
       byte[] bytes = Encoding.UTF8.GetBytes(csv_line);
       fs.Write(bytes, 0, bytes.Length);
     }
