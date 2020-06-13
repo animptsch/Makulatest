@@ -303,7 +303,14 @@ namespace MakulaTest
             MyCanvas.Children.Add(_polygon);
 
             MakulaDataSet mds = new MakulaDataSet(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MakulaData.csv"));
-            mds.SaveData(_session.Points, SettingsModel.Backward, true, CircleSize, 354, 354, (int)MyCanvas.Width, (int)MyCanvas.Height); // direction, rightEye, CircleSize, midX, midY, monitorWidth (mm), monitorHeight (mm)            
+
+
+            mds.SaveData(_session.Points,
+                         SettingsModel.Backward,  // direction
+                         true,                    // rightEye
+                         CircleSize,
+                         MyRectangle);
+
             Parent.btnStartMacularDiagnosis.IsEnabled = true;
             _session.Points.Clear();
         }
@@ -357,7 +364,7 @@ namespace MakulaTest
         }
 
 
-        private void drawLines(bool isDrawAmselGrid = false)
+        private void drawLinesOld(bool isDrawAmselGrid = false)
         {
             double width = MyRectangle.Width;
             double height = MyRectangle.Height;
@@ -444,7 +451,57 @@ namespace MakulaTest
             }
         }
 
-        private void clearCanvas()
+    private void drawLines(bool isDrawAmselGrid = true)
+    {
+      double width = MyRectangle.Width;
+      double height = MyRectangle.Height;
+      double x = MyRectangle.Margin.Left;
+      double y = MyRectangle.Margin.Top;
+
+      _centerX = width / 2.0 + x;
+      _centerY = height / 2.0 + y;
+
+  clearCanvas();
+
+      //draw horizontal Line
+      double thickness = 3;
+
+      if (isDrawAmselGrid)
+      {
+        var line1 = new Line()
+        {
+          Stroke = new SolidColorBrush(Colors.Black),
+          Fill = new SolidColorBrush(Colors.Black),
+          StrokeThickness = thickness,
+          X1 = x,
+          X2 = width + x,
+          Y1 = _centerY,
+          Y2 = _centerY
+        };
+
+        MyCanvas.Children.Add(line1);
+
+        //draw vertical Lines
+        var line2 = new Line()
+        {
+          Stroke = new SolidColorBrush(Colors.Black),
+          StrokeThickness = thickness,
+          Fill = new SolidColorBrush(Colors.Black),
+          X1 = _centerX,
+          X2 = _centerX,
+          Y1 = y,
+          Y2 = height + y
+        };
+
+        MyCanvas.Children.Add(line2);
+
+        EllipseGeometry geo = new EllipseGeometry(new Point(_centerX, _centerY), width / 2 + 30, height / 2 + 30);
+        _pathGeo = geo.GetFlattenedPathGeometry();
+      }
+    }
+
+
+    private void clearCanvas()
         {
             MyCanvas.Children.Clear();
             MyCanvas.Children.Add(MyRectangle);
