@@ -53,6 +53,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BoolToOppositeBoolConverter.cs" />
     <Compile Include="JustifyGridSize.xaml.cs">
       <DependentUpon>JustifyGridSize.xaml</DependentUpon>
     </Compile>

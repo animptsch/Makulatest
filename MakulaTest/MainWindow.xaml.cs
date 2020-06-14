@@ -169,7 +169,7 @@ namespace MakulaTest
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
-            SettingsViewModel vm = new SettingsViewModel();
+            SettingsViewModel vm = DiagnoseControl.SettingsViewModel;
             Settings settings = new Settings(vm);
 
             bool? result = settings.ShowDialog();

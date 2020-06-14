@@ -30,15 +30,19 @@ namespace MakulaTest
         private double _centerX;
         private double _centerY;
         private Storyboard _sbTranslate;
-        private MakulaSession _session;
-
-        private bool _isMeasureStarted;
+        private MakulaSession _session;        
 
         public MacularDiagnosisControl()
         {
             InitializeComponent();
-            SettingsModel = new Model.Settings();
-            _isMeasureStarted = false;
+                        
+            SettingsViewModel = new SettingsViewModel();
+            SettingsModel = SettingsViewModel.Model;
+            DataContext = SettingsViewModel;
+            SettingsViewModel.IsRightEyeChecked = true;
+            SettingsViewModel.IsBackwardChecked = true;
+
+            SettingsViewModel.IsMeasureStarted = false;
         }
 
         public void SetSize(double width, double height)
@@ -71,14 +75,16 @@ namespace MakulaTest
         public readonly Brush CircleColor = new SolidColorBrush(Colors.Red);
 
         public Model.Settings SettingsModel { get; set; }
+        public Model.SettingsViewModel SettingsViewModel { get; set; }
+
         public MainWindow Parent { get; set; }
 
 
         public void StartDiagnosis()
         {
-            if (!_isMeasureStarted)
+            if (!SettingsViewModel.IsMeasureStarted)
             {
-                _isMeasureStarted = true;
+                SettingsViewModel.IsMeasureStarted = true;
                 _session = new MakulaSession();
 
                 _removeTimer = new DispatcherTimer();
@@ -108,7 +114,7 @@ namespace MakulaTest
         {
             Point pt = getPointInOuterCircle();
 
-            if (_moveTimer != null && _removeTimer != null && _isMeasureStarted)
+            if (_moveTimer != null && _removeTimer != null && SettingsViewModel.IsMeasureStarted)
             {
                 _moveTimer.Stop();
                 _removeTimer.Stop();
@@ -162,16 +168,19 @@ namespace MakulaTest
 
 
         private Ellipse moveCircle(Point begin, bool backward)
-        {           
+        {
+            int durationInSeconds;
             Point end;
             if (!backward)
             {
                 end = new Point(_centerX, _centerY);
+                durationInSeconds = SettingsModel.Duration;
             }
             else
             {
                 end = begin;
                 begin = new Point(_centerX, _centerY);
+                durationInSeconds = SettingsModel.DurationBackwards;
             }
             
             Point pt = new Point(begin.X - CircleSize / 2, begin.Y - CircleSize / 2);
@@ -181,7 +190,7 @@ namespace MakulaTest
             _sbTranslate = new Storyboard();
             var daTranslateX = new DoubleAnimation();
             var daTranslateY = new DoubleAnimation();
-            var duration = new Duration(TimeSpan.FromSeconds(SettingsModel.Duration));
+            var duration = new Duration(TimeSpan.FromSeconds(durationInSeconds));
 
             daTranslateX.Duration = duration;
             daTranslateY.Duration = duration;
@@ -202,7 +211,7 @@ namespace MakulaTest
             daTranslateX.To = end.X - begin.X;
             daTranslateY.To = end.Y - begin.Y;
 
-            if (_isMeasureStarted)
+            if (SettingsViewModel.IsMeasureStarted)
             {
                 _sbTranslate.Begin();
             }
@@ -226,7 +235,7 @@ namespace MakulaTest
                 _sbTranslate.Stop();
 
                 MyCanvas.Children.Remove(_ellipse);
-                if (_isMeasureStarted)
+                if (SettingsViewModel.IsMeasureStarted)
                 {
                     resetTimer();
                 }
@@ -235,7 +244,7 @@ namespace MakulaTest
 
         public void StopDiagnosis()
         {
-            _isMeasureStarted = false;
+            SettingsViewModel.IsMeasureStarted = false;
             _moveTimer.Stop();
             _removeTimer.Stop();
 
@@ -278,7 +287,7 @@ namespace MakulaTest
 
             mds.SaveData(_session.Points,
                          SettingsModel.Backward,  // direction
-                         true,                    // rightEye
+                         SettingsModel.RightEye,  // rightEye
                          CircleSize,
                          MyRectangle);
 

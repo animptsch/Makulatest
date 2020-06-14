@@ -25,10 +25,11 @@
         <Label Content="Anzahl der Schritte:" Grid.Row="0" />
         <TextBox Margin="5" Width="100" Height="20" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Steps}"/>
 
-        <CheckBox Margin="5" Content="Rückwärts" IsChecked="{Binding Path=Backward}" Grid.Row="1" Grid.Column="1"/>
+        <Label Content="Dauer der Animation vorwärts:" Grid.Row="1" />
+        <TextBox Margin="5" Width="100" Height="20" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Duration}"/>
 
-        <Label Content="Dauer der Animation:" Grid.Row="2" />
-        <TextBox Margin="5" Width="100" Height="20" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1" Text="{Binding Path=Duration}"/>
+        <Label Content="Dauer der Animation rückwärts:" Grid.Row="2" />
+        <TextBox Margin="5" Width="100" Height="20" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1" Text="{Binding Path=DurationBackwards}"/>
 
         <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal">
             <Button x:Name="btnOk" IsDefault="True" Margin="10" FontSize="10" Padding="5" Click="BtnOk_Click"  >OK</Button>

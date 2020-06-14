@@ -23,7 +23,23 @@ namespace MakulaTest.Model
                 }
             }
         }
-        
+
+
+        public string DurationBackwards
+        {
+            get { return Model.DurationBackwards.ToString(); }
+            set
+            {
+                int duration;
+                if (int.TryParse(value, out duration))
+                {
+                    Model.DurationBackwards = duration;
+                    OnPropertyChanged(nameof(DurationBackwards));
+                }
+            }
+        }
+
+
 
         public string Steps
         {
@@ -41,16 +57,74 @@ namespace MakulaTest.Model
         }
 
 
-        public bool Backward
+
+        private bool _isRightEyeChecked;
+
+        public bool IsRightEyeChecked
         {
-            get { return Model.Backward; }
+            get { return _isRightEyeChecked; }
             set
             {
-                Model.Backward = value;
-                OnPropertyChanged(nameof(Backward));
+                _isRightEyeChecked = value;
+                _isLeftEyeChecked = value == false;
+                Model.RightEye = _isRightEyeChecked;
+                OnPropertyChanged(nameof(IsRightEyeChecked));
             }
         }
 
+        private bool _isLeftEyeChecked;
+
+        public bool IsLeftEyeChecked
+        {
+            get { return _isLeftEyeChecked; }
+            set
+            {
+                _isLeftEyeChecked = value;
+                _isRightEyeChecked = value == false;
+                Model.RightEye = _isRightEyeChecked;
+                OnPropertyChanged(nameof(IsLeftEyeChecked));
+            }
+        }
+
+        private bool _isBackwardChecked;
+
+        public bool IsBackwardChecked
+        {
+            get { return _isBackwardChecked; }
+            set
+            {
+                _isBackwardChecked = value;
+                _isForwardChecked = value == false;
+                Model.Backward = _isBackwardChecked;
+                OnPropertyChanged(nameof(IsBackwardChecked));
+            }
+        }
+
+        private bool _isForwardChecked;
+
+        public bool IsForwardChecked
+        {
+            get { return _isForwardChecked; }
+            set
+            {
+                _isForwardChecked = value;
+                _isBackwardChecked = value == false;
+                Model.Backward = _isBackwardChecked;
+                OnPropertyChanged(nameof(IsForwardChecked));
+            }
+        }
+
+        private bool _isMeasureStarted;
+
+        public bool IsMeasureStarted
+        {
+            get { return _isMeasureStarted; }
+            set
+            {
+                _isMeasureStarted = value;
+                OnPropertyChanged(nameof(IsMeasureStarted));
+            }
+        }
 
 
 
@@ -65,7 +139,7 @@ namespace MakulaTest.Model
 
         public SettingsViewModel()
         {
-            Model = new Settings();
+            Model = new Settings();            
         }
 
 
