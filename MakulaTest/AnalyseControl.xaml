@@ -6,89 +6,78 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MakulaTest"
              mc:Ignorable="d"
-       d:DesignHeight="700" d:DesignWidth="700"
-                                   SizeChanged="MyCanvas_SizeChanged" >
+             d:DesignHeight="700" d:DesignWidth="700"
+             SizeChanged="MyCanvas_SizeChanged" 
+             IsVisibleChanged="MyCanvas_VisibleChanged"
+             Loaded="MyCanvas_Loaded">
+
+  <UserControl.Resources>
+    <Style TargetType="{x:Type Button}">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderBrush" Value="Transparent"/>
+      <Setter Property="Width" Value="70"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type Button}">
+            <Border Background="{TemplateBinding Background}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="Background" Value="Transparent"/>
+          <Setter Property="Foreground" Value="White"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
+  </UserControl.Resources>
 
   <DockPanel>
 
+    
     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Height="50">
 
-      <Button x:Name="BtnBack"
-      Background="Transparent"
-      BorderBrush="Transparent"
-      ToolTip="Zurück zur Hauptseite" 
-      Click="BtnBack_Click"
-      HorizontalAlignment="Left"
-              Width="70"
-                DockPanel.Dock="Bottom">
+      
+       <Button x:Name="BtnBack" ToolTip="Zurück zur Hauptseite" 
+               Click="BtnBack_Click" HorizontalAlignment="Left"
+               DockPanel.Dock="Bottom">
+           <Image Source="Images/back.png" />
+       </Button>
 
-      <Button.Style>
-        <Style TargetType="{x:Type Button}">
-          <Setter Property="Background" Value="Transparent"/>
-          <Setter Property="Template">
-            <Setter.Value>
-              <ControlTemplate TargetType="{x:Type Button}">
-                <Border Background="{TemplateBinding Background}">
-                  <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Border>
-              </ControlTemplate>
-            </Setter.Value>
-          </Setter>
-          <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-              <Setter Property="Background" Value="Black"/>
-              <Setter Property="Foreground" Value="White"/>
-            </Trigger>
-          </Style.Triggers>
-        </Style>
-      </Button.Style>
+       <Button x:Name="BtnGrid" ToolTip="Raster an/aus" 
+               Click="BtnGrid_Click" HorizontalAlignment="Right"
+               DockPanel.Dock="Bottom">
+           <Image Source="Images/grid.png" />
+       </Button>
 
-      <Image Source="Images/back.png" />
-    </Button>
-
-    <Button x:Name="BtnGrid"
-      Background="Transparent"
-      BorderBrush="Transparent"
-      ToolTip="Raster an/aus" 
-      Click="BtnGrid_Click"
-      HorizontalAlignment="Right"
-      Width="70"
+      <Button x:Name="BtnDayBefore" ToolTip="1 Tag zurück" 
+              Click="BtnDayBefore_Click" HorizontalAlignment="Right"
               DockPanel.Dock="Bottom">
+        <Image Source="Images/daybefore.png" />
+      </Button>
 
+      <Button x:Name="BtnNextDay" ToolTip="1 Tag vor" 
+              Click="BtnNextDay_Click" HorizontalAlignment="Right"
+              DockPanel.Dock="Bottom">
+        <Image Source="Images/nextday.png" />
+      </Button>
 
-      <Button.Style>
-        <Style TargetType="{x:Type Button}">
-          <Setter Property="Background" Value="Transparent"/>
-          <Setter Property="Template">
-            <Setter.Value>
-              <ControlTemplate TargetType="{x:Type Button}">
-                <Border Background="{TemplateBinding Background}">
-                  <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Border>
-              </ControlTemplate>
-            </Setter.Value>
-          </Setter>
-          <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-              <Setter Property="Background" Value="Black"/>
-              <Setter Property="Foreground" Value="White"/>
-            </Trigger>
-          </Style.Triggers>
-        </Style>
-      </Button.Style>
-
-      <Image Source="Images/grid.png" />
-    </Button>
+      <Button x:Name="BtnPrint" ToolTip="Drucken des Fensters" 
+              Click="BtnPrint_Click" HorizontalAlignment="Right"
+              Width="150"
+              DockPanel.Dock="Bottom">
+           <Image Source="Images/printer.png" />
+      </Button>
+      
     </StackPanel>
 
-    <Canvas Visibility="Visible" 
-          
-            Height="650"
-                    x:Name="MyCanvas">
+    <Canvas Visibility="Visible" Height="650" x:Name="MyCanvas"/>
 
-    </Canvas>
 
-  
+
   </DockPanel>
 
 
