@@ -11,8 +11,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Windows.Threading;
-
-
+using System.Printing;
+using System.Windows.Documents;
+using System.Linq;
 
 namespace MakulaTest
 {
@@ -21,7 +22,7 @@ namespace MakulaTest
   public class MakulaDataSetInternal
   {
     public List<Point> Points;
-    public int actualSequenceId;
+    public int actualSequence;
     public DateTime actualDate;
   }
 
@@ -37,16 +38,19 @@ namespace MakulaTest
     private DispatcherTimer _moveTimer;
     private Rectangle testRect;
     private int maxSequenceId;
-    private string path;
     private MakulaDataSetInternal data;
     private Size windowSize;
     private bool timeMeasure = false;
     private bool _showGrid = true;
-    
+    private string _path;
+    //private Rectangle _rect;
+    private List<int> _sequences;
+
+
 
     public new MainWindow Parent { get; set; }
 
-    
+
 
 
     public AnalyseControl()
@@ -60,9 +64,13 @@ namespace MakulaTest
     }
 
 
- 
-    public void Start()
+
+    public void Start(string path)
     {
+      _path = path;
+      //_rect = MyRectangle;
+      _sequences = new List<int>();
+
       var steps = 12;
       var radius = 100;
       Vector center = new Vector(radius, radius);
@@ -74,10 +82,9 @@ namespace MakulaTest
         Console.WriteLine(String.Format("{0,8:D} {1,8:N2} {2,8:N2}", entry_id, Math.Round(start.X, 2), Math.Round(start.Y, 2)));
       }
 
-      path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MakulaTestData.csv");
-  
-      maxSequenceId = GetMaxSequenceId();
-      data.actualSequenceId = maxSequenceId;
+      //path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MakulaTestData.csv");
+      ReadSequences();
+      data.actualSequence = _sequences.Count - 1;
 
       ReadData();
 
@@ -92,11 +99,13 @@ namespace MakulaTest
 
     }
 
-    private int GetMaxSequenceId()
+
+    private void ReadSequences()
     {
       var sequence_id_max = 0;
-    
-      StreamReader fs = new StreamReader(path);
+      var lastSequenceId = -1;
+
+      StreamReader fs = new StreamReader(_path);
       string csv_line;
       char[] charSeparators = new char[] { ';' };
 
@@ -109,25 +118,120 @@ namespace MakulaTest
         try
         {
           var sequence_id = int.Parse(elements[0]);
-          sequence_id_max = Math.Max(sequence_id_max, sequence_id);
+          if (sequence_id != lastSequenceId)
+            _sequences.Add(sequence_id);
+          lastSequenceId = sequence_id;
         }
         catch (FormatException e)
         {
         }
       }
       fs.Close();
-
-      //Console.WriteLine("sequence_id_max=" + sequence_id_max.ToString());
-      return sequence_id_max;
     }
+
+
+    private int GetMaxSequenceId()
+    {
+      //Console.WriteLine("sequence_id_max=" + sequence_id_max.ToString());
+      return _sequences.Max();
+    }
+
+
+
 
     private void BtnBack_Click(object sender, RoutedEventArgs e)
     {
       //Console.WriteLine("btnBack_Click");
       Parent.AnalyseStop();
-      
+
     }
 
+    private void BtnDayBefore_Click(object sender, RoutedEventArgs e)
+    {
+      GoBackInTime();
+    }
+
+    private void BtnNextDay_Click(object sender, RoutedEventArgs e)
+    {
+      GoForwardInTime();
+    }
+
+
+    private void BtnPrint_Click(object sender, RoutedEventArgs e)
+    {
+      CanvasPrint();
+    }
+
+    private void CanvasPrint()
+    {
+      var originalCanvasWidth = MyCanvas.Width;
+      var originalCanvasHeight = MyCanvas.Height;
+
+      PrintDialog prnt = new PrintDialog();
+
+      if (prnt.ShowDialog() == true)
+      {
+        MyCanvas.Width = MyCanvas.Width * 0.7;
+        MyCanvas.Height = MyCanvas.Height * 0.7;
+
+        prnt.PrintVisual(MyCanvas, "Printing Canvas");
+
+        MyCanvas.Width = originalCanvasWidth;
+        MyCanvas.Height = originalCanvasHeight;
+      }
+      // this.Close();
+    }
+
+
+    private void PrintFlowDocument()
+    {
+
+      PrintDialog prnt = new PrintDialog();
+
+      // Create a FlowDocument dynamically.  
+
+      FlowDocument doc = new FlowDocument(new Paragraph(new Run("Some text goes here")));
+
+      doc.Name = "FlowDoc";
+
+      // Create IDocumentPaginatorSource from FlowDocument  
+
+      IDocumentPaginatorSource idpSource = doc;
+
+      // Call PrintDocument method to send document to printer  
+
+      prnt.PrintDocument(idpSource.DocumentPaginator, "Hello WPF Printing.");
+
+
+    }
+    /// <summary>  
+    /// This method creates a dynamic FlowDocument. You can add anything to this  
+    /// FlowDocument that you would like to send to the printer  
+    /// </summary>  
+    /// <returns></returns>  
+    private FlowDocument CreateFlowDocument()
+    {
+      // Create a FlowDocument  
+      FlowDocument doc = new FlowDocument();
+      // Create a Section  
+      Section sec = new Section();
+      // Create first Paragraph  
+      Paragraph p1 = new Paragraph();
+      // Create and add a new Bold, Italic and Underline  
+      Bold bld = new Bold();
+      bld.Inlines.Add(new Run("First Paragraph"));
+      Italic italicBld = new Italic();
+      italicBld.Inlines.Add(bld);
+      Underline underlineItalicBld = new Underline();
+      underlineItalicBld.Inlines.Add(italicBld);
+      // Add Bold, Italic, Underline to Paragraph  
+      p1.Inlines.Add(underlineItalicBld);
+      // Add Paragraph to Section  
+      sec.Blocks.Add(p1);
+      // Add Section to FlowDocument  
+      doc.Blocks.Add(sec);
+      return doc;
+    }
 
     private void BtnGrid_Click(object sender, RoutedEventArgs e)
     {
@@ -171,14 +275,14 @@ namespace MakulaTest
       }
       */
 
-   
+
       DrawTestfield(40, 40);
       DrawTestPolygon(40, 40);
       DrawMidPoint(40, 40);
-      if (_showGrid) DrawGrid(40,40);
+      if (_showGrid) DrawGrid(40, 40);
 
       var a = CalculatePolygonArea();
-      var pct1 = Math.Round(a * 100 / 69528.8237343631, 2);
+      var pct1 = a * 100.0 / (Math.PI * 65 * 65);
       var pct2 = 100 - pct1;
 
       DrawLegend(80, 20, "Sehfeld:", pct2, "außerhalb:", pct1);
@@ -187,34 +291,34 @@ namespace MakulaTest
 
       //Console.WriteLine("Die Fläche des Polygons beträgt: " + a.ToString());
 
-    
+
       var y_off = 220;
-    
+
       //DrawXAxis(20, 400, cursor_y + 150, 50);
       //DrawCheckMark(450, 100);
 
       TimeMeasureStop("Dialog Ende");
     }
 
-    
+
     private void DrawLegend(int xOffset, int yOffset, string text1, double pct2, string text2, double pct1)
     {
       double radius = GetRadius(40, 40);
       Vector center = new Vector(radius, radius);
 
-      var x_pos  = Convert.ToInt32(radius) * 2 + xOffset;
+      var x_pos = Convert.ToInt32(radius) * 2 + xOffset;
       var y_pos1 = Convert.ToInt32(center.Y + 30 - yOffset);
       var y_pos2 = Convert.ToInt32(center.Y + 30 + yOffset);
 
       DrawRectangle(x_pos, y_pos1, 40, 20, Colors.LightGreen);
       DrawStringAtPos("Sehfeld:", x_pos + 50, y_pos1, 16);
-      DrawStringAtPos(pct2.ToString() + "%", x_pos + 140, y_pos1, 16);
+      DrawStringAtPos(string.Format("{0:N2}%", pct2), x_pos + 140, y_pos1, 16);
 
       DrawRectangle(x_pos, y_pos2, 40, 20, Colors.LightPink);
       DrawStringAtPos("außerhalb:", x_pos + 50, y_pos2, 16);
-      DrawStringAtPos(pct1.ToString() + "%", x_pos + 140, y_pos2, 16);
-      
-      DrawStringAtPos(data.actualDate.ToString(), Convert.ToInt32(radius)+40, Convert.ToInt32(radius)*2 + 60, 16, TextAlignment.Center);
+      DrawStringAtPos(string.Format("{0:N2}%", pct1), x_pos + 140, y_pos2, 16);
+
+      DrawStringAtPos(data.actualDate.ToString(), Convert.ToInt32(radius) + 40, Convert.ToInt32(radius) * 2 + 60, 16, TextAlignment.Center);
       //DrawBlackLine(0, Convert.ToInt32(center.Y)+40,1000, Convert.ToInt32(center.Y)+40, 2);
     }
 
@@ -222,24 +326,57 @@ namespace MakulaTest
 
     private void MyCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-      Vector v;
-      if (e.NewSize.Width == 0.0 && e.NewSize.Height == 0.0)
-        v = new Vector(e.PreviousSize.Width, e.PreviousSize.Height);
-      else
-        v = new Vector(e.NewSize.Width, e.NewSize.Height);
-    
-      v -= new Vector(BtnBack.ActualWidth, BtnBack.ActualHeight);
-
-      windowSize = new Size(v.X,v.Y);
       
-      RefreshScreen();
+        Vector v;
+        if (e.NewSize.Width == 0.0 && e.NewSize.Height == 0.0)
+          v = new Vector(e.PreviousSize.Width, e.PreviousSize.Height);
+        else
+          v = new Vector(e.NewSize.Width, e.NewSize.Height);
+
+        v -= new Vector(BtnBack.ActualWidth, BtnBack.ActualHeight);
+
+        windowSize = new Size(v.X, v.Y);
+
+        RefreshScreen();
+     
     }
+
+    private void MyCanvas_Loaded(object sender, RoutedEventArgs e)
+    {
+      int i = 44;
+      //ReadData();
+      //RefreshScreen();
+    }
+
+    private void MyCanvas_VisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+      int i = 44;
+/*
+      Console.WriteLine(" Parent.DataPath=" + Parent.DataPath);
+      if ((bool)e.NewValue == true)
+      {
+        if (data.Points == null)
+        {
+          _path = Parent.DataPath;
+          _sequences = new List<int>();
+
+          ReadSequences();
+          data.actualSequence = _sequences.Count - 1;
+
+
+          ReadData();
+        }
+        RefreshScreen();
+      }
+*/
+    }
+
 
 
     public void GoBackInTime()
     {
-      if (data.actualSequenceId > 1)
-      { data.actualSequenceId--;
+      if (data.actualSequence > 0)
+      { data.actualSequence--;
         ReadData();
         RefreshScreen();
       }
@@ -248,8 +385,8 @@ namespace MakulaTest
 
     public void GoForwardInTime()
     {
-      if (data.actualSequenceId < maxSequenceId)
-      { data.actualSequenceId++;
+      if (data.actualSequence < _sequences.Count-1)
+      { data.actualSequence++;
         ReadData();
         RefreshScreen();
       }
@@ -400,15 +537,16 @@ namespace MakulaTest
     {
 
       double radius = GetRadius(40, 40);
-      double scaleFactor = radius / data.Points[0].X;
+      //double scaleFactor = radius * 2.0 / data.Points[0].X;
+      double scaleFactor = radius / 65;
 
       int[,] intPoints = new int[20, 2];
 
       int count = 0;
       foreach (var point in data.Points)
       {
-        intPoints[count, 0] = Convert.ToInt32(point.X * scaleFactor);
-        intPoints[count, 1] = Convert.ToInt32(point.Y * scaleFactor);
+        intPoints[count, 0] = Convert.ToInt32(point.X * scaleFactor + radius);
+        intPoints[count, 1] = Convert.ToInt32(point.Y * scaleFactor + radius);
         count++;
        }
 
@@ -600,11 +738,11 @@ namespace MakulaTest
     private void ReadData()
     {
       data.Points = new List<Point>();
-
+  
       var count = 0;
       int entry_id;
 
-      StreamReader fs = new StreamReader(path);
+      StreamReader fs = new StreamReader(_path);
       string csv_line;
       char[] charSeparators = new char[] { ';' };
 
@@ -615,15 +753,20 @@ namespace MakulaTest
         var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
 
         DateTime Date;
-   
+        Boolean backward;
+        Boolean rightEye;
+
         try
         {
-          if (int.Parse(elements[0]) == data.actualSequenceId)
+          if (int.Parse(elements[0]) == _sequences[data.actualSequence])
           {
             entry_id = int.Parse(elements[1]);
             Date = DateTime.Parse(elements[2]);
-            p.X = double.Parse(elements[3]);
-            p.Y = double.Parse(elements[4]);
+            backward=Boolean.Parse(elements[3]);
+            rightEye= Boolean.Parse(elements[4]);
+
+            p.X = double.Parse(elements[5]);
+            p.Y = double.Parse(elements[6]);
 
             data.actualDate = Date;
             data.Points.Add(p);
@@ -653,10 +796,10 @@ namespace MakulaTest
 
       GenerateTestDataFirstDay(1, 70.0,rnd);
 
-      data.actualSequenceId = 1;
+      data.actualSequence = 1;
       ReadData();
 
-      FileStream fs = new FileStream(path, FileMode.Append);
+      FileStream fs = new FileStream(_path, FileMode.Append);
 
       GenerateTestDataNextDay(-5.0, rnd, fs);
       GenerateTestDataNextDay(-2.0, rnd, fs);
@@ -672,8 +815,8 @@ namespace MakulaTest
 
     private void GenerateTestDataNextDay(double change_factor, Random rnd, FileStream fs)
     {
-      data.actualSequenceId++;
-      var day = DateTime.Now.AddDays(data.actualSequenceId);
+      data.actualSequence++;
+      var day = DateTime.Now.AddDays(data.actualSequence);
 
       var entry_id = 0;
 
@@ -718,7 +861,7 @@ namespace MakulaTest
 
         //Console.WriteLine("center_vector=" + center_vector.ToString());
 
-        WriteCSV(fs, data.actualSequenceId, entry_id, day, center_vector);
+        WriteCSV(fs, data.actualSequence, entry_id, day, center_vector);
         entry_id++;
        // break;
       }
@@ -770,8 +913,8 @@ namespace MakulaTest
 
     private void GenerateTestDataFirstDay(int sequence_id, double sight_pct, Random rnd)
     {
-      File.Delete(path);
-      FileStream fs = File.OpenWrite(path);
+      File.Delete(_path);
+      FileStream fs = File.OpenWrite(_path);
 
       var day = DateTime.Now.AddDays(sequence_id);
 
