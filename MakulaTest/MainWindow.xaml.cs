@@ -72,7 +72,7 @@ namespace MakulaTest
             MyAnalyse.Visibility = Visibility.Visible;
             DiagnoseControl.Visibility = Visibility.Collapsed;
             MainWindowToolbar.Visibility = Visibility.Collapsed;
-            MyAnalyse.Start();
+            MyAnalyse.Start(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MakulaData.csv"));
         }
 
         private void BtnSettingSize_Click(object sender, RoutedEventArgs e)
