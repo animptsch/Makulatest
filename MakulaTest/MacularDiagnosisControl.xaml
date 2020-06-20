@@ -8,6 +8,7 @@
              d:DesignHeight="700" d:DesignWidth="700">
     <Grid>
         <Grid.Resources>
+            <local:BoolToOppositeBoolConverter x:Key="BoolToOppositeBoolConverter_ValueConverter" Inverse="True"/>
             <Style TargetType="TextBox">
                 <Setter Property="Width" Value="200"/>
                 <Setter Property="Height" Value="250"/>
@@ -21,15 +22,36 @@
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Canvas Grid.RowSpan="2" Visibility="Visible" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Height="300" Width="300" x:Name="MyCanvas"  MouseDown="MyCanvas_MouseDown" PreviewMouseWheel="MyCanvas_PreviewMouseWheel">
             <Rectangle x:Name="MyRectangle" Stroke="Black" Fill="White" Width="200" Height="200"  Margin="50" />
         </Canvas>
 
-        <TextBox x:Name="txtPointList" Grid.Column="1" />
-        <TextBox x:Name="txtLastPos" Grid.Column="1" Grid.Row="1" />
+        <StackPanel  Grid.Column="1" >
+            <GroupBox Margin="5" IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}"  BorderBrush="Black" BorderThickness="1">
+                <StackPanel>
+                    <RadioButton Content="Linkes Auge" IsChecked="{Binding Path=IsLeftEyeChecked}"/>
+                    <RadioButton Content="Rechtes Auge" IsChecked="{Binding Path=IsRightEyeChecked}"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Margin="5" IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}" BorderBrush="Black" BorderThickness="1">
+                <StackPanel>
+                    <RadioButton Content="Vorwärts" IsChecked="{Binding Path=IsForwardChecked}"/>
+                    <RadioButton Content="Rückwärts" IsChecked="{Binding Path=IsBackwardChecked}"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+
+
+
+
+
+
+
+        <TextBox x:Name="txtPointList" Visibility="Collapsed" Grid.Column="1" />
+        <TextBox x:Name="txtLastPos" Visibility="Collapsed" Grid.Column="1" Grid.Row="1" />
 
     </Grid>
 </UserControl>

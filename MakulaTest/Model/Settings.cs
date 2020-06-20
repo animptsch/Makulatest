@@ -12,13 +12,17 @@ namespace MakulaTest.Model
 
         public int Duration { get; set; }
 
+        public int DurationBackwards { get; set; }
+
         public bool Backward { get; set; }
+
+        public bool RightEye { get; set; }
 
         public Settings()
         {                        
             Duration = 10;
-            Steps = 20;
-            Backward = false;
+            DurationBackwards = 10;
+            Steps = 20;            
         }
     }
 
