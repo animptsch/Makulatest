@@ -6,8 +6,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MakulaTest"
         xmlns:model="clr-namespace:MakulaTest.Model"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d" Background="LightGray"
-        Title="Einstellungen" Height="180" Width="300"
+        Title="Einstellungen" Height="280" Width="300"
         WindowStartupLocation ="Manual">
     <Grid >
         
@@ -16,6 +17,10 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -31,7 +36,16 @@
         <Label Content="Dauer der Animation rückwärts:" Grid.Row="2" />
         <TextBox Margin="5" Width="100" Height="20" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1" Text="{Binding Path=DurationBackwards}"/>
 
-        <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal">
+        <Label Content="Hintergrundfarbe:" Grid.Row="3" />
+        <xctk:ColorPicker Grid.Row="3" Grid.Column="1" Margin="5" SelectedColor="{Binding Path=BackgroundColor}" />
+
+        <Label Content="Linien Farbe:" Grid.Row="4" />
+        <xctk:ColorPicker Grid.Row="4" Grid.Column="1" Margin="5" SelectedColor="{Binding Path=LineColor}" />
+
+        <Label Content="Ball Farbe:" Grid.Row="5" />
+        <xctk:ColorPicker Grid.Row="5" Grid.Column="1" Margin="5" SelectedColor="{Binding Path=SelectedColor}" />
+
+        <StackPanel Grid.Column="1" Grid.Row="6" Orientation="Horizontal">
             <Button x:Name="btnOk" IsDefault="True" Margin="10" FontSize="10" Padding="5" Click="BtnOk_Click"  >OK</Button>
             <Button x:Name="btnCancel" IsCancel="True" Margin="10" FontSize="10" Padding="5" Click="BtnCancel_Click" >Cancel</Button>
         </StackPanel>

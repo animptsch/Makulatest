@@ -57,6 +57,41 @@ namespace MakulaTest.Model
         }
 
 
+        
+        public string BackgroundColor
+        {
+            get { return Model.BackgroundColor; }
+            set
+            {
+                Model.BackgroundColor = value;
+                OnPropertyChanged(nameof(BackgroundColor));
+            }
+        }
+
+
+        public string LineColor
+        {
+            get { return Model.LineColor; }
+            set
+            {
+                Model.LineColor = value;
+                OnPropertyChanged(nameof(LineColor));
+            }
+        }
+
+
+        public string BallColor
+        {
+            get { return Model.BallColor; }
+            set
+            {
+                Model.BallColor = value;
+                OnPropertyChanged(nameof(BallColor));
+            }
+        }
+
+
+
 
         private bool _isRightEyeChecked;
 

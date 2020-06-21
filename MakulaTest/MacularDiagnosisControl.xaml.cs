@@ -162,6 +162,9 @@ namespace MakulaTest
             if (_ellipse != null)
             {
                 MyCanvas.Children.Remove(_ellipse);
+                double pos = 1.0 / (double)SettingsModel.Steps;                
+                LastPos -= pos;
+
                 _ellipse = null;
             }
         }

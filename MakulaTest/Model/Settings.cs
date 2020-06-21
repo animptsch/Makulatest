@@ -18,6 +18,10 @@ namespace MakulaTest.Model
 
         public bool RightEye { get; set; }
 
+        public string BackgroundColor { get; set; }
+        public string LineColor { get; set; }
+        public string BallColor { get; set; }
+
         public Settings()
         {                        
             Duration = 10;
