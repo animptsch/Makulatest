@@ -14,6 +14,7 @@ using System.Windows.Threading;
 using System.Printing;
 using System.Windows.Documents;
 using System.Linq;
+using System.Diagnostics.Eventing.Reader;
 
 namespace MakulaTest
 {
@@ -45,7 +46,9 @@ namespace MakulaTest
     private string _path;
     //private Rectangle _rect;
     private List<int> _sequences;
-
+    private bool _backward;
+    private bool _rightEye;
+    private double _minDistance; // point distance to center
 
 
     public new MainWindow Parent { get; set; }
@@ -136,8 +139,50 @@ namespace MakulaTest
       return _sequences.Max();
     }
 
+    //https://de.cleanpng.com/png-z809ef/download-png.html
 
 
+    private void CbRightEye_IsChecked(object sender, RoutedEventArgs e)
+    {
+      if (CbLeftEye != null)
+         _rightEye = (CbLeftEye.IsChecked == true);
+      else
+        _rightEye = false;
+    }
+
+    private void CbLeftEye_IsChecked(object sender, RoutedEventArgs e)
+    {
+      if (CbLeftEye != null)
+        _rightEye = (CbLeftEye.IsChecked == true);
+      else
+        _rightEye = false;
+    }
+
+
+    private void CbForward_IsChecked(object sender, RoutedEventArgs e)
+    {
+      if (CbLeftEye != null)
+        _rightEye = (CbLeftEye.IsChecked == true);
+      else
+        _rightEye = false;
+    }
+
+    private void CbBackward_IsChecked(object sender, RoutedEventArgs e)
+    {
+      if (CbLeftEye != null)
+        _rightEye = (CbLeftEye.IsChecked == true);
+      else
+        _rightEye = false;
+    }
+
+
+
+    private void BtnDaten_Click(object sender, RoutedEventArgs e)
+    {
+      //Console.WriteLine("btnBack_Click");
+      Parent.AnalyseStop();
+
+    }
 
     private void BtnBack_Click(object sender, RoutedEventArgs e)
     {
@@ -285,7 +330,7 @@ namespace MakulaTest
       var pct1 = a * 100.0 / (Math.PI * 65 * 65);
       var pct2 = 100 - pct1;
 
-      DrawLegend(80, 20, "Sehfeld:", pct2, "außerhalb:", pct1);
+      DrawLegend(80, 20, "Sehbereich:", pct2, "Ausfallbereich:", pct1);
 
       cursor_y = 420;
 
@@ -303,22 +348,48 @@ namespace MakulaTest
 
     private void DrawLegend(int xOffset, int yOffset, string text1, double pct2, string text2, double pct1)
     {
+
       double radius = GetRadius(40, 40);
       Vector center = new Vector(radius, radius);
+
 
       var x_pos = Convert.ToInt32(radius) * 2 + xOffset;
       var y_pos1 = Convert.ToInt32(center.Y + 30 - yOffset);
       var y_pos2 = Convert.ToInt32(center.Y + 30 + yOffset);
 
+      DrawStringAtPos("Hubert Nimptsch", x_pos - 2, 40, 36, TextAlignment.Left);
+      DrawStringAtPos("Angerweg 2", x_pos - 2, 90, 16, TextAlignment.Left);
+      DrawStringAtPos("31028 Gronau/Leine", x_pos - 2,  120, 22, TextAlignment.Left);
+      DrawStringAtPos("Mobil: 01575 1086320", x_pos - 2, 150, 16, TextAlignment.Left);
+
+
       DrawRectangle(x_pos, y_pos1, 40, 20, Colors.LightGreen);
-      DrawStringAtPos("Sehfeld:", x_pos + 50, y_pos1, 16);
-      DrawStringAtPos(string.Format("{0:N2}%", pct2), x_pos + 140, y_pos1, 16);
+      DrawStringAtPos(text1, x_pos + 50, y_pos1, 16);
+      DrawStringAtPos(string.Format("{0:N2}%", pct2), x_pos + 160, y_pos1, 16);
 
       DrawRectangle(x_pos, y_pos2, 40, 20, Colors.LightPink);
-      DrawStringAtPos("außerhalb:", x_pos + 50, y_pos2, 16);
-      DrawStringAtPos(string.Format("{0:N2}%", pct1), x_pos + 140, y_pos2, 16);
+      DrawStringAtPos(text2, x_pos + 50, y_pos2, 16);
+      DrawStringAtPos(string.Format("{0:N2}%", pct1), x_pos + 160, y_pos2, 16);
 
-      DrawStringAtPos(data.actualDate.ToString(), Convert.ToInt32(radius) + 40, Convert.ToInt32(radius) * 2 + 60, 16, TextAlignment.Center);
+      DrawStringAtPos("minimaler Abstand:",          x_pos, y_pos2+30, 16);
+      DrawStringAtPos(string.Format("{0:N2} mm", _minDistance), x_pos + 160, y_pos2+30, 16);
+      
+
+
+
+
+      var textBelowPicture = data.actualDate.ToString();
+      if (_backward) 
+        textBelowPicture += " von Außen nach Innen";
+      else
+        textBelowPicture += " von Innen nach Außen";
+
+      if (_rightEye) 
+        textBelowPicture += "; rechtes Auge";
+      else
+        textBelowPicture += "; linkes Auge";
+
+      DrawStringAtPos(textBelowPicture, Convert.ToInt32(radius) + 40, Convert.ToInt32(radius) * 2 + 60, 16, TextAlignment.Center);
       //DrawBlackLine(0, Convert.ToInt32(center.Y)+40,1000, Convert.ToInt32(center.Y)+40, 2);
     }
 
@@ -748,31 +819,34 @@ namespace MakulaTest
 
       Point p = new Point() { X = 0.0, Y = 0.0 };
 
+      _minDistance = 20000.0;
+
       while ((csv_line = fs.ReadLine()) != null)
       {
         var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
 
         DateTime Date;
-        Boolean backward;
-        Boolean rightEye;
-
+     
         try
         {
           if (int.Parse(elements[0]) == _sequences[data.actualSequence])
           {
             entry_id = int.Parse(elements[1]);
             Date = DateTime.Parse(elements[2]);
-            backward=Boolean.Parse(elements[3]);
-            rightEye= Boolean.Parse(elements[4]);
+            _backward=Boolean.Parse(elements[3]);
+            _rightEye= Boolean.Parse(elements[4]);
 
             p.X = double.Parse(elements[5]);
             p.Y = double.Parse(elements[6]);
 
             data.actualDate = Date;
             data.Points.Add(p);
-       
-           // if (count < 20)
-           //   Console.WriteLine(count.ToString() + ". Date="+  Date.ToString()+" X = " + p.X.ToString() + " Y= " + p.Y.ToString());
+
+            var d = Math.Sqrt(p.X * p.X + p.Y * p.Y);
+            if (d < _minDistance) _minDistance = d;
+
+            // if (count < 20)
+            //   Console.WriteLine(count.ToString() + ". Date="+  Date.ToString()+" X = " + p.X.ToString() + " Y= " + p.Y.ToString());
           }
         }
         catch (FormatException e)
