@@ -64,19 +64,58 @@
               DockPanel.Dock="Bottom">
         <Image Source="Images/nextday.png" />
       </Button>
-
+      
+      <Button x:Name="BtnDaten" ToolTip="Daten bearbeiten" 
+              Click="BtnDaten_Click" HorizontalAlignment="Right"
+              DockPanel.Dock="Bottom">
+        <Image Source="Images/daten.png" />
+      </Button>
       <Button x:Name="BtnPrint" ToolTip="Drucken des Fensters" 
               Click="BtnPrint_Click" HorizontalAlignment="Right"
               Width="150"
               DockPanel.Dock="Bottom">
-           <Image Source="Images/printer.png" />
+        <Image Source="Images/printer.png" />
       </Button>
-      
+
+      <StackPanel>
+        <CheckBox Name="CbRightEye" 
+                IsThreeState="False" 
+                ToolTip="Ausfallbereich des rechten Auges anzeigen" 
+                Width="150" Height="25"  HorizontalAlignment="Left"
+                Checked="CbRightEye_IsChecked"
+                Unchecked="CbRightEye_IsChecked"
+                IsChecked="True">rechtes Auge</CheckBox>
+
+        <CheckBox Name="CbLeftEye" ToolTip="Ausfallbereich des linken Auges anzeigen" 
+                IsThreeState="False" 
+                Width="150" Height="25" HorizontalAlignment="Left" 
+                Checked="CbLeftEye_IsChecked"
+                Unchecked="CbLeftEye_IsChecked"
+                IsChecked="False">linkes Auge</CheckBox>
+      </StackPanel>
+
+      <StackPanel>
+        <CheckBox Name="CbForward" 
+                IsThreeState="False" 
+                ToolTip="Ausfallbereich für nach Innen anzeigen" 
+                 Height="25"  HorizontalAlignment="Left"
+                Checked="CbForward_IsChecked"
+                Unchecked="CbForward_IsChecked"
+                IsChecked="True">von Außen nach Innen</CheckBox>
+
+        <CheckBox Name="CbBackward" ToolTip="Ausfallbereich für nach Außen anzeigen" 
+                IsThreeState="False" 
+                Height="25" HorizontalAlignment="Left" 
+                Checked="CbBackward_IsChecked"
+                Unchecked="CbBackward_IsChecked"
+                IsChecked="False">von Innen nach Außen</CheckBox>
+      </StackPanel>
+
     </StackPanel>
 
     <Canvas Visibility="Visible" Height="650" x:Name="MyCanvas"/>
 
-
+  
 
   </DockPanel>
 
