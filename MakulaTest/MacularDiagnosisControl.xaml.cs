@@ -30,7 +30,11 @@ namespace MakulaTest
         private double _centerX;
         private double _centerY;
         private Storyboard _sbTranslate;
-        private MakulaSession _session;        
+        private MakulaSession _session;
+
+        public Brush BackgroundColor { get; set; }
+        public Brush LineColor{ get; set; }
+        public Brush MovedCircleColor { get; set; }
 
         public MacularDiagnosisControl()
         {
@@ -72,7 +76,7 @@ namespace MakulaTest
         }
 
         public const int CircleSize = 8;
-        public readonly Brush CircleColor = new SolidColorBrush(Colors.Red);
+        
 
         public Model.Settings SettingsModel { get; set; }
         public Model.SettingsViewModel SettingsViewModel { get; set; }
@@ -84,6 +88,15 @@ namespace MakulaTest
         {
             if (!SettingsViewModel.IsMeasureStarted)
             {
+                var brushConv = new BrushConverter();
+                MovedCircleColor = (SolidColorBrush)brushConv.ConvertFrom(SettingsModel.BallColor);
+                MyCanvas.Background = (SolidColorBrush)brushConv.ConvertFrom(SettingsModel.BackgroundColor);
+                
+                LineColor = (SolidColorBrush)brushConv.ConvertFrom(SettingsModel.LineColor);
+
+                drawLines();
+                drawCenterCircle();
+
                 SettingsViewModel.IsMeasureStarted = true;
                 _session = new MakulaSession();
 
@@ -188,7 +201,7 @@ namespace MakulaTest
             
             Point pt = new Point(begin.X - CircleSize / 2, begin.Y - CircleSize / 2);
 
-            var ellipse = drawCircle(pt, CircleColor);            
+            var ellipse = drawCircle(pt, MovedCircleColor);            
 
             _sbTranslate = new Storyboard();
             var daTranslateX = new DoubleAnimation();
@@ -351,8 +364,8 @@ namespace MakulaTest
             {
                 var line1 = new Line()
                 {
-                    Stroke = new SolidColorBrush(Colors.Black),
-                    Fill = new SolidColorBrush(Colors.Black),
+                    Stroke = LineColor,
+                    Fill = LineColor,
                     StrokeThickness = thickness,
                     X1 = x,
                     X2 = width + x,
@@ -365,9 +378,9 @@ namespace MakulaTest
                 //draw vertical Lines
                 var line2 = new Line()
                 {
-                    Stroke = new SolidColorBrush(Colors.Black),
+                    Stroke = LineColor,
                     StrokeThickness = thickness,
-                    Fill = new SolidColorBrush(Colors.Black),
+                    Fill = LineColor,
                     X1 = _centerX,
                     X2 = _centerX,
                     Y1 = y,
@@ -386,13 +399,14 @@ namespace MakulaTest
         {
             MyCanvas.Children.Clear();
             MyCanvas.Children.Add(MyRectangle);
+            MyRectangle.Fill = BackgroundColor;
         }
 
         private void drawCenterCircle()
         {            
             Point pt = new Point(_centerX - CircleSize / 2.0, _centerY - CircleSize / 2.0);
 
-            var ellipse = drawCircle(pt, new SolidColorBrush(Colors.Black));                       
+            var ellipse = drawCircle(pt, LineColor);                       
         }
 
         private void MyCanvas_MouseDown(object sender, MouseButtonEventArgs e)

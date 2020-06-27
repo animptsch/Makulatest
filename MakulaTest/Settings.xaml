@@ -43,7 +43,7 @@
         <xctk:ColorPicker Grid.Row="4" Grid.Column="1" Margin="5" SelectedColor="{Binding Path=LineColor}" />
 
         <Label Content="Ball Farbe:" Grid.Row="5" />
-        <xctk:ColorPicker Grid.Row="5" Grid.Column="1" Margin="5" SelectedColor="{Binding Path=SelectedColor}" />
+        <xctk:ColorPicker Grid.Row="5" Grid.Column="1" Margin="5" SelectedColor="{Binding Path=BallColor}" />
 
         <StackPanel Grid.Column="1" Grid.Row="6" Orientation="Horizontal">
             <Button x:Name="btnOk" IsDefault="True" Margin="10" FontSize="10" Padding="5" Click="BtnOk_Click"  >OK</Button>

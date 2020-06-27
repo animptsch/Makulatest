@@ -26,7 +26,10 @@ namespace MakulaTest.Model
         {                        
             Duration = 10;
             DurationBackwards = 10;
-            Steps = 20;            
+            Steps = 20;
+            LineColor = "#FFFFFF00";
+            BackgroundColor = "#FFffffff";
+            BallColor = "#ff000000";
         }
     }
 
