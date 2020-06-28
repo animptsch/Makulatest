@@ -8,7 +8,7 @@
         xmlns:model="clr-namespace:MakulaTest.Model"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d" Background="LightGray"
-        Title="Einstellungen" Height="280" Width="300"
+        Title="Einstellungen" Height="310" Width="300"
         WindowStartupLocation ="Manual">
     <Grid >
         
@@ -42,10 +42,13 @@
         <Label Content="Linien Farbe:" Grid.Row="4" />
         <xctk:ColorPicker Grid.Row="4" Grid.Column="1" Margin="5" SelectedColor="{Binding Path=LineColor}" />
 
-        <Label Content="Polygon Farbe:" Grid.Row="5" />
-        <xctk:ColorPicker Grid.Row="5" Grid.Column="1" Margin="5" SelectedColor="{Binding Path=PolygonColor}" />
+        <Label Content="Kreis Farbe:" Grid.Row="5" />
+        <xctk:ColorPicker Grid.Row="5" Grid.Column="1" Margin="5" SelectedColor="{Binding Path=BallColor}" />
 
-        <StackPanel Grid.Column="1" Grid.Row="6" Orientation="Horizontal">
+        <Label Content="Polygon Farbe:" Grid.Row="6" />
+        <xctk:ColorPicker Grid.Row="6" Grid.Column="1" Margin="5" SelectedColor="{Binding Path=PolygonColor}" />
+
+        <StackPanel Grid.Column="1" Grid.Row="7" Orientation="Horizontal" Grid.ColumnSpan="2">
             <Button x:Name="btnOk" IsDefault="True" Margin="10" FontSize="10" Padding="5" Click="BtnOk_Click"  >OK</Button>
             <Button x:Name="btnCancel" IsCancel="True" Margin="10" FontSize="10" Padding="5" Click="BtnCancel_Click" >Cancel</Button>
         </StackPanel>

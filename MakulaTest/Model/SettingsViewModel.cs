@@ -23,7 +23,7 @@ namespace MakulaTest.Model
 
         public int DurationBackwards
         {
-            get { return Model.Duration; }
+            get { return Model.DurationBackwards; }
             set
             {
 

@@ -38,8 +38,8 @@
             </GroupBox>
             <GroupBox Margin="5" IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}" BorderBrush="Black" BorderThickness="1">
                 <StackPanel>
-                    <RadioButton Content="Vorwärts" IsChecked="{Binding Path=IsForwardChecked}"/>
-                    <RadioButton Content="Rückwärts" IsChecked="{Binding Path=IsBackwardChecked}"/>
+                    <RadioButton Content="Von außen nach innen" IsChecked="{Binding Path=IsForwardChecked}"/>
+                    <RadioButton Content="Von innen nach außen" IsChecked="{Binding Path=IsBackwardChecked}"/>
                 </StackPanel>
             </GroupBox>
         </StackPanel>
