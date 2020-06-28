@@ -1,63 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
+using System.IO;
+using System.Xml.Serialization;
+using System.Windows.Media;
+using System;
 
 namespace MakulaTest.Model
 {
     public class SettingsViewModel :INotifyPropertyChanged
     {
                 
-        public string Duration
+        public int Duration
         {
-            get { return Model.Duration.ToString(); }
+            get { return Model.Duration; }
             set
             {
-                int duration;
-                if (int.TryParse(value, out duration))
-                {
-                    Model.Duration = duration;
-                    OnPropertyChanged(nameof(Duration));
-                }
+                Model.Duration = value;
+                OnPropertyChanged(nameof(Duration));
             }
         }
 
+        private BrushConverter _brushConv;
 
-        public string DurationBackwards
+        public int DurationBackwards
         {
-            get { return Model.DurationBackwards.ToString(); }
+            get { return Model.Duration; }
             set
             {
-                int duration;
-                if (int.TryParse(value, out duration))
-                {
-                    Model.DurationBackwards = duration;
-                    OnPropertyChanged(nameof(DurationBackwards));
-                }
+
+                Model.DurationBackwards = value;
+               OnPropertyChanged(nameof(DurationBackwards));
+
             }
         }
 
 
 
-        public string Steps
+        public int Steps
         {
-            get { return Model.Steps.ToString(); }
+            get { return Model.Steps; }
             set
             {
-                int steps;
 
-                if (int.TryParse(value, out steps))
-                {
-                    Model.Steps = steps;
-                    OnPropertyChanged(nameof(Steps));
-                }
+                Model.Steps = value;
+                OnPropertyChanged(nameof(Steps));
             }
         }
 
+        public Brush BackgroundBrush { get => (SolidColorBrush)_brushConv.ConvertFrom(BackgroundColor); }
 
-        
         public string BackgroundColor
         {
             get { return Model.BackgroundColor; }
@@ -65,9 +55,11 @@ namespace MakulaTest.Model
             {
                 Model.BackgroundColor = value;
                 OnPropertyChanged(nameof(BackgroundColor));
+                OnPropertyChanged(nameof(BackgroundBrush));
             }
         }
 
+        public Brush LinesBrush { get => (SolidColorBrush)_brushConv.ConvertFrom(LineColor); }
 
         public string LineColor
         {
@@ -76,9 +68,12 @@ namespace MakulaTest.Model
             {
                 Model.LineColor = value;
                 OnPropertyChanged(nameof(LineColor));
+                OnPropertyChanged(nameof(LinesBrush));
             }
         }
 
+
+        public Brush MovedBallBrush { get => (SolidColorBrush)_brushConv.ConvertFrom(BallColor); }
 
         public string BallColor
         {
@@ -87,10 +82,21 @@ namespace MakulaTest.Model
             {
                 Model.BallColor = value;
                 OnPropertyChanged(nameof(BallColor));
+                OnPropertyChanged(nameof(MovedBallBrush));
             }
         }
 
+        public Brush PolygonBrush { get => (SolidColorBrush)_brushConv.ConvertFrom(PolygonColor); }
 
+        public string PolygonColor
+        {
+            get { return Model.PolygonColor; }
+            set
+            {
+                Model.PolygonColor = value;
+                OnPropertyChanged(nameof(PolygonColor));
+            }
+        }
 
 
         private bool _isRightEyeChecked;
@@ -101,8 +107,7 @@ namespace MakulaTest.Model
             set
             {
                 _isRightEyeChecked = value;
-                _isLeftEyeChecked = value == false;
-                Model.RightEye = _isRightEyeChecked;
+                _isLeftEyeChecked = value == false;                
                 OnPropertyChanged(nameof(IsRightEyeChecked));
             }
         }
@@ -115,8 +120,7 @@ namespace MakulaTest.Model
             set
             {
                 _isLeftEyeChecked = value;
-                _isRightEyeChecked = value == false;
-                Model.RightEye = _isRightEyeChecked;
+                _isRightEyeChecked = value == false;                
                 OnPropertyChanged(nameof(IsLeftEyeChecked));
             }
         }
@@ -129,8 +133,7 @@ namespace MakulaTest.Model
             set
             {
                 _isBackwardChecked = value;
-                _isForwardChecked = value == false;
-                Model.Backward = _isBackwardChecked;
+                _isForwardChecked = value == false;                
                 OnPropertyChanged(nameof(IsBackwardChecked));
             }
         }
@@ -143,8 +146,7 @@ namespace MakulaTest.Model
             set
             {
                 _isForwardChecked = value;
-                _isBackwardChecked = value == false;
-                Model.Backward = _isBackwardChecked;
+                _isBackwardChecked = value == false;                
                 OnPropertyChanged(nameof(IsForwardChecked));
             }
         }
@@ -163,7 +165,7 @@ namespace MakulaTest.Model
 
 
 
-        public Settings Model { get; }
+        public Settings Model { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -174,9 +176,58 @@ namespace MakulaTest.Model
 
         public SettingsViewModel()
         {
-            Model = new Settings();            
+            _brushConv = new BrushConverter();
+            Model = new Settings();
+
+            string baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings");
+
+            if (!Directory.Exists(baseDir))
+            {
+                Directory.CreateDirectory(baseDir);
+            }
+
+            _settingsFileName = System.IO.Path.Combine(baseDir, "appsettings.xml");
+
+            loadSettings();
         }
 
+        public void SaveSettings()
+        {
 
+            using (Stream serializeStream = File.Open(_settingsFileName, FileMode.Create, FileAccess.Write))
+            {
+                var serializer = new XmlSerializer(typeof(Settings));
+                serializer.Serialize(serializeStream, Model);
+            }
+        }
+
+        private bool loadSettings()
+        {
+            bool result = File.Exists(_settingsFileName);
+
+            Settings loadedModel = new Settings();
+            if (result)
+            {
+                try
+                {
+                    using (Stream fileStream = File.OpenRead(_settingsFileName))
+                    {
+                        var serializer = new XmlSerializer(typeof(Settings));
+                        loadedModel = (Settings)serializer.Deserialize(fileStream);
+                    }
+
+                }
+                catch (System.Exception)
+                {
+                    return false;
+                }
+
+                Model = loadedModel;                
+            }
+
+            return result;
+        }
+
+        private readonly string _settingsFileName;
     }
 }

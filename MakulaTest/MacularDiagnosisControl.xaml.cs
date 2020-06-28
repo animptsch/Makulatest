@@ -32,16 +32,12 @@ namespace MakulaTest
         private Storyboard _sbTranslate;
         private MakulaSession _session;
 
-        public Brush BackgroundColor { get; set; }
-        public Brush LineColor{ get; set; }
-        public Brush MovedCircleColor { get; set; }
 
         public MacularDiagnosisControl()
         {
             InitializeComponent();
                         
-            SettingsViewModel = new SettingsViewModel();
-            SettingsModel = SettingsViewModel.Model;
+            SettingsViewModel = new SettingsViewModel();            
             DataContext = SettingsViewModel;
             SettingsViewModel.IsRightEyeChecked = true;
             SettingsViewModel.IsBackwardChecked = true;
@@ -77,8 +73,7 @@ namespace MakulaTest
 
         public const int CircleSize = 8;
         
-
-        public Model.Settings SettingsModel { get; set; }
+        
         public Model.SettingsViewModel SettingsViewModel { get; set; }
 
         public MainWindow Parent { get; set; }
@@ -88,12 +83,9 @@ namespace MakulaTest
         {
             if (!SettingsViewModel.IsMeasureStarted)
             {
-                var brushConv = new BrushConverter();
-                MovedCircleColor = (SolidColorBrush)brushConv.ConvertFrom(SettingsModel.BallColor);
-                MyCanvas.Background = (SolidColorBrush)brushConv.ConvertFrom(SettingsModel.BackgroundColor);
-                
-                LineColor = (SolidColorBrush)brushConv.ConvertFrom(SettingsModel.LineColor);
 
+                MyCanvas.Background = SettingsViewModel.BackgroundBrush;                
+                
                 drawLines();
                 drawCenterCircle();
 
@@ -101,12 +93,12 @@ namespace MakulaTest
                 _session = new MakulaSession();
 
                 _removeTimer = new DispatcherTimer();
-                _removeTimer.Interval = new TimeSpan(0, 0, SettingsModel.Duration);
+                _removeTimer.Interval = new TimeSpan(0, 0, SettingsViewModel.Duration);
                 _removeTimer.Tick += new EventHandler(_removeTimer_Tick);
                 _removeTimer.Start();
 
                 _moveTimer = new DispatcherTimer();
-                _moveTimer.Interval = new TimeSpan(0, 0, SettingsModel.Duration + 2);
+                _moveTimer.Interval = new TimeSpan(0, 0, SettingsViewModel.Duration + 2);
                 _moveTimer.Tick += new EventHandler(_timer_Tick);
                 _moveTimer.Start();
                 LastPos = _offset;
@@ -118,7 +110,7 @@ namespace MakulaTest
                 }
 
                 Point pt = getPointInOuterCircle();
-                _ellipse = moveCircle(pt, SettingsModel.Backward);
+                _ellipse = moveCircle(pt, SettingsViewModel.IsBackwardChecked);
             }
         }
 
@@ -134,7 +126,7 @@ namespace MakulaTest
                 _removeTimer.Start();
                 _moveTimer.Start();
 
-                _ellipse = moveCircle(pt, SettingsModel.Backward);
+                _ellipse = moveCircle(pt, SettingsViewModel.IsBackwardChecked);
             }
         }
 
@@ -175,7 +167,7 @@ namespace MakulaTest
             if (_ellipse != null)
             {
                 MyCanvas.Children.Remove(_ellipse);
-                double pos = 1.0 / (double)SettingsModel.Steps;                
+                double pos = 1.0 / (double)SettingsViewModel.Steps;                
                 LastPos -= pos;
 
                 _ellipse = null;
@@ -190,18 +182,18 @@ namespace MakulaTest
             if (!backward)
             {
                 end = new Point(_centerX, _centerY);
-                durationInSeconds = SettingsModel.Duration;
+                durationInSeconds = SettingsViewModel.Duration;
             }
             else
             {
                 end = begin;
                 begin = new Point(_centerX, _centerY);
-                durationInSeconds = SettingsModel.DurationBackwards;
+                durationInSeconds = SettingsViewModel.DurationBackwards;
             }
             
             Point pt = new Point(begin.X - CircleSize / 2, begin.Y - CircleSize / 2);
 
-            var ellipse = drawCircle(pt, MovedCircleColor);            
+            var ellipse = drawCircle(pt, SettingsViewModel.MovedBallBrush);            
 
             _sbTranslate = new Storyboard();
             var daTranslateX = new DoubleAnimation();
@@ -293,17 +285,16 @@ namespace MakulaTest
             }
 
             _polygon.Points = new PointCollection(_session.Points);
-            _polygon.Stroke = Brushes.Blue;
-            _polygon.Fill = Brushes.White;
+            _polygon.Stroke = SettingsViewModel.PolygonBrush;            
 
             MyCanvas.Children.Add(_polygon);
 
             MakulaDataSet mds = new MakulaDataSet(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MakulaData.csv"));
 
 
-            mds.SaveData(_session.Points,
-                         SettingsModel.Backward,  // direction
-                         SettingsModel.RightEye,  // rightEye
+            mds.SaveData(_session.Points,                
+                         SettingsViewModel.IsBackwardChecked,  // direction
+                         SettingsViewModel.IsRightEyeChecked,  // rightEye
                          CircleSize,
                          MyRectangle);
 
@@ -336,7 +327,7 @@ namespace MakulaTest
             Point pt, ptTan;
             var rnd = new Random();
 
-            double pos = 1.0 / (double)SettingsModel.Steps;
+            double pos = 1.0 / (double)SettingsViewModel.Steps;
             _pathGeo.GetPointAtFractionLength(LastPos, out pt, out ptTan);
             LastPos += pos;
             if (LastPos >= 1.0 + _offset + pos)
@@ -364,8 +355,8 @@ namespace MakulaTest
             {
                 var line1 = new Line()
                 {
-                    Stroke = LineColor,
-                    Fill = LineColor,
+                    Stroke = SettingsViewModel.LinesBrush,
+                    Fill = SettingsViewModel.LinesBrush,
                     StrokeThickness = thickness,
                     X1 = x,
                     X2 = width + x,
@@ -378,9 +369,9 @@ namespace MakulaTest
                 //draw vertical Lines
                 var line2 = new Line()
                 {
-                    Stroke = LineColor,
+                    Stroke = SettingsViewModel.LinesBrush,
                     StrokeThickness = thickness,
-                    Fill = LineColor,
+                    Fill = SettingsViewModel.LinesBrush,
                     X1 = _centerX,
                     X2 = _centerX,
                     Y1 = y,
@@ -397,16 +388,17 @@ namespace MakulaTest
 
         private void clearCanvas()
         {
+            MyCanvas.Background = SettingsViewModel.BackgroundBrush;
             MyCanvas.Children.Clear();
             MyCanvas.Children.Add(MyRectangle);
-            MyRectangle.Fill = BackgroundColor;
+            MyRectangle.Fill = SettingsViewModel.BackgroundBrush;            
         }
 
         private void drawCenterCircle()
         {            
             Point pt = new Point(_centerX - CircleSize / 2.0, _centerY - CircleSize / 2.0);
 
-            var ellipse = drawCircle(pt, LineColor);                       
+            var ellipse = drawCircle(pt, SettingsViewModel.LinesBrush);                       
         }
 
         private void MyCanvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -443,7 +435,7 @@ namespace MakulaTest
         {
             if (e.Delta < 0 && LastPos > _offset)
             {
-                double pos = 2.0 / (double)SettingsModel.Steps;
+                double pos = 2.0 / (double)SettingsViewModel.Steps;
                 LastPos -= pos;
 
                 var lastPoint = _session.Points.Last();

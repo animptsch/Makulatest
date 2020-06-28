@@ -37,6 +37,7 @@ namespace MakulaTest
         private void BtnOk_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = true;
+            _vm.SaveSettings();
             this.Close();
         }
         

@@ -172,11 +172,7 @@ namespace MakulaTest
             SettingsViewModel vm = DiagnoseControl.SettingsViewModel;
             Settings settings = new Settings(vm);
 
-            bool? result = settings.ShowDialog();
-            if (result == true)
-            {
-                DiagnoseControl.SettingsModel = vm.Model;
-            }
+            bool? result = settings.ShowDialog();            
         }
 
         private void BtnScreenCalib_Click(object sender, RoutedEventArgs e)

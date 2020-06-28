@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MakulaTest.Model
 {
+    [Serializable]
     public class Settings
     {
         public int Steps { get; set; }
@@ -13,14 +15,11 @@ namespace MakulaTest.Model
         public int Duration { get; set; }
 
         public int DurationBackwards { get; set; }
-
-        public bool Backward { get; set; }
-
-        public bool RightEye { get; set; }
-
+     
         public string BackgroundColor { get; set; }
         public string LineColor { get; set; }
         public string BallColor { get; set; }
+        public string PolygonColor { get; set; }
 
         public Settings()
         {                        
@@ -30,7 +29,10 @@ namespace MakulaTest.Model
             LineColor = "#FFFFFF00";
             BackgroundColor = "#FFffffff";
             BallColor = "#ff000000";
+            PolygonColor = "#FFAADD00";
         }
+
+        
     }
 
 
