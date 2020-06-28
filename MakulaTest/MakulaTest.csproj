@@ -77,8 +77,8 @@
     <Compile Include="Model\SerializedWindowsState.cs" />
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Model\SettingsViewModel.cs" />
-    <Compile Include="Settings.xaml.cs">
-      <DependentUpon>Settings.xaml</DependentUpon>
+    <Compile Include="SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Page Include="AnalyseControl.xaml">
       <SubType>Designer</SubType>
@@ -110,7 +110,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Settings.xaml">
+    <Page Include="SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
