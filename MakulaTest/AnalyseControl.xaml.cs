@@ -33,8 +33,6 @@ namespace MakulaTest
   /// </summary>
   public partial class AnalyseControl : UserControl
   {
-    private int cursor_x;
-    private int cursor_y;
     private Stopwatch stopwatch;
     private DispatcherTimer _moveTimer;
     private Rectangle testRect;
@@ -49,7 +47,7 @@ namespace MakulaTest
     private bool _backward;
     private bool _rightEye;
     private double _minDistance; // point distance to center
-
+    private Draw _draw;
 
     public new MainWindow Parent { get; set; }
 
@@ -62,7 +60,6 @@ namespace MakulaTest
       data = new MakulaDataSetInternal();
       timeMeasure = false; // stop watch control 
       _showGrid = true; // toggle grid display
-
       InitializeComponent();
     }
 
@@ -70,6 +67,8 @@ namespace MakulaTest
 
     public void Start(string path)
     {
+      _draw = new Draw(MyCanvas);
+
       _path = path;
       //_rect = MyRectangle;
       _sequences = new List<int>();
@@ -105,14 +104,13 @@ namespace MakulaTest
 
     private void ReadSequences()
     {
-      var sequence_id_max = 0;
       var lastSequenceId = -1;
 
       StreamReader fs = new StreamReader(_path);
       string csv_line;
       char[] charSeparators = new char[] { ';' };
 
-      Point p = new Point() { X = 0.0, Y = 0.0 };
+      //Point p = new Point() { X = 0.0, Y = 0.0 };
 
       while ((csv_line = fs.ReadLine()) != null)
       {
@@ -296,22 +294,12 @@ namespace MakulaTest
     {
       TimeMeasureStart();
 
-
       //Console.WriteLine("*********** Analyse.MyCanvas.Width (new): " + windowSize.Width.ToString());
       //Console.WriteLine("*********** Analyse.MyCanvas.Height (new): " + windowSize.Height.ToString());
-
-      cursor_x = 30; // used for text lines
-      cursor_y = 50;
 
       //Console.WriteLine("MyCanvas.ActualHeight="+ MyCanvas.Width.ToString());
 
       MyCanvas.Children.Clear();
-
-      //DrawString("Die Analyse ist abgeschlossen.", 24);
-      //DrawHorizontalLine(320);
-      //DrawString("", 24);
-      //DrawString("Es ist alles in Ordnung.", 36);
-
 
       /*
       foreach (var point in data.Points)
@@ -320,25 +308,18 @@ namespace MakulaTest
       }
       */
 
-
       DrawTestfield(40, 40);
       DrawTestPolygon(40, 40);
       DrawMidPoint(40, 40);
-      if (_showGrid) DrawGrid(40, 40);
+      if (_showGrid) DrawGrid(40.0, 40.0);
 
       var a = CalculatePolygonArea();
       var pct1 = a * 100.0 / (Math.PI * 65 * 65);
       var pct2 = 100 - pct1;
 
       DrawLegend(80, 20, "Sehbereich:", pct2, "Ausfallbereich:", pct1);
-
-      cursor_y = 420;
-
+   
       //Console.WriteLine("Die Fläche des Polygons beträgt: " + a.ToString());
-
-
-      var y_off = 220;
-
       //DrawXAxis(20, 400, cursor_y + 150, 50);
       //DrawCheckMark(450, 100);
 
@@ -346,51 +327,44 @@ namespace MakulaTest
     }
 
 
-    private void DrawLegend(int xOffset, int yOffset, string text1, double pct2, string text2, double pct1)
+    private void DrawLegend(double xOffset, double yOffset, string text1, double pct2, string text2, double pct1)
     {
-
-      double radius = GetRadius(40, 40);
+      double radius = GetRadius(40.0, 40.0);
       Vector center = new Vector(radius, radius);
 
+      var x_pos = radius * 2.0 + xOffset;
+      var y_pos1 = center.Y + 30.0 - yOffset;
+      var y_pos2 = center.Y + 30.0 + yOffset;
 
-      var x_pos = Convert.ToInt32(radius) * 2 + xOffset;
-      var y_pos1 = Convert.ToInt32(center.Y + 30 - yOffset);
-      var y_pos2 = Convert.ToInt32(center.Y + 30 + yOffset);
+      _draw.DrawStringAtPos("Hubert Nimptsch", x_pos - 2, 40, 36, TextAlignment.Left);
+      _draw.DrawStringAtPos("Angerweg 2", x_pos - 2, 90, 16, TextAlignment.Left);
+      _draw.DrawStringAtPos("31028 Gronau/Leine", x_pos - 2,  120, 22, TextAlignment.Left);
+      _draw.DrawStringAtPos("Mobil: 01575 1086320", x_pos - 2, 150, 16, TextAlignment.Left);
 
-      DrawStringAtPos("Hubert Nimptsch", x_pos - 2, 40, 36, TextAlignment.Left);
-      DrawStringAtPos("Angerweg 2", x_pos - 2, 90, 16, TextAlignment.Left);
-      DrawStringAtPos("31028 Gronau/Leine", x_pos - 2,  120, 22, TextAlignment.Left);
-      DrawStringAtPos("Mobil: 01575 1086320", x_pos - 2, 150, 16, TextAlignment.Left);
+      _draw.DrawRectangle(x_pos, y_pos1, 40, 20, Colors.LightGreen);
+      _draw.DrawStringAtPos(text1, x_pos + 50, y_pos1, 16);
+      _draw.DrawStringAtPos(string.Format("{0:N2}%", pct2), x_pos + 160, y_pos1, 16);
 
+      _draw.DrawRectangle(x_pos, y_pos2, 40, 20, Colors.LightPink);
+      _draw.DrawStringAtPos(text2, x_pos + 50, y_pos2, 16);
+      _draw.DrawStringAtPos(string.Format("{0:N2}%", pct1), x_pos + 160, y_pos2, 16);
 
-      DrawRectangle(x_pos, y_pos1, 40, 20, Colors.LightGreen);
-      DrawStringAtPos(text1, x_pos + 50, y_pos1, 16);
-      DrawStringAtPos(string.Format("{0:N2}%", pct2), x_pos + 160, y_pos1, 16);
-
-      DrawRectangle(x_pos, y_pos2, 40, 20, Colors.LightPink);
-      DrawStringAtPos(text2, x_pos + 50, y_pos2, 16);
-      DrawStringAtPos(string.Format("{0:N2}%", pct1), x_pos + 160, y_pos2, 16);
-
-      DrawStringAtPos("minimaler Abstand:",          x_pos, y_pos2+30, 16);
-      DrawStringAtPos(string.Format("{0:N2} mm", _minDistance), x_pos + 160, y_pos2+30, 16);
-      
-
-
-
+      _draw.DrawStringAtPos("minimaler Abstand:",          x_pos, y_pos2+30, 16);
+      _draw.DrawStringAtPos(string.Format("{0:N2} mm", _minDistance), x_pos + 160, y_pos2+30, 16);
 
       var textBelowPicture = data.actualDate.ToString();
-      if (_backward) 
-        textBelowPicture += " von Außen nach Innen";
-      else
+      if (_backward)
         textBelowPicture += " von Innen nach Außen";
-
+      else
+        textBelowPicture += " von Außen nach Innen";
+     
       if (_rightEye) 
         textBelowPicture += "; rechtes Auge";
       else
         textBelowPicture += "; linkes Auge";
 
-      DrawStringAtPos(textBelowPicture, Convert.ToInt32(radius) + 40, Convert.ToInt32(radius) * 2 + 60, 16, TextAlignment.Center);
-      //DrawBlackLine(0, Convert.ToInt32(center.Y)+40,1000, Convert.ToInt32(center.Y)+40, 2);
+      _draw.DrawStringAtPos(textBelowPicture, Convert.ToInt32(radius) + 40, Convert.ToInt32(radius) * 2 + 60, 16, TextAlignment.Center);
+      //_draw.DrawBlackLine(0, Convert.ToInt32(center.Y)+40,1000, Convert.ToInt32(center.Y)+40, 2);
     }
 
 
@@ -415,8 +389,6 @@ namespace MakulaTest
     private void MyCanvas_Loaded(object sender, RoutedEventArgs e)
     {
       int i = 44;
-      //ReadData();
-      //RefreshScreen();
     }
 
     private void MyCanvas_VisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -466,13 +438,13 @@ namespace MakulaTest
 
     private void _timer_Tick(object sender, EventArgs e)
     {
-      int x=0;
-      int y=0;
+      double x=0;
+      double y =0;
 
       if (testRect != null)
       {
-        x = Convert.ToInt32(Canvas.GetLeft(testRect));
-        y = Convert.ToInt32(Canvas.GetTop(testRect));
+        x = Canvas.GetLeft(testRect);
+        y = Canvas.GetTop(testRect);
         MyCanvas.Children.Remove(testRect);
       }
 
@@ -481,8 +453,7 @@ namespace MakulaTest
       x++;
       y++;
     
-      testRect = DrawRectangle(x, y, 40, 20, Colors.LightGreen);
-
+      testRect = _draw.DrawRectangle(x, y, 40, 20, Colors.LightGreen);
       //Console.WriteLine("Timer Tick Event "+x.ToString()+","+y.ToString());
 
     }
@@ -523,30 +494,7 @@ namespace MakulaTest
         Console.WriteLine(what + " Ticks: " + stopwatch.ElapsedTicks + " Real time: " + stopwatch.ElapsedMilliseconds + " ms");
     }
 
-    private void DrawBlackLine(int px1, int py1, int px2, int py2, int thickness)
-    {
-      var line = new Line()
-      {
-        X1 = px1,
-        Y1 = py1,
-        X2 = px2,
-        Y2 = py2,
-        Stroke = new SolidColorBrush(Colors.Black),
-        StrokeThickness = thickness
-      };
-
-      MyCanvas.Children.Add(line);
-    }
-
-
-    private void DrawHorizontalLine(int size)
-    {
-      DrawBlackLine(cursor_x, cursor_y - 15, cursor_x + size, cursor_y - 15, 2);
-    }
-
-
-
-    private double GetRadius(int xOffset, int yOffset)
+    private double GetRadius(double xOffset, double yOffset)
     { double radius;
 
       if (windowSize.Width - xOffset > windowSize.Height - yOffset - 50)
@@ -562,30 +510,20 @@ namespace MakulaTest
 
     private void DrawMidPoint(int x, int y)
     {
-      double radius = GetRadius(40, 40);
+      double radius = GetRadius(40.0, 40.0);
       Vector center = new Vector(radius, radius);
 
-      var ellipse = new Ellipse()
-      {
-        Width = 15,
-        Height = 15,
-        Stroke = new SolidColorBrush(Colors.Black),
-        Fill = new SolidColorBrush(Colors.Black),
-      };
-
-      ellipse.SetValue(Canvas.LeftProperty, x+center.X - 7.5);
-      ellipse.SetValue(Canvas.TopProperty, y+center.Y - 7.5);
-      MyCanvas.Children.Add(ellipse);
+      _draw.DrawEllipse(x + center.X, y + center.Y, 15.0, 15.0, Colors.Black, Colors.Black);
     }
 
 
-    private void DrawTestfield(int x, int y)
+    private void DrawTestfield(double x, double y)
     {
-      int[,] intPoints = new int[20, 2];
+      double[,] Points = new double[20, 2];
 
       var minWinExtend = Math.Min(windowSize.Width, windowSize.Height);
 
-      double radius = GetRadius(40,40);
+      double radius = GetRadius(40.0,40.0);
       int steps = 20;
 
       Vector center = new Vector(radius, radius);
@@ -595,216 +533,70 @@ namespace MakulaTest
       {
         Vector start = GetStartingPoint(i, steps, center, radius);
 
-        intPoints[count, 0] = Convert.ToInt32(start.X);
-        intPoints[count, 1] = Convert.ToInt32(start.Y);
+        Points[count, 0] = start.X;
+        Points[count, 1] = start.Y;
         count++;
       }
 
-      DrawPolygon(intPoints, x, y, Colors.Black, Colors.LightGreen, 2, false);
+      _draw.DrawPolygon(Points, x, y, Colors.Black, Colors.LightGreen, 2, false);
     }
 
         
-    private void DrawTestPolygon(int x, int y)
+    private void DrawTestPolygon(double x, double y)
     {
 
-      double radius = GetRadius(40, 40);
+      double radius = GetRadius(40.0, 40.0);
       //double scaleFactor = radius * 2.0 / data.Points[0].X;
       double scaleFactor = radius / 65;
 
-      int[,] intPoints = new int[20, 2];
+      double[,] Points = new double[20, 2];
 
       int count = 0;
       foreach (var point in data.Points)
       {
-        intPoints[count, 0] = Convert.ToInt32(point.X * scaleFactor + radius);
-        intPoints[count, 1] = Convert.ToInt32(point.Y * scaleFactor + radius);
+        Points[count, 0] = point.X * scaleFactor + radius;
+        Points[count, 1] = point.Y * scaleFactor + radius;
         count++;
        }
 
-      DrawPolygon(intPoints, x, y, Colors.Black, Colors.LightPink, 2, false);
-
+      _draw.DrawPolygon(Points, x, y, Colors.Black, Colors.LightPink, 2, false);
     }
 
+ 
 
-    private void DrawPolygon(int[,] points, int x, int y, Color strokeColor, Color fillColor, int thickness)
-    {
-      DrawPolygon(points, x, y, strokeColor, fillColor, thickness, true);
-    }
-
-    private void DrawPolygon(int[,] points, int x, int y, Color strokeColor, Color fillColor, int thickness, bool translation)
-    {
-      // Create a blue and a black Brush  
-      SolidColorBrush strokeBrush = new SolidColorBrush();
-      strokeBrush.Color = strokeColor;
-      SolidColorBrush fillBrush = new SolidColorBrush();
-      fillBrush.Color = fillColor;
-      // Create a Polygon  
-      Polygon polygon = new Polygon();
-      polygon.Stroke = strokeBrush;
-      polygon.Fill = fillBrush;
-      polygon.StrokeThickness = thickness;
-      // Create a collection of points for a polygon 
-
-      var x_min = 0;
-      var y_min = 0;
-
-      PointCollection polygonPoints = new PointCollection();
-      if (translation)
-      { x_min = int.MaxValue;
-        y_min = int.MaxValue;
-
-        for (int i = 0; i < points.Length / 2; i++)
-        {
-          x_min = Math.Min(y_min, points[i, 0]);
-          y_min = Math.Min(y_min, points[i, 1]);
-        }
-      }
-
-
-      for (int i = 0; i < points.Length / 2; i++)
-      {
-        System.Windows.Point Point = new System.Windows.Point(points[i, 0] - x_min + x, points[i, 1] - y_min + y);
-        polygonPoints.Add(Point);
-        //Console.WriteLine(i.ToString() + "  done " + points[i, 0].ToString() + "," + points[i, 1].ToString());
-      }
-
-      // Set Polygon.Points properties  
-      polygon.Points = polygonPoints;
-
-      // Add Polygon to the page 
-
-      MyCanvas.Children.Add(polygon);
-    }
-
-
-    private Rectangle DrawRectangle(int x, int y, int x_size, int y_size, Color fillColor)
-    {
-      return DrawRectangle(x, y, x_size, y_size, fillColor, 2);
-    }
-
-    private Rectangle DrawRectangle(int x, int y, int x_size, int y_size, Color fillColor, int thickness)
-    {
-      var MyStroke = new SolidColorBrush(fillColor);
-     
-      var myRect = new Rectangle
-      { Stroke = System.Windows.Media.Brushes.Black,
-        StrokeThickness = thickness,
-        Fill = MyStroke,
-        HorizontalAlignment = HorizontalAlignment.Left,
-        VerticalAlignment = VerticalAlignment.Center,
-        Width = x_size,
-        Height = y_size
-      };
-      MyCanvas.Children.Add(myRect);
-      Canvas.SetLeft(myRect, x);
-      Canvas.SetTop(myRect, y);
-      return myRect;
-    }
-
-
-
-    private void DrawGrid(int x, int y)
+    private void DrawGrid(double x, double y)
     {
       int LineNumber = 20;
 
       double radius = GetRadius(x, y);
-      int width = Convert.ToInt32(radius);
-      int height = Convert.ToInt32(radius);
-
-   
-   
-      int centerIndex = LineNumber / 2;
-
+      double width = radius;
+      double height = radius;
+  
+      double centerIndex = Math.Floor(LineNumber / 2.0);
 
       double deltaHorz = width*2.0 / LineNumber;
       double deltaVert = height*2.0 / LineNumber;
 
-      int xLoop = x + width - Convert.ToInt32(centerIndex * deltaHorz);
-      int yLoop = y + height - Convert.ToInt32(centerIndex * deltaVert);
+      double xLoop = x + width - centerIndex * deltaHorz;
+      double yLoop = y + height -centerIndex * deltaVert;
 
-      int lineHeight = yLoop, lineWidth = xLoop;
+      double lineHeight = yLoop, lineWidth = xLoop;
 
       //draw frame
-      DrawRectangle(x, y, width*2, height*2, Colors.Transparent,1);
+      _draw.DrawRectangle(x, y, width * 2, height * 2, Colors.Transparent, 1);
 
       //draw Lines
       for (int i = 0; i < LineNumber; i++)
       {
-        int thickness = 1;
-        if (centerIndex == i) thickness = 3;
+        double thickness = 1.0;
+        if (centerIndex == i) thickness = 3.0;
 
-        DrawBlackLine(x, Convert.ToInt32(yLoop + i * deltaVert), x + width * 2, Convert.ToInt32(yLoop + i * deltaVert), thickness);
-        DrawBlackLine(Convert.ToInt32(xLoop + i * deltaHorz), y, Convert.ToInt32(xLoop + i * deltaHorz), y + height * 2, thickness);
+        _draw.DrawBlackLine(x, yLoop + i * deltaVert, x + width * 2, yLoop + i * deltaVert, thickness);
+        _draw.DrawBlackLine(xLoop + i * deltaHorz, y, xLoop + i * deltaHorz, y + height * 2, thickness);
       }
 
     }
 
-
-    private void DrawCheckMark(int x, int y)
-    {
-      int[,] points = { { 7, 83 }, { 20, 73 }, { 26, 74 }, { 41, 98 }, { 124, 14 }, { 128, 18 }, { 52, 116 }, { 34, 129 } };
-
-      DrawPolygon(points, x, y, Colors.Black, Colors.LightGreen, 2);
-
-    }
-
-    private void DrawArrowTip(int x, int y, int x_size, int y_size)
-    {
-      int[,] points = { { 0, 0 }, { 0, y_size }, { x_size, y_size / 2 } };
-
-      DrawPolygon(points, x, y, Colors.Black, Colors.Black, 2);
-
-    }
-
-    private void DrawStringAtPos(string text, int x, int y, int size, TextAlignment align)
-    {
-      TextBlock txt1 = new TextBlock
-      { //TextAlignment = TextAlignment.Center,
-        FontSize = size,
-        Text = text,
-        //FontWeight = FontWeights.UltraBold
-      };
-
-      if (align == TextAlignment.Center)
-      {
-        var sz = MeasureText(text, txt1.FontFamily, txt1.FontStyle, txt1.FontWeight, txt1.FontStretch, txt1.FontSize);
-        Canvas.SetLeft(txt1, x - sz.Width / 2);
-        //Console.WriteLine(" Text: " + text + " Width: " + sz.Width.ToString());
-      }
-      else
-        Canvas.SetLeft(txt1, x);
-
-      Canvas.SetTop(txt1, y);
-    
-      MyCanvas.Children.Add(txt1);
-    }
-
-
-    private void DrawStringAtPos(string text, int x, int y, int size)
-    {
-      DrawStringAtPos(text, x,y, size, TextAlignment.Left);
-    }
-
-    private void DrawString(string text, int size)
-    {
-      DrawStringAtPos(text, cursor_x, cursor_y, size);
-      cursor_y += size * 2;
-    }
-
-
-    private void DrawXAxis(int x1, int x2, int y, int step)
-    {
-      const int size = 10;
-      DrawBlackLine(x1, y, x2, y, 2);
-      for (int i = x1 + step; i < x2; i += step)
-      {
-        DrawBlackLine(i, y - size / 2, i, y + size / 2, 2);
-        DrawStringAtPos(i.ToString(), i, y + 5, 14, TextAlignment.Center);
-
-      }
-      DrawArrowTip(x2, y - size / 2, 20, size);
-
-    }
 
     private void ReadData()
     {
@@ -1044,58 +836,6 @@ namespace MakulaTest
       */
 
 
-
-
-
-
-  /// <summary>
-  /// Get the required height and width of the specified text. Uses Glyph's
-  /// </summary>
-  public static Size MeasureText(string text, FontFamily fontFamily, FontStyle fontStyle, FontWeight fontWeight, FontStretch fontStretch, double fontSize)
-    {
-      Typeface typeface = new Typeface(fontFamily, fontStyle, fontWeight, fontStretch);
-      GlyphTypeface glyphTypeface;
-
-      if (!typeface.TryGetGlyphTypeface(out glyphTypeface))
-      {
-        return MeasureTextSize(text, fontFamily, fontStyle, fontWeight, fontStretch, fontSize);
-      }
-
-      double totalWidth = 0;
-      double height = 0;
-
-      for (int n = 0; n < text.Length; n++)
-      {
-        ushort glyphIndex = glyphTypeface.CharacterToGlyphMap[text[n]];
-
-        double width = glyphTypeface.AdvanceWidths[glyphIndex] * fontSize;
-
-        double glyphHeight = glyphTypeface.AdvanceHeights[glyphIndex] * fontSize;
-
-        if (glyphHeight > height)
-        {
-          height = glyphHeight;
-        }
-
-        totalWidth += width;
-      }
-
-      return new Size(totalWidth, height);
-    }
-
-    /// <summary>
-    /// Get the required height and width of the specified text. Uses FormattedText
-    /// </summary>
-    public static Size MeasureTextSize(string text, FontFamily fontFamily, FontStyle fontStyle, FontWeight fontWeight, FontStretch fontStretch, double fontSize)
-    {
-      FormattedText ft = new FormattedText(text,
-                                           CultureInfo.CurrentCulture,
-                                           FlowDirection.LeftToRight,
-                                           new Typeface(fontFamily, fontStyle, fontWeight, fontStretch),
-                                           fontSize,
-                                           Brushes.Black);
-      return new Size(ft.Width, ft.Height);
-    }
 
     
     }
