@@ -31,6 +31,7 @@ namespace MakulaTest
         private double _centerY;
         private Storyboard _sbTranslate;
         private MakulaSession _session;
+        private Draw _draw;
 
 
         public MacularDiagnosisControl()
@@ -43,6 +44,7 @@ namespace MakulaTest
             SettingsViewModel.IsBackwardChecked = true;
 
             SettingsViewModel.IsMeasureStarted = false;
+            _draw = new Draw(MyCanvas);
         }
 
         public void SetSize(double width, double height)
@@ -73,7 +75,6 @@ namespace MakulaTest
 
         public const int CircleSize = 8;
         
-        
         public Model.SettingsViewModel SettingsViewModel { get; set; }
 
         public MainWindow Parent { get; set; }
@@ -83,7 +84,6 @@ namespace MakulaTest
         {
             if (!SettingsViewModel.IsMeasureStarted)
             {
-
                 MyCanvas.Background = SettingsViewModel.BackgroundBrush;                
                 
                 drawLines();
@@ -190,10 +190,8 @@ namespace MakulaTest
                 begin = new Point(_centerX, _centerY);
                 durationInSeconds = SettingsViewModel.DurationBackwards;
             }
-            
-            Point pt = new Point(begin.X - CircleSize / 2, begin.Y - CircleSize / 2);
 
-            var ellipse = drawCircle(pt, SettingsViewModel.MovedBallBrush);            
+            var ellipse = _draw.DrawCircle(begin.X, begin.Y, CircleSize, SettingsViewModel.MovedBallBrush);
 
             _sbTranslate = new Storyboard();
             var daTranslateX = new DoubleAnimation();
@@ -302,22 +300,7 @@ namespace MakulaTest
             _session.Points.Clear();
         }
 
-        private Ellipse drawCircle(Point pt, Brush color)
-        {
-            var ellipse = new Ellipse()
-            {
-                Width = CircleSize,
-                Height = CircleSize,
-                Stroke = color,
-                Fill = color
-            };
-
-            ellipse.SetValue(Canvas.LeftProperty, pt.X);
-            ellipse.SetValue(Canvas.TopProperty, pt.Y);
-            MyCanvas.Children.Add(ellipse);
-
-            return ellipse;
-        }
+    
 
         private Point getPointInOuterCircle()
         {
@@ -347,38 +330,15 @@ namespace MakulaTest
             _centerY = height / 2.0 + y;
 
             clearCanvas();
-
-            //draw horizontal Line
-            double thickness = 3;
-
+           
             if (isDrawAmselGrid)
-            {
-                var line1 = new Line()
-                {
-                    Stroke = SettingsViewModel.LinesBrush,
-                    Fill = SettingsViewModel.LinesBrush,
-                    StrokeThickness = thickness,
-                    X1 = x,
-                    X2 = width + x,
-                    Y1 = _centerY,
-                    Y2 = _centerY
-                };
+            {   double thickness = 3;
 
-                MyCanvas.Children.Add(line1);
+                //draw horizontal Line
+                _draw.DrawLine(x, _centerY, width + x, _centerY, thickness, SettingsViewModel.LinesBrush);
 
-                //draw vertical Lines
-                var line2 = new Line()
-                {
-                    Stroke = SettingsViewModel.LinesBrush,
-                    StrokeThickness = thickness,
-                    Fill = SettingsViewModel.LinesBrush,
-                    X1 = _centerX,
-                    X2 = _centerX,
-                    Y1 = y,
-                    Y2 = height + y
-                };
-
-                MyCanvas.Children.Add(line2);
+                //draw vertical Line
+                _draw.DrawLine(_centerX, y, _centerX, height + y, thickness, SettingsViewModel.LinesBrush);
 
                 EllipseGeometry geo = new EllipseGeometry(new Point(_centerX, _centerY), width / 2 + 30, height / 2 + 30);
                 _pathGeo = geo.GetFlattenedPathGeometry();
@@ -396,9 +356,7 @@ namespace MakulaTest
 
         private void drawCenterCircle()
         {            
-            Point pt = new Point(_centerX - CircleSize / 2.0, _centerY - CircleSize / 2.0);
-
-            var ellipse = drawCircle(pt, SettingsViewModel.LinesBrush);                       
+            _draw.DrawCircle(_centerX, _centerY, CircleSize, SettingsViewModel.LinesBrush);
         }
 
         private void MyCanvas_MouseDown(object sender, MouseButtonEventArgs e)
