@@ -65,7 +65,7 @@
         <Image Source="Images/nextday.png" />
       </Button>
       
-      <Button x:Name="BtnDaten" ToolTip="Daten bearbeiten" 
+      <Button x:Name="BtnDaten" ToolTip="Datensatz löschen" 
               Click="BtnDaten_Click" HorizontalAlignment="Right"
               DockPanel.Dock="Bottom">
         <Image Source="Images/daten.png" />
