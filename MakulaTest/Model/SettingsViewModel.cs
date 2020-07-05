@@ -14,10 +14,24 @@ namespace MakulaTest.Model
             get { return Model.Duration; }
             set
             {
-                Model.Duration = value;
+                Model.Duration = value;                
                 OnPropertyChanged(nameof(Duration));
+                UpdateSelectedDuration();
             }
         }
+
+        private void UpdateSelectedDuration()
+        {
+            int selectedDuration = IsBackwardChecked ? DurationBackwards : Duration;
+
+            if (selectedDuration != SelectedDuration)
+            {
+                SelectedDuration = selectedDuration;
+                OnPropertyChanged(nameof(SelectedDuration));
+            }
+        }
+
+        public int SelectedDuration { get; set; }
 
         private BrushConverter _brushConv;
 
@@ -27,9 +41,9 @@ namespace MakulaTest.Model
             set
             {
 
-                Model.DurationBackwards = value;
-               OnPropertyChanged(nameof(DurationBackwards));
-
+                Model.DurationBackwards = value;                
+                OnPropertyChanged(nameof(DurationBackwards));
+                UpdateSelectedDuration();
             }
         }
 
@@ -135,6 +149,7 @@ namespace MakulaTest.Model
                 _isBackwardChecked = value;
                 _isForwardChecked = value == false;                
                 OnPropertyChanged(nameof(IsBackwardChecked));
+                UpdateSelectedDuration();
             }
         }
 
