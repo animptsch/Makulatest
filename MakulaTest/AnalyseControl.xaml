@@ -68,7 +68,7 @@
       <Button x:Name="BtnDaten" ToolTip="Datensatz löschen" 
               Click="BtnDaten_Click" HorizontalAlignment="Right"
               DockPanel.Dock="Bottom">
-        <Image Source="Images/daten.png" />
+        <Image Source="Images/delrecord.png" />
       </Button>
       <Button x:Name="BtnPrint" ToolTip="Drucken des Fensters" 
               Click="BtnPrint_Click" HorizontalAlignment="Right"
