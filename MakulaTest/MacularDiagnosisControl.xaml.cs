@@ -93,12 +93,12 @@ namespace MakulaTest
                 _session = new MakulaSession();
 
                 _removeTimer = new DispatcherTimer();
-                _removeTimer.Interval = new TimeSpan(0, 0, SettingsViewModel.Duration);
+                _removeTimer.Interval = new TimeSpan(0, 0, SettingsViewModel.SelectedDuration);
                 _removeTimer.Tick += new EventHandler(_removeTimer_Tick);
                 _removeTimer.Start();
 
                 _moveTimer = new DispatcherTimer();
-                _moveTimer.Interval = new TimeSpan(0, 0, SettingsViewModel.Duration + 2);
+                _moveTimer.Interval = new TimeSpan(0, 0, SettingsViewModel.SelectedDuration + 2);
                 _moveTimer.Tick += new EventHandler(_timer_Tick);
                 _moveTimer.Start();
                 LastPos = _offset;
@@ -179,16 +179,18 @@ namespace MakulaTest
         {
             int durationInSeconds;
             Point end;
+
+            durationInSeconds = SettingsViewModel.SelectedDuration;
+
+
             if (!backward)
             {
-                end = new Point(_centerX, _centerY);
-                durationInSeconds = SettingsViewModel.Duration;
+                end = new Point(_centerX, _centerY);                
             }
             else
             {
                 end = begin;
-                begin = new Point(_centerX, _centerY);
-                durationInSeconds = SettingsViewModel.DurationBackwards;
+                begin = new Point(_centerX, _centerY);                
             }
 
             var ellipse = _draw.DrawCircle(begin.X, begin.Y, CircleSize, SettingsViewModel.MovedBallBrush);
