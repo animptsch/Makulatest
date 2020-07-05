@@ -63,9 +63,7 @@ namespace MakulaTest
       InitializeComponent();
     }
 
-
-
-    public void Start(string path)
+        public void Start(string path)
     {
       _draw = new Draw(MyCanvas);
 
@@ -89,6 +87,7 @@ namespace MakulaTest
       data.actualSequence = _sequences.Count - 1;
 
       ReadData();
+      
 
       /*
       _moveTimer = new DispatcherTimer();
@@ -562,7 +561,20 @@ namespace MakulaTest
       _draw.DrawPolygon(Points, x, y, Colors.Black, Colors.LightPink, 2, false);
     }
 
- 
+
+        protected override Size ArrangeOverride(Size arrangeBounds)
+        {
+            MyCanvas.Measure(arrangeBounds);
+
+            MyCanvas.Arrange(new Rect(arrangeBounds));
+
+            windowSize = MyCanvas.RenderSize;            
+
+            RefreshScreen();
+
+            return base.ArrangeOverride(arrangeBounds);
+        }
+
 
     private void DrawGrid(double x, double y)
     {
