@@ -104,6 +104,7 @@ namespace MakulaTest
 
     private void ReadSequences()
     {
+      _sequences = new List<int>();
       var lastSequenceId = -1;
 
       StreamReader fs = new StreamReader(_path);
@@ -115,16 +116,17 @@ namespace MakulaTest
       while ((csv_line = fs.ReadLine()) != null)
       {
         var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
-
-        try
+        if (elements.Length < 8 || elements[7] == "True")
         {
-          var sequence_id = int.Parse(elements[0]);
-          if (sequence_id != lastSequenceId)
-            _sequences.Add(sequence_id);
-          lastSequenceId = sequence_id;
-        }
-        catch (FormatException e)
-        {
+          try
+          {
+            var sequence_id = int.Parse(elements[0]);
+            if (sequence_id != lastSequenceId)
+              _sequences.Add(sequence_id);
+            lastSequenceId = sequence_id;
+          }
+          catch (FormatException e)
+          { }
         }
       }
       fs.Close();
@@ -173,13 +175,11 @@ namespace MakulaTest
         _rightEye = false;
     }
 
-
-
     private void BtnDaten_Click(object sender, RoutedEventArgs e)
-    {
-      //Console.WriteLine("btnBack_Click");
-      Parent.AnalyseStop();
-
+    { MakulaDataSet mds = new MakulaDataSet(_path);
+      mds.DeleteRecord(_sequences[data.actualSequence]);
+      ReadSequences();
+      GoBackInTime();
     }
 
     private void BtnBack_Click(object sender, RoutedEventArgs e)
@@ -616,6 +616,7 @@ namespace MakulaTest
       while ((csv_line = fs.ReadLine()) != null)
       {
         var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
+            
 
         DateTime Date;
      
