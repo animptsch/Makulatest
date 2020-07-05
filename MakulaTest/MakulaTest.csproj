@@ -162,5 +162,8 @@
   <ItemGroup>
     <Resource Include="Custom-Icon-Design-Mono-General-4-Eye.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\delrecord.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
