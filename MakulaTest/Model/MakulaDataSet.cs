@@ -27,6 +27,8 @@ namespace MakulaTest.Model
 
       FileStream fs = new FileStream(pathInternal, FileMode.Append);
 
+
+
       foreach (var point in Points)
       {
         var realPoint = point;
@@ -36,12 +38,53 @@ namespace MakulaTest.Model
 
         realPoint.X = relX * 130.0 / MyRectangle.Width;
         realPoint.Y = relY * 130.0 / MyRectangle.Height;
-      
+
         WriteCSV(fs, maxSequenceId + 1, entryId, day, backward, rightEye, realPoint);
         entryId++;
       }
 
       fs.Close();
+    }
+    public void DeleteRecord(int sequence)
+    {
+      List<string> fileContent = new List<string>();
+
+      StreamReader fs = new StreamReader(pathInternal);
+      string csv_line;
+      char[] charSeparators = new char[] { ';' };
+
+      while ((csv_line = fs.ReadLine()) != null)
+      {
+        csv_line += ";True"; // add ActiveFlag to ensure to have at least 8 elements
+        var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
+          
+        DateTime Date;
+
+        try
+        {
+          if (int.Parse(elements[0]) == sequence) elements[7] = "False";
+        }
+        catch (FormatException e)
+        { }
+
+        csv_line = elements[0] + ";" + elements[1] + ";" + elements[2] + ";" +
+                 elements[3] + ";" + elements[4] + ";" +
+                 elements[5] + ";" + elements[6] + ";" + elements[7] + "\n";
+
+        fileContent.Add(csv_line);
+      }
+      fs.Close();
+
+      //  FileStream fs2 = new FileStream(pathInternal, FileMode.Create);
+      FileStream fs2 = new FileStream(pathInternal, FileMode.Create);
+     
+      foreach (var r in fileContent)
+      {
+        byte[] bytes = Encoding.UTF8.GetBytes(r);
+        fs2.Write(bytes, 0, bytes.Length);
+      }
+
+      fs2.Close();
     }
 
     private int GetMaxSequenceId()
