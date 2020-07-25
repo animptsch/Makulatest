@@ -22,14 +22,15 @@
 
         <local:MacularDiagnosisControl x:Name="DiagnoseControl" Visibility="Collapsed" />
         <local:AnalyseControl x:Name="MyAnalyse" Visibility="Collapsed" />
-        
-        <StackPanel Margin="10" x:Name="MainWindowToolbar" Orientation="Horizontal" Grid.Row="1" >
+
+        <WrapPanel Margin="10" x:Name="MainWindowToolbar" Orientation="Horizontal" Grid.Row="1" >
             <Button x:Name="btnAnalyse" Content="Analyse" Click="BtnAnalyse_Click" />
             <Button x:Name="btnDiagnose" Content="Diagnose" Click="BtnDiagnose_Click"  />
             <Button x:Name="btnSettingSize" Content="Größe speichern" Click="BtnSettingSize_Click"/>
             <Button x:Name="btnStartMacularDiagnosis" Content="Start"  Click="BtnStartMacularDiagnosis_Click"/>
             <Button x:Name="btnSettings" Content="Einstellungen" Click="BtnSettings_Click"/>
             <Button x:Name="btnScreenCalib" Content="Kalibrieren" Click="BtnScreenCalib_Click"/>
-        </StackPanel>
+            <Button x:Name="btnSendMail" Content="Mail senden" Click="btnSendMail_Click"/>
+        </WrapPanel>
     </Grid>
 </Window>

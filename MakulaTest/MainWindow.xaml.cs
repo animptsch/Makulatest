@@ -188,5 +188,10 @@ namespace MakulaTest
 
         private double _canvasHeight;
         private double _canvasWidth;
+
+        private void btnSendMail_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

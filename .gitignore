@@ -12,6 +12,8 @@
 
 *.exe
 
+*.msi
+
 *.pdb
 
 *.dll.config
