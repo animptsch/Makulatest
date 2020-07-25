@@ -70,8 +70,8 @@ namespace MakulaTest
       _path = path;
       //_rect = MyRectangle;
       _sequences = new List<int>();
-
-      var steps = 12;
+/*********************************
+      var steps = 17;
       var radius = 100;
       Vector center = new Vector(radius, radius);
 
@@ -81,6 +81,7 @@ namespace MakulaTest
       { var start = GetStartingPoint(entry_id, steps, center, radius);
         Console.WriteLine(String.Format("{0,8:D} {1,8:N2} {2,8:N2}", entry_id, Math.Round(start.X, 2), Math.Round(start.Y, 2)));
       }
+***************************************/
 
       //path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MakulaTestData.csv");
       ReadSequences();
@@ -518,13 +519,14 @@ namespace MakulaTest
 
     private void DrawTestfield(double x, double y)
     {
-      double[,] Points = new double[20, 2];
+      int steps = data.Points.Count;
+      double[,] Points = new double[steps, 2];
 
       var minWinExtend = Math.Min(windowSize.Width, windowSize.Height);
 
       double radius = GetRadius(40.0,40.0);
-      int steps = 20;
-
+    
+   
       Vector center = new Vector(radius, radius);
 
       int count = 0;
@@ -534,6 +536,7 @@ namespace MakulaTest
 
         Points[count, 0] = start.X;
         Points[count, 1] = start.Y;
+        //Console.WriteLine(count.ToString() + ". TestPoints=" + Points[count, 0].ToString() + "," + Points[count, 1].ToString());
         count++;
       }
 
@@ -548,13 +551,15 @@ namespace MakulaTest
       //double scaleFactor = radius * 2.0 / data.Points[0].X;
       double scaleFactor = radius / 65;
 
-      double[,] Points = new double[20, 2];
+      int steps = data.Points.Count;
+      double[,] Points = new double[steps, 2];
 
       int count = 0;
       foreach (var point in data.Points)
       {
         Points[count, 0] = point.X * scaleFactor + radius;
         Points[count, 1] = point.Y * scaleFactor + radius;
+        //Console.WriteLine(count.ToString() + ". Points=" + Points[count, 0].ToString() +"," + Points[count, 1].ToString());
         count++;
        }
 
