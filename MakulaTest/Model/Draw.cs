@@ -100,13 +100,12 @@ namespace MakulaTest.Model
 
         for (int i = 0; i < points.Length / 2; i++)
         {
-          x_min = Math.Min(y_min, points[i, 0]);
+          x_min = Math.Min(x_min, points[i, 0]);
           y_min = Math.Min(y_min, points[i, 1]);
         }
       }
 
-
-      for (int i = 0; i < points.Length / 2; i++)
+      for (int i = 0; i < points.Length / 2; i++) // points length is doubled because one element has two parts (x,y)
       {
         System.Windows.Point Point = new System.Windows.Point(points[i, 0] - x_min + x, points[i, 1] - y_min + y);
         polygonPoints.Add(Point);
