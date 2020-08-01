@@ -316,15 +316,50 @@ namespace MakulaTest
             var rnd = new Random();
 
             double pos = 1.0 / (double)SettingsViewModel.Steps;
-            _pathGeo.GetPointAtFractionLength(LastPos, out pt, out ptTan);
+            _pathGeo.GetPointAtFractionLength(CorrectedPosition(LastPos), out pt, out ptTan);
             LastPos += pos;
-            if (LastPos >= 1.0 + _offset + pos)
+            if (LastPos >= 1.0 + _offset)
                 StopDiagnosis();
+
+
 
             return pt;
         }
 
-        private void drawLines(bool isDrawAmselGrid = true)
+
+    private double CorrectedPosition(double LastPos)
+    {
+      double tolerance = 0.03;
+      //string outString= "Korrektur für " + LastPos.ToString();
+
+      while (LastPos > 1.0) LastPos -= tolerance;
+
+      LastPos = CheckAndCorrect(LastPos, 0.00, tolerance);
+      LastPos = CheckAndCorrect(LastPos, 0.25, tolerance);
+      LastPos = CheckAndCorrect(LastPos, 0.50, tolerance);
+      LastPos = CheckAndCorrect(LastPos, 0.75, tolerance);
+      LastPos = CheckAndCorrect(LastPos, 1.00, tolerance);
+
+      //Console.WriteLine(outString + " auf " +LastPos.ToString());
+
+      return LastPos;
+
+    }
+
+    private double CheckAndCorrect(double pos, double boundery, double tolerance)
+    {
+      if (Math.Abs(pos - boundery) < tolerance)
+      {
+        if (Math.Abs(pos - boundery - tolerance) >= tolerance || Math.Abs(pos - tolerance) > 1.0)
+          return Math.Abs(pos - tolerance);
+        else
+          return Math.Abs(pos + tolerance);
+      }
+      return pos;
+    }
+
+
+    private void drawLines(bool isDrawAmselGrid = true)
         {
             double width = MyRectangle.Width;
             double height = MyRectangle.Height;
