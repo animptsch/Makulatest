@@ -25,6 +25,9 @@ namespace MakulaTest
     public List<Point> Points;
     public int actualSequence;
     public DateTime actualDate;
+    public int record_no;
+    public bool deleted;
+
   }
 
 
@@ -63,7 +66,7 @@ namespace MakulaTest
       InitializeComponent();
     }
 
-        public void Start(string path)
+    public void Start(string path)
     {
       _draw = new Draw(MyCanvas);
 
@@ -88,7 +91,10 @@ namespace MakulaTest
       data.actualSequence = _sequences.Count - 1;
 
       ReadData();
-      
+
+
+      //TestOffsets();
+
 
       /*
       _moveTimer = new DispatcherTimer();
@@ -106,30 +112,32 @@ namespace MakulaTest
     {
       _sequences = new List<int>();
       var lastSequenceId = -1;
-
-      StreamReader fs = new StreamReader(_path);
-      string csv_line;
-      char[] charSeparators = new char[] { ';' };
-
-      //Point p = new Point() { X = 0.0, Y = 0.0 };
-
-      while ((csv_line = fs.ReadLine()) != null)
+      if (File.Exists(_path))
       {
-        var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
-        if (elements.Length < 8 || elements[7] == "True")
+        StreamReader fs = new StreamReader(_path);
+        string csv_line;
+        char[] charSeparators = new char[] { ';' };
+
+        //Point p = new Point() { X = 0.0, Y = 0.0 };
+
+        while ((csv_line = fs.ReadLine()) != null)
         {
-          try
+          var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
+          if (elements.Length < 8 || elements[7] == "True" || elements[7] == "False")
           {
-            var sequence_id = int.Parse(elements[0]);
-            if (sequence_id != lastSequenceId)
-              _sequences.Add(sequence_id);
-            lastSequenceId = sequence_id;
+            try
+            {
+              var sequence_id = int.Parse(elements[0]);
+              if (sequence_id != lastSequenceId)
+                _sequences.Add(sequence_id);
+              lastSequenceId = sequence_id;
+            }
+            catch (FormatException e)
+            { }
           }
-          catch (FormatException e)
-          { }
         }
+        fs.Close();
       }
-      fs.Close();
     }
 
 
@@ -362,6 +370,10 @@ namespace MakulaTest
         textBelowPicture += "; rechtes Auge";
       else
         textBelowPicture += "; linkes Auge";
+
+      #if DEBUG
+        textBelowPicture += " ("+ data.record_no + ", "+ data.deleted + ")";
+      #endif
 
       _draw.DrawStringAtPos(textBelowPicture, Convert.ToInt32(radius) + 40, Convert.ToInt32(radius) * 2 + 60, 16, TextAlignment.Center);
       //_draw.DrawBlackLine(0, Convert.ToInt32(center.Y)+40,1000, Convert.ToInt32(center.Y)+40, 2);
@@ -618,58 +630,66 @@ namespace MakulaTest
     private void ReadData()
     {
       data.Points = new List<Point>();
-  
-      var count = 0;
-      int entry_id;
 
-      StreamReader fs = new StreamReader(_path);
-      string csv_line;
-      char[] charSeparators = new char[] { ';' };
-
-      Point p = new Point() { X = 0.0, Y = 0.0 };
-
-      _minDistance = 20000.0;
-
-      while ((csv_line = fs.ReadLine()) != null)
+      if (File.Exists(_path))
       {
-        var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
-            
+        var count = 0;
+        int entry_id;
 
-        DateTime Date;
-     
-        try
+        StreamReader fs = new StreamReader(_path);
+        string csv_line;
+        char[] charSeparators = new char[] { ';' };
+
+        Point p = new Point() { X = 0.0, Y = 0.0 };
+
+        _minDistance = 20000.0;
+
+        while ((csv_line = fs.ReadLine()) != null)
         {
-          if (int.Parse(elements[0]) == _sequences[data.actualSequence])
+          var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
+
+
+          DateTime Date;
+
+          try
           {
-            entry_id = int.Parse(elements[1]);
-            Date = DateTime.Parse(elements[2]);
-            _backward=Boolean.Parse(elements[3]);
-            _rightEye= Boolean.Parse(elements[4]);
+            if (int.Parse(elements[0]) == _sequences[data.actualSequence])
+            {
+              entry_id = int.Parse(elements[1]);
+              Date = DateTime.Parse(elements[2]);
+              _backward = Boolean.Parse(elements[3]);
+              _rightEye = Boolean.Parse(elements[4]);
 
-            p.X = double.Parse(elements[5]);
-            p.Y = double.Parse(elements[6]);
+              p.X = double.Parse(elements[5]);
+              p.Y = double.Parse(elements[6]);
 
-            data.actualDate = Date;
-            data.Points.Add(p);
+              data.actualDate = Date;
+              data.Points.Add(p);
 
-            var d = Math.Sqrt(p.X * p.X + p.Y * p.Y);
-            if (d < _minDistance) _minDistance = d;
+              data.record_no = int.Parse(elements[0]);
+              if (elements.Length < 8)
+                data.deleted = false;
+              else
+                data.deleted = Boolean.Parse(elements[7]);
 
-            // if (count < 20)
-            //   Console.WriteLine(count.ToString() + ". Date="+  Date.ToString()+" X = " + p.X.ToString() + " Y= " + p.Y.ToString());
+              var d = Math.Sqrt(p.X * p.X + p.Y * p.Y);
+              if (d < _minDistance) _minDistance = d;
+
+              // if (count < 20)
+              //   Console.WriteLine(count.ToString() + ". Date="+  Date.ToString()+" X = " + p.X.ToString() + " Y= " + p.Y.ToString());
+            }
           }
+          catch (FormatException e)
+          {
+            //Date = DateTime.Now;
+            //X = 0;
+            //Y = 0;
+          }
+          count++;
         }
-        catch (FormatException e)
-        {
-          //Date = DateTime.Now;
-          //X = 0;
-          //Y = 0;
-        }
-        count++;
+
+        fs.Close();
       }
-
-      fs.Close();
-
     }
 
 
@@ -832,6 +852,49 @@ namespace MakulaTest
     }
 
 
+    private void TestOffsets()
+    {
+   
+      for (int schritte = 2; schritte < 21; schritte++)
+      {
+        double max_d = -1.0;
+        double best_q = -1.0;
+
+        for (double q = 0.0; q < 0.2; q += 0.000001)
+        //double q = 1.0/15.0/2.0;
+        {
+          double min_d = 20000.0;
+
+          for (int i = 0; i < schritte; i++)
+          {
+            double value = q + 1.0 * i / schritte;
+
+            if (Math.Abs(value) < min_d) min_d = Math.Abs(value);
+            if (Math.Abs(value - 0.25) < min_d) min_d = Math.Abs(value - 0.25);
+            if (Math.Abs(value - 0.50) < min_d) min_d = Math.Abs(value - 0.50);
+            if (Math.Abs(value - 0.75) < min_d) min_d = Math.Abs(value - 0.75);
+            if (Math.Abs(value - 1.00) < min_d) min_d = Math.Abs(value - 1.00);
+
+            //Console.WriteLine(i.ToString() + ".  v=" + Math.Round(value, 2).ToString() + " min_d=" + Math.Round(min_d, 2).ToString());
+
+          }
+
+          if (min_d > max_d)
+          {
+            max_d = min_d;
+            best_q = q;
+          }
+
+          //Console.WriteLine("q="+q.ToString()+" min_d=" + Math.Round(min_d, 2).ToString());
+
+        }
+        //Console.WriteLine("best_q=" + best_q.ToString() + " max_d=" + max_d.ToString());
+        best_q *= 360.0;
+        max_d *= 360.0;
+        Console.WriteLine(schritte.ToString() + ". best_q=" + best_q.ToString() + " max_d=" + max_d.ToString());
+
+      }
+    }
 
 
     /*
@@ -855,7 +918,7 @@ namespace MakulaTest
 
 
 
-    
-    }
+
+  }
 
 }
