@@ -47,13 +47,7 @@
            <Image Source="Images/back.png" />
        </Button>
 
-       <Button x:Name="BtnGrid" ToolTip="Raster an/aus" 
-               Click="BtnGrid_Click" HorizontalAlignment="Right"
-               DockPanel.Dock="Bottom">
-           <Image Source="Images/grid.png" />
-       </Button>
-
-      <Button x:Name="BtnDayBefore" ToolTip="1 Tag zurück" 
+       <Button x:Name="BtnDayBefore" ToolTip="1 Tag zurück" 
               Click="BtnDayBefore_Click" HorizontalAlignment="Right"
               DockPanel.Dock="Bottom">
         <Image Source="Images/daybefore.png" />
