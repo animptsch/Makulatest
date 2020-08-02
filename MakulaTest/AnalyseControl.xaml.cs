@@ -67,7 +67,7 @@ namespace MakulaTest
         }
 
         public void Start(string path)
-        {
+        {           
             _draw = new Draw(MyCanvas);
 
             _path = path;
@@ -314,6 +314,11 @@ namespace MakulaTest
               Console.WriteLine(point.ToString());
             }
             */
+
+            if (IsFatalError)
+            {
+                return;
+            }
 
             DrawTestfield(40, 40);
             DrawTestPolygon(40, 40);
