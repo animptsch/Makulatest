@@ -193,15 +193,8 @@ namespace MakulaTest.Model
         {
             _brushConv = new BrushConverter();
             Model = new Settings();
-
-            string baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings");
-
-            if (!Directory.Exists(baseDir))
-            {
-                Directory.CreateDirectory(baseDir);
-            }
-
-            _settingsFileName = System.IO.Path.Combine(baseDir, "appsettings.xml");
+            
+            _settingsFileName = FilePathSettings.Instance.AppSettingsFilePath;
 
             loadSettings();
         }

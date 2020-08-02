@@ -292,8 +292,7 @@ namespace MakulaTest
 
             MyCanvas.Children.Add(_polygon);
 
-            MakulaDataSet mds = new MakulaDataSet(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MakulaData.csv"));
-
+            MakulaDataSet mds = new MakulaDataSet(FilePathSettings.Instance.CSVDataFilePath);
 
             mds.SaveData(_session.Points,                
                          SettingsViewModel.IsBackwardChecked,  // direction

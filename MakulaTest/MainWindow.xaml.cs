@@ -19,17 +19,10 @@ namespace MakulaTest
         public MainWindow()
         {
             InitializeComponent();
-
-            string baseDir = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Settings");
-
-            if (!Directory.Exists(baseDir))
-            {
-                Directory.CreateDirectory(baseDir);
-            }
-
-            _windowsSettingsFile = System.IO.Path.Combine(baseDir, "windowsSettings.xml");
+            _filePathSettings = FilePathSettings.Instance;            
         }
 
+        private FilePathSettings _filePathSettings;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -72,7 +65,7 @@ namespace MakulaTest
             MyAnalyse.Visibility = Visibility.Visible;
             DiagnoseControl.Visibility = Visibility.Collapsed;
             MainWindowToolbar.Visibility = Visibility.Collapsed;
-            MyAnalyse.Start(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MakulaData.csv"));
+            MyAnalyse.Start(_filePathSettings.CSVDataFilePath);
         }
 
         private void BtnSettingSize_Click(object sender, RoutedEventArgs e)
@@ -109,12 +102,12 @@ namespace MakulaTest
 
             var xmlserializer = new XmlSerializer(typeof(SerializedWindowsState));
 
-            if (File.Exists(_windowsSettingsFile))
+            if (File.Exists(_filePathSettings.WindowsSettingsFilePath))
             {
-                File.Delete(_windowsSettingsFile);
+                File.Delete(_filePathSettings.WindowsSettingsFilePath);
             }
 
-            using (var fileStream = File.Open(_windowsSettingsFile, FileMode.Create))
+            using (var fileStream = File.Open(_filePathSettings.WindowsSettingsFilePath, FileMode.Create))
             {
                 using (var xWriter = XmlWriter.Create(fileStream))
                 {
@@ -122,10 +115,7 @@ namespace MakulaTest
                 }
             }
         }
-
-        private string _windowsSettingsFile;
-
-
+        
         public void AnalyseStop()
         {
             MyAnalyse.Visibility = Visibility.Collapsed;
@@ -139,9 +129,9 @@ namespace MakulaTest
 
             var xmlserializer = new XmlSerializer(typeof(SerializedWindowsState));
 
-            if (File.Exists(_windowsSettingsFile))
+            if (File.Exists(_filePathSettings.WindowsSettingsFilePath))
             {
-                using (var fileStream = File.OpenRead(_windowsSettingsFile))
+                using (var fileStream = File.OpenRead(_filePathSettings.WindowsSettingsFilePath))
                 {
                     try
                     {

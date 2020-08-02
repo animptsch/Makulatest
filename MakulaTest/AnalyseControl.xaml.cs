@@ -85,8 +85,7 @@ namespace MakulaTest
         Console.WriteLine(String.Format("{0,8:D} {1,8:N2} {2,8:N2}", entry_id, Math.Round(start.X, 2), Math.Round(start.Y, 2)));
       }
 ***************************************/
-
-      //path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MakulaTestData.csv");
+      
       ReadSequences();
       data.actualSequence = _sequences.Count - 1;
 

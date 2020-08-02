@@ -73,6 +73,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BoolToOppositeBoolConverter.cs" />
+    <Compile Include="FilePathSettings.cs" />
     <Compile Include="JustifyGridSize.xaml.cs">
       <DependentUpon>JustifyGridSize.xaml</DependentUpon>
     </Compile>
@@ -165,14 +166,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\delrecord.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Settings\appsettings.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Settings\windowsSettings.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
