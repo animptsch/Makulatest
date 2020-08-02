@@ -15,15 +15,22 @@ namespace MakulaTest
     {
         public App()
         {
+            AnalyseControl.IsFatalError = false;
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
         }
+
+        
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             if(e.Exception != null)
             {
-                ErrorView view = new ErrorView(e.Exception);
-                view.ShowDialog();
+                AnalyseControl.IsFatalError = true;
+                this.Dispatcher.Invoke(() =>
+               {
+                   ErrorView view = new ErrorView(e.Exception);
+                   view.ShowDialog();
+               });
             }
         }
     } 
