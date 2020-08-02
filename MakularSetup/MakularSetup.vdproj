@@ -21,6 +21,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_BEAB3D093BB8411C8B8F6D262DEDF022"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C51DAF4A8EBD4245854F173C9043CDF0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -76,12 +82,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CCD4F6F3D0E6A83B1D8195616EC36C41"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_C51DAF4A8EBD4245854F173C9043CDF0"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -113,6 +113,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_CD9506C7372F4B55D4562C575DDAF686"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_CCD4F6F3D0E6A83B1D8195616EC36C41"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -239,6 +245,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BEAB3D093BB8411C8B8F6D262DEDF022"
+            {
+            "SourcePath" = "8:C:\\Users\\animp\\OneDrive\\Bilder\\Custom-Icon-Design-Mono-General-4-Eye.ico"
+            "TargetName" = "8:Custom-Icon-Design-Mono-General-4-Eye.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_79404E2487924F3FB6FB35168CA94D93"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C9002D5E3E5763CC4218B85B8BAD68DF"
@@ -453,7 +479,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:MakularTest"
         "ProductCode" = "8:{CAD2A3EB-E4EB-485F-9867-DCF87903FF30}"
-        "PackageCode" = "8:{69274B3A-F824-4625-A2B6-3DB8581A4D11}"
+        "PackageCode" = "8:{DE591350-D7C5-47E5-B063-B4450EE39530}"
         "UpgradeCode" = "8:{5DC6F942-65D8-40EA-B7EF-F3553DF59B56}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -573,6 +599,34 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_14EC0D2EF2454EAC92D10D9893D11A82"
+            {
+            "Name" = "8:MakularTest"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_C51DAF4A8EBD4245854F173C9043CDF0"
+            "Folder" = "8:_6ED5179895AA480B8C314811FB3CC9ED"
+            "WorkingFolder" = "8:_79404E2487924F3FB6FB35168CA94D93"
+            "Icon" = "8:_BEAB3D093BB8411C8B8F6D262DEDF022"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B7C31958E54B406388CA4CF14F446BFA"
+            {
+            "Name" = "8:MakulaTest"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_C51DAF4A8EBD4245854F173C9043CDF0"
+            "Folder" = "8:_BF914E00EA244744939E1D54E1EE89F1"
+            "WorkingFolder" = "8:_79404E2487924F3FB6FB35168CA94D93"
+            "Icon" = "8:_BEAB3D093BB8411C8B8F6D262DEDF022"
+            "Feature" = "8:"
+            }
         }
         "UserInterface"
         {
@@ -974,7 +1028,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C51DAF4A8EBD4245854F173C9043CDF0"
             {
-            "SourcePath" = "8:..\\MakulaTest\\obj\\Release\\MakulaTest.exe"
+            "SourcePath" = "8:..\\MakulaTest\\obj\\Debug\\MakulaTest.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_79404E2487924F3FB6FB35168CA94D93"
