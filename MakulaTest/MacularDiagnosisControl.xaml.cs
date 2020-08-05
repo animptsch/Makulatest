@@ -19,7 +19,6 @@ namespace MakulaTest
     public partial class MacularDiagnosisControl : UserControl
     {
         private Ellipse _ellipse;
-        private PathGeometry _pathGeo;
         private const int LineNumber = 17;
         private const double EmptyValue = -1;
         private const double _offset = 0.03;
@@ -33,7 +32,6 @@ namespace MakulaTest
         private MakulaSession _session;
         private Draw _draw;
 
-
         public MacularDiagnosisControl()
         {
             InitializeComponent();
@@ -45,7 +43,8 @@ namespace MakulaTest
 
             SettingsViewModel.IsMeasureStarted = false;
             _draw = new Draw(MyCanvas);
-        }
+            _session = new MakulaSession();
+    }
 
         public void SetSize(double width, double height)
         {
@@ -60,18 +59,7 @@ namespace MakulaTest
             drawCenterCircle();
         }
 
-        private double _lastPos;
-
-        public double LastPos
-        {
-            get { return _lastPos; }
-            set
-            {
-                _lastPos = value;
-                txtLastPos.AppendText(string.Format("{0:00.00}\n", value));
-                txtLastPos.ScrollToEnd();
-            }
-        }
+        private int _currentPointIndex;
 
         public const int CircleSize = 8;
         
@@ -90,7 +78,6 @@ namespace MakulaTest
                 drawCenterCircle();
 
                 SettingsViewModel.IsMeasureStarted = true;
-                _session = new MakulaSession();
 
                 _removeTimer = new DispatcherTimer();
                 _removeTimer.Interval = new TimeSpan(0, 0, SettingsViewModel.SelectedDuration);
@@ -101,7 +88,7 @@ namespace MakulaTest
                 _moveTimer.Interval = new TimeSpan(0, 0, SettingsViewModel.SelectedDuration + 2);
                 _moveTimer.Tick += new EventHandler(_timer_Tick);
                 _moveTimer.Start();
-                LastPos = _offset;
+                _currentPointIndex = 0;
 
                 if (_polygon != null)
                 {
@@ -171,7 +158,6 @@ namespace MakulaTest
             {
                 MyCanvas.Children.Remove(_ellipse);
                 double pos = 1.0 / (double)SettingsViewModel.Steps;                
-                LastPos -= pos;
 
                 _ellipse = null;
             }
@@ -242,6 +228,7 @@ namespace MakulaTest
                                               .Transform(new Point(CircleSize / 2.0, CircleSize / 2.0));
 
                 _session.Points.Add(relativePoint);
+                _currentPointIndex++;
                 UpdateTextBox();
                 _sbTranslate.Stop();
 
@@ -289,7 +276,7 @@ namespace MakulaTest
 
             _polygon.Points = new PointCollection(_session.Points);
             _polygon.Stroke = SettingsViewModel.PolygonBrush;            
-
+         
             MyCanvas.Children.Add(_polygon);
 
             MakulaDataSet mds = new MakulaDataSet(FilePathSettings.Instance.CSVDataFilePath);
@@ -304,61 +291,22 @@ namespace MakulaTest
             _session.Points.Clear();
         }
 
-    
-
         private Point getPointInOuterCircle()
         {
-            double width = MyRectangle.Width;
-            double height = MyRectangle.Height;
+          if (_currentPointIndex >= SettingsViewModel.Steps)
+          { StopDiagnosis();
+            return _session.StartingPoints[0];
+          }
 
-            Point pt, ptTan;
-            var rnd = new Random();
-
-            double pos = 1.0 / (double)SettingsViewModel.Steps;
-            _pathGeo.GetPointAtFractionLength(CorrectedPosition(LastPos), out pt, out ptTan);
-            LastPos += pos;
-            if (LastPos >= 1.0 + _offset)
-                StopDiagnosis();
-
-
-
-            return pt;
+          if (_currentPointIndex < 0)
+          { Console.WriteLine("ERROR: _currentPointIndex=" + _currentPointIndex.ToString());
+            _currentPointIndex = 0;
+          }
+        
+          return _session.StartingPoints[_currentPointIndex];
         }
 
-
-    private double CorrectedPosition(double LastPos)
-    {
-      double tolerance = 0.03;
-      //string outString= "Korrektur für " + LastPos.ToString();
-
-      while (LastPos > 1.0) LastPos -= tolerance;
-
-      LastPos = CheckAndCorrect(LastPos, 0.00, tolerance);
-      LastPos = CheckAndCorrect(LastPos, 0.25, tolerance);
-      LastPos = CheckAndCorrect(LastPos, 0.50, tolerance);
-      LastPos = CheckAndCorrect(LastPos, 0.75, tolerance);
-      LastPos = CheckAndCorrect(LastPos, 1.00, tolerance);
-
-      //Console.WriteLine(outString + " auf " +LastPos.ToString());
-
-      return LastPos;
-
-    }
-
-    private double CheckAndCorrect(double pos, double boundery, double tolerance)
-    {
-      if (Math.Abs(pos - boundery) < tolerance)
-      {
-        if (Math.Abs(pos - boundery - tolerance) >= tolerance || Math.Abs(pos - tolerance) > 1.0)
-          return Math.Abs(pos - tolerance);
-        else
-          return Math.Abs(pos + tolerance);
-      }
-      return pos;
-    }
-
-
-    private void drawLines(bool isDrawAmselGrid = true)
+        private void drawLines(bool isDrawAmselGrid = true)
         {
             double width = MyRectangle.Width;
             double height = MyRectangle.Height;
@@ -379,9 +327,54 @@ namespace MakulaTest
                 //draw vertical Line
                 _draw.DrawLine(_centerX, y, _centerX, height + y, thickness, SettingsViewModel.LinesBrush);
 
-                EllipseGeometry geo = new EllipseGeometry(new Point(_centerX, _centerY), width / 2 + 30, height / 2 + 30);
-                _pathGeo = geo.GetFlattenedPathGeometry();
+                DetermineStartingPoints(width / 2 + 30, height / 2 + 30);
+      
             }
+        }
+
+
+        private void DetermineStartingPoints(double width, double height)
+        {
+          _session.StartingPoints.Clear();
+          _currentPointIndex = 0;
+
+          for (var i = 0; i < SettingsViewModel.Steps; i++)
+          {
+            double anglePart = CorrectedAngle(1.0*(SettingsViewModel.Steps - i - 1) / SettingsViewModel.Steps + 0.25 ); //+ 0.25+ _offset
+            double angle = anglePart * 2 * Math.PI;
+            //Console.WriteLine(i.ToString() + ". anglePart=" + anglePart.ToString());
+
+            Point pt = new Point(Math.Sin(angle) * width + _centerX, Math.Cos(angle) * height + _centerY);
+            _session.StartingPoints.Add(pt);
+          }
+        }
+
+
+        private double CorrectedAngle(double anglePart)
+        {
+          double tolerance = 0.03;
+          //string outString= "Korrektur für " + anglePart.ToString();
+ 
+          //while (anglePart > 1.0) anglePart -= tolerance;
+
+          for (double boundery=0.00; boundery < 2.0; boundery+= 0.25)
+            anglePart = CheckAndCorrect(anglePart, boundery, tolerance);
+
+          //Console.WriteLine(outString + " auf " +anglePart.ToString());
+
+          return anglePart;
+        }
+
+        private double CheckAndCorrect(double pos, double boundery, double tolerance)
+        {
+          if (Math.Abs(pos - boundery) < tolerance)
+          {
+            if (Math.Abs(pos - boundery - tolerance) >= tolerance || Math.Abs(pos - tolerance) > 1.0)
+              return Math.Abs(pos - tolerance);
+            else
+              return Math.Abs(pos + tolerance);
+          }
+          return pos;
         }
 
 
@@ -430,10 +423,10 @@ namespace MakulaTest
 
         private void MyCanvas_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (e.Delta < 0 && LastPos > _offset)
+            if (e.Delta < 0 && _currentPointIndex > 0)
             {
                 double pos = 2.0 / (double)SettingsViewModel.Steps;
-                LastPos -= pos;
+                _currentPointIndex--;
 
                 var lastPoint = _session.Points.Last();
                 if (lastPoint != null)
