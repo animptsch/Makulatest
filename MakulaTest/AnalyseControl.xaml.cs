@@ -20,15 +20,7 @@ namespace MakulaTest
 {
 
 
-    public class MakulaDataSetInternal
-    {
-        public List<Point> Points;
-        public int actualSequence;
-        public DateTime actualDate;
-        public int record_no;
-        public bool deleted;
 
-    }
 
 
     /// <summary>
@@ -40,17 +32,15 @@ namespace MakulaTest
         private DispatcherTimer _moveTimer;
         private Rectangle testRect;
         private int maxSequenceId;
-        private MakulaDataSetInternal data;
         private Size windowSize;
         private bool timeMeasure = false;
         private bool _showGrid = true;
-        private string _path;
         //private Rectangle _rect;
-        private List<int> _sequences;
-        private bool _backward;
-        private bool _rightEye;
-        private double _minDistance; // point distance to center
         private Draw _draw;
+        private MakulaDataSet _mds;
+    
+        private bool _rightEyeFilter;
+
 
         public new MainWindow Parent { get; set; }
 
@@ -60,19 +50,17 @@ namespace MakulaTest
         public AnalyseControl()
         {
             stopwatch = new Stopwatch();
-            data = new MakulaDataSetInternal();
             timeMeasure = false; // stop watch control 
             _showGrid = true; // toggle grid display
             InitializeComponent();
         }
 
         public void Start(string path)
-        {           
+        {
             _draw = new Draw(MyCanvas);
 
-            _path = path;
+            _mds = new MakulaDataSet(path);
             //_rect = MyRectangle;
-            _sequences = new List<int>();
 /*********************************
                   var steps = 17;
                   var radius = 100;
@@ -86,14 +74,10 @@ namespace MakulaTest
                   }
 ***************************************/
 
-            ReadSequences();
-            data.actualSequence = _sequences.Count - 1;
-
-            ReadData();
-
+            _mds.ReadSequences();
+            _mds.ReadData();
 
             //TestOffsets();
-
 
             /*
             _moveTimer = new DispatcherTimer();
@@ -107,85 +91,45 @@ namespace MakulaTest
         }
 
 
-        private void ReadSequences()
-        {
-            _sequences = new List<int>();
-            var lastSequenceId = -1;
-            if (File.Exists(_path))
-            {
-                StreamReader fs = new StreamReader(_path);
-                string csv_line;
-                char[] charSeparators = new char[] { ';' };
-
-                //Point p = new Point() { X = 0.0, Y = 0.0 };
-
-                while ((csv_line = fs.ReadLine()) != null)
-                {
-                    var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
-                    if (elements.Length < 8 || elements[7] == "True" || elements[7] == "False")
-                    {
-                        try
-                        {
-                            var sequence_id = int.Parse(elements[0]);
-                            if (sequence_id != lastSequenceId)
-                                _sequences.Add(sequence_id);
-                            lastSequenceId = sequence_id;
-                        }
-                        catch (FormatException e)
-                        { }
-                    }
-                }
-                fs.Close();
-            }
-        }
-
-
-        private int GetMaxSequenceId()
-        {
-            //Console.WriteLine("sequence_id_max=" + sequence_id_max.ToString());
-            return _sequences.Max();
-        }
-
         //https://de.cleanpng.com/png-z809ef/download-png.html
 
 
         private void CbRightEye_IsChecked(object sender, RoutedEventArgs e)
         {
             if (CbLeftEye != null)
-                _rightEye = (CbLeftEye.IsChecked == true);
+                _rightEyeFilter = (CbLeftEye.IsChecked == true);
             else
-                _rightEye = false;
+                _rightEyeFilter = false;
         }
 
         private void CbLeftEye_IsChecked(object sender, RoutedEventArgs e)
         {
             if (CbLeftEye != null)
-                _rightEye = (CbLeftEye.IsChecked == true);
+              _rightEyeFilter = (CbLeftEye.IsChecked == true);
             else
-                _rightEye = false;
+              _rightEyeFilter = false;
         }
 
 
         private void CbForward_IsChecked(object sender, RoutedEventArgs e)
         {
             if (CbLeftEye != null)
-                _rightEye = (CbLeftEye.IsChecked == true);
+              _rightEyeFilter = (CbLeftEye.IsChecked == true);
             else
-                _rightEye = false;
+              _rightEyeFilter = false;
         }
 
         private void CbBackward_IsChecked(object sender, RoutedEventArgs e)
         {
             if (CbLeftEye != null)
-                _rightEye = (CbLeftEye.IsChecked == true);
+              _rightEyeFilter = (CbLeftEye.IsChecked == true);
             else
-                _rightEye = false;
+              _rightEyeFilter = false;
         }
 
         private void BtnDaten_Click(object sender, RoutedEventArgs e)
-    { MakulaDataSet mds = new MakulaDataSet(_path);
-            mds.DeleteRecord(_sequences[data.actualSequence]);
-            ReadSequences();
+        {   _mds.DeleteRecord(_mds.data.actualSequence);
+            _mds.ReadSequences();
             GoBackInTime();
         }
 
@@ -361,22 +305,22 @@ namespace MakulaTest
             _draw.DrawStringAtPos(text2, x_pos + 50, y_pos2, 16);
             _draw.DrawStringAtPos(string.Format("{0:N2}%", pct1), x_pos + 160, y_pos2, 16);
 
-      _draw.DrawStringAtPos("minimaler Abstand:",          x_pos, y_pos2+30, 16);
-      _draw.DrawStringAtPos(string.Format("{0:N2} mm", _minDistance), x_pos + 160, y_pos2+30, 16);
+            _draw.DrawStringAtPos("minimaler Abstand:",          x_pos, y_pos2+30, 16);
+            _draw.DrawStringAtPos(string.Format("{0:N2} mm", _mds.minDistance), x_pos + 160, y_pos2+30, 16);
 
-            var textBelowPicture = data.actualDate.ToString();
-            if (_backward)
+            var textBelowPicture = _mds.data.actualDate.ToString();
+            if (_mds.backward)
                 textBelowPicture += " von Innen nach Außen";
             else
                 textBelowPicture += " von Außen nach Innen";
 
-            if (_rightEye)
+            if (_mds.rightEye)
                 textBelowPicture += "; rechtes Auge";
             else
                 textBelowPicture += "; linkes Auge";
 
       #if DEBUG
-        textBelowPicture += " ("+ data.record_no + ", "+ data.deleted + ")";
+        textBelowPicture += " ("+ _mds.data.record_no + ", "+ _mds.data.deleted + ")";
       #endif
 
             _draw.DrawStringAtPos(textBelowPicture, Convert.ToInt32(radius) + 40, Convert.ToInt32(radius) * 2 + 60, 16, TextAlignment.Center);
@@ -407,48 +351,24 @@ namespace MakulaTest
             int i = 44;
         }
 
-        private void MyCanvas_VisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            int i = 44;
-/*
-                  Console.WriteLine(" Parent.DataPath=" + Parent.DataPath);
-                  if ((bool)e.NewValue == true)
-                  {
-                    if (data.Points == null)
-                    {
-                      _path = Parent.DataPath;
-                      _sequences = new List<int>();
-
-                      ReadSequences();
-                      data.actualSequence = _sequences.Count - 1;
-
-
-                      ReadData();
-                    }
-                    RefreshScreen();
-                  }
-*/
-        }
-
-
 
         public void GoBackInTime()
         {
-            if (data.actualSequence > 0)
-      { data.actualSequence--;
-                ReadData();
-                RefreshScreen();
+            if (_mds.data.actualSequence > 0)
+            { _mds.data.actualSequence--;
+              _mds.ReadData();
+              RefreshScreen();
             }
 
         }
 
         public void GoForwardInTime()
         {
-      if (data.actualSequence < _sequences.Count-1)
-      { data.actualSequence++;
-                ReadData();
-                RefreshScreen();
-            }
+          if (_mds.data.actualSequence < _mds.GetMaxSequenceId())
+          { _mds.data.actualSequence++;
+            _mds.ReadData();
+            RefreshScreen();
+          }
         }
 
 
@@ -478,14 +398,14 @@ namespace MakulaTest
         //https://de.wikipedia.org/wiki/Gaußsche_Trapezformel
         public double CalculatePolygonArea()
         {
-            if (data.Points == null) return 0.0;
+            if (_mds.data.Points == null) return 0.0;
 
-            int n = data.Points.Count;
+            int n = _mds.data.Points.Count;
             if (n < 3) return 0.0; // a polygon must have at least 3 points
             double a = 0.0;
             for (int i = 0; i < n; i++)
             {
-                a += (data.Points[i].Y + data.Points[(i + 1) % n].Y) * (data.Points[i].X - data.Points[(i + 1) % n].X);
+                a += (_mds.data.Points[i].Y + _mds.data.Points[(i + 1) % n].Y) * (_mds.data.Points[i].X - _mds.data.Points[(i + 1) % n].X);
             }
 
             return Math.Abs(a / 2.0);
@@ -540,13 +460,12 @@ namespace MakulaTest
                 return;
             }
 
-            int steps = data.Points.Count;
+            int steps = _mds.data.Points.Count;
             double[,] Points = new double[steps, 2];
 
             var minWinExtend = Math.Min(windowSize.Width, windowSize.Height);
 
-      double radius = GetRadius(40.0,40.0);
-
+            double radius = GetRadius(40.0,40.0);
 
             Vector center = new Vector(radius, radius);
 
@@ -576,11 +495,11 @@ namespace MakulaTest
             //double scaleFactor = radius * 2.0 / data.Points[0].X;
             double scaleFactor = radius / 65;
 
-            int steps = data.Points.Count;
+            int steps = _mds.data.Points.Count;
             double[,] Points = new double[steps, 2];
 
             int count = 0;
-            foreach (var point in data.Points)
+            foreach (var point in _mds.data.Points)
             {
                 Points[count, 0] = point.X * scaleFactor + radius;
                 Points[count, 1] = point.Y * scaleFactor + radius;
@@ -641,79 +560,12 @@ namespace MakulaTest
 
         }
 
-
-        private void ReadData()
-        {
-            data.Points = new List<Point>();
-
-            if (File.Exists(_path))
-            {
-                var count = 0;
-                int entry_id;
-
-                StreamReader fs = new StreamReader(_path);
-                string csv_line;
-                char[] charSeparators = new char[] { ';' };
-
-                Point p = new Point() { X = 0.0, Y = 0.0 };
-
-                _minDistance = 20000.0;
-
-                while ((csv_line = fs.ReadLine()) != null)
-                {
-                    var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
-
-
-                    DateTime Date;
-
-                    try
-                    {
-                        if (int.Parse(elements[0]) == _sequences[data.actualSequence])
-                        {
-                            entry_id = int.Parse(elements[1]);
-                            Date = DateTime.Parse(elements[2]);
-                            _backward = Boolean.Parse(elements[3]);
-                            _rightEye = Boolean.Parse(elements[4]);
-
-                            p.X = double.Parse(elements[5]);
-                            p.Y = double.Parse(elements[6]);
-
-                            data.actualDate = Date;
-                            data.Points.Add(p);
-
-                            data.record_no = int.Parse(elements[0]);
-                            if (elements.Length < 8)
-                                data.deleted = false;
-                            else
-                                data.deleted = Boolean.Parse(elements[7]);
-
-                            var d = Math.Sqrt(p.X * p.X + p.Y * p.Y);
-                            if (d < _minDistance) _minDistance = d;
-
-                            // if (count < 20)
-                            //   Console.WriteLine(count.ToString() + ". Date="+  Date.ToString()+" X = " + p.X.ToString() + " Y= " + p.Y.ToString());
-                        }
-                    }
-                    catch (FormatException e)
-                    {
-                        //Date = DateTime.Now;
-                        //X = 0;
-                        //Y = 0;
-                    }
-                    count++;
-                }
-
-                fs.Close();
-            }
-        }
-
-
-
+/*
         private void GenerateTestData()
         {
             var rnd = new Random();
 
-      GenerateTestDataFirstDay(1, 70.0,rnd);
+            GenerateTestDataFirstDay(1, 70.0,rnd);
 
             data.actualSequence = 1;
             ReadData();
@@ -723,8 +575,8 @@ namespace MakulaTest
             GenerateTestDataNextDay(-5.0, rnd, fs);
             GenerateTestDataNextDay(-2.0, rnd, fs);
             GenerateTestDataNextDay(-3.0, rnd, fs);
-      GenerateTestDataNextDay( 2.0, rnd, fs);
-      GenerateTestDataNextDay( 3.0, rnd, fs);
+            GenerateTestDataNextDay( 2.0, rnd, fs);
+            GenerateTestDataNextDay( 3.0, rnd, fs);
             GenerateTestDataNextDay(-2.0, rnd, fs);
             GenerateTestDataNextDay(-4.0, rnd, fs);
 
@@ -751,10 +603,10 @@ namespace MakulaTest
                 start.X = point.X;
                 start.Y = point.Y;
 
-        var center_vector = start-center;
+                var center_vector = start-center;
                 //Console.WriteLine("Center="+center_vector.ToString());
 
-        var pct = center_vector.Length* 100.0/ radius;
+                var pct = center_vector.Length* 100.0/ radius;
                 //Console.WriteLine("pct1=" + pct.ToString());
 
                 double fluctuation = rnd.NextDouble();
@@ -764,7 +616,7 @@ namespace MakulaTest
 
                 //Console.WriteLine("pct2=" + pct.ToString());
 
-        pct = Math.Max(Math.Min(pct, 100.0),0.0);
+                pct = Math.Max(Math.Min(pct, 100.0),0.0);
                 //Console.WriteLine("pct3=" + pct.ToString());
 
                 var new_l = radius * pct / 100.0;
@@ -785,38 +637,30 @@ namespace MakulaTest
                 // break;
             }
 
-            /*
-                  for (var i = 0; i < steps; i++)
-                  {
-                    double angle = i * 2*Math.PI / steps;
-                    start.X = data.Points[i].X;
-                    start.Y = data.Points[i].Y;
+            
+                  //for (var i = 0; i < steps; i++)
+                  //{
+                  //  double angle = i * 2*Math.PI / steps;
+                  //  start.X = data.Points[i].X;
+                  //  start.Y = data.Points[i].Y;
 
-                    center_vector = center - start;
+                  //  center_vector = center - start;
 
-                    double pos = rnd.NextDouble();
-                    center_vector *= (pos - 0.5);
+                  //  double pos = rnd.NextDouble();
+                  //  center_vector *= (pos - 0.5);
 
-                    center_vector += center;
+                  //  center_vector += center;
 
-                    WriteCSV(fs, sequence_id, entry_id, day, center_vector);
+                  //  WriteCSV(fs, sequence_id, entry_id, day, center_vector);
 
-                    entry_id++;
+                  //  entry_id++;
 
-                  }
-                  */
-
-        }
-
-
-        private void WriteCSV(FileStream fs, int sequence_id, int entry_id, DateTime day, Vector center_vector)
-        {
-            string csv_line = sequence_id.ToString() + ";" + entry_id.ToString() + ";" + day.ToString() + ";" +
-                              center_vector.X.ToString() + ";" + center_vector.Y.ToString() + "\n";
-            byte[] bytes = Encoding.UTF8.GetBytes(csv_line);
-            fs.Write(bytes, 0, bytes.Length);
+                  //}
+                
 
         }
+        */
+
 
 
 
@@ -830,6 +674,7 @@ namespace MakulaTest
         }
 
 
+    /*
         private void GenerateTestDataFirstDay(int sequence_id, double sight_pct, Random rnd)
         {
             File.Delete(_path);
@@ -865,7 +710,7 @@ namespace MakulaTest
 
 
         }
-
+*/
 
         private void TestOffsets()
         {
