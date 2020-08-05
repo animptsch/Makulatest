@@ -8,7 +8,6 @@
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="700"
              SizeChanged="MyCanvas_SizeChanged" 
-             IsVisibleChanged="MyCanvas_VisibleChanged"
              Loaded="MyCanvas_Loaded">
 
   <UserControl.Resources>
