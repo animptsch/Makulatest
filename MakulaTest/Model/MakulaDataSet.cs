@@ -7,13 +7,31 @@ using System.Windows.Shapes;
 
 namespace MakulaTest.Model
 {
+  public class MakulaDataSetInternal
+  {
+    public List<Point> Points;
+    public int actualSequence;
+    public DateTime actualDate;
+    public int record_no;
+    public bool deleted;
+
+  }
+
   public class MakulaDataSet
   {
     private readonly string pathInternal;
+    private List<int> _sequences;
+
+    public bool backward;
+    public bool rightEye;
+    public double minDistance; // point distance to center
+    public MakulaDataSetInternal data;
 
     public MakulaDataSet(string path)
     {
       pathInternal = path;
+      data = new MakulaDataSetInternal();
+
     }
 
     public void SaveData(List<Point> Points, bool backward, bool rightEye, int circleSize, Rectangle MyRectangle)
@@ -22,7 +40,7 @@ namespace MakulaTest.Model
       double midY = MyRectangle.Height / 2.0 + MyRectangle.Margin.Top + circleSize / 2.0;
 
       var day = DateTime.Now;
-      var maxSequenceId = GetMaxSequenceId();
+      var maxSequenceId = GetMaxSequenceIdFromFile();
       var entryId = 0;
 
       FileStream fs = new FileStream(pathInternal, FileMode.Append);
@@ -45,7 +63,7 @@ namespace MakulaTest.Model
 
       fs.Close();
     }
-    public void DeleteRecord(int sequence)
+    public void DeleteRecord(int sequenceIdx)
     {
       List<string> fileContent = new List<string>();
 
@@ -62,7 +80,7 @@ namespace MakulaTest.Model
 
         try
         {
-          if (int.Parse(elements[0]) == sequence) elements[7] = "False";
+          if (int.Parse(elements[0]) == _sequences[sequenceIdx]) elements[7] = "False";
         }
         catch (FormatException e)
         { }
@@ -87,7 +105,13 @@ namespace MakulaTest.Model
       fs2.Close();
     }
 
-    private int GetMaxSequenceId()
+    public int GetMaxSequenceId()
+    {
+      return _sequences.Count - 1;
+    }
+      
+      
+    private int GetMaxSequenceIdFromFile()
     {
       var sequenceIdMax = 0;
 
@@ -125,6 +149,121 @@ namespace MakulaTest.Model
       byte[] bytes = Encoding.UTF8.GetBytes(csv_line);
       fs.Write(bytes, 0, bytes.Length);
     }
+
+    public void WriteCSV(FileStream fs, int sequence_id, int entry_id, DateTime day, Vector center_vector)
+    {
+      string csv_line = sequence_id.ToString() + ";" + entry_id.ToString() + ";" + day.ToString() + ";" +
+                        center_vector.X.ToString() + ";" + center_vector.Y.ToString() + "\n";
+      byte[] bytes = Encoding.UTF8.GetBytes(csv_line);
+      fs.Write(bytes, 0, bytes.Length);
+
+    }
+
+
+
+    public void ReadSequences()
+    {
+      _sequences = new List<int>();
+
+      var lastSequenceId = -1;
+      if (File.Exists(pathInternal))
+      {
+        StreamReader fs = new StreamReader(pathInternal);
+        string csv_line;
+        char[] charSeparators = new char[] { ';' };
+
+        //Point p = new Point() { X = 0.0, Y = 0.0 };
+
+        while ((csv_line = fs.ReadLine()) != null)
+        {
+          var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
+          if (elements.Length < 8 || elements[7] == "True" || elements[7] == "False")
+          {
+            try
+            {
+              var sequence_id = int.Parse(elements[0]);
+              if (sequence_id != lastSequenceId)
+                _sequences.Add(sequence_id);
+              lastSequenceId = sequence_id;
+            }
+            catch (FormatException e)
+            { }
+          }
+        }
+        fs.Close();
+      }
+ 
+      data.actualSequence = _sequences.Count - 1;
+    }
+
+    public void ReadData()
+    {
+      data.Points = new List<Point>();
+
+      if (File.Exists(pathInternal))
+      {
+        var count = 0;
+        int entry_id;
+
+        StreamReader fs = new StreamReader(pathInternal);
+        string csv_line;
+        char[] charSeparators = new char[] { ';' };
+
+        Point p = new Point() { X = 0.0, Y = 0.0 };
+
+        minDistance = 20000.0;
+
+        while ((csv_line = fs.ReadLine()) != null)
+        {
+          var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
+
+
+          DateTime Date;
+
+          try
+          {
+            if (int.Parse(elements[0]) == _sequences[data.actualSequence])
+            {
+              entry_id = int.Parse(elements[1]);
+              Date = DateTime.Parse(elements[2]);
+              backward = Boolean.Parse(elements[3]);
+              rightEye = Boolean.Parse(elements[4]);
+
+              p.X = double.Parse(elements[5]);
+              p.Y = double.Parse(elements[6]);
+
+              data.actualDate = Date;
+              data.Points.Add(p);
+
+              data.record_no = int.Parse(elements[0]);
+              if (elements.Length < 8)
+                data.deleted = false;
+              else
+                data.deleted = Boolean.Parse(elements[7]);
+
+              var d = Math.Sqrt(p.X * p.X + p.Y * p.Y);
+              if (d < minDistance) minDistance = d;
+
+              // if (count < 20)
+              //   Console.WriteLine(count.ToString() + ". Date="+  Date.ToString()+" X = " + p.X.ToString() + " Y= " + p.Y.ToString());
+            }
+          }
+          catch (FormatException e)
+          {
+            //Date = DateTime.Now;
+            //X = 0;
+            //Y = 0;
+          }
+          count++;
+        }
+
+        fs.Close();
+      }
+    }
+
+
+
+
   }
 
 }
