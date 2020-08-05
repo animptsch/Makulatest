@@ -12,11 +12,13 @@ namespace MakulaTest.Model
         public DateTime TimeStamp { get; set; }
 
         public List<Point> Points { get; set; }
+        public List<Point> StartingPoints { get; set; }
 
         public MakulaSession()
         {
             TimeStamp = DateTime.Now;
             Points = new List<Point>();
+            StartingPoints = new List<Point>();
         }
 
     }
