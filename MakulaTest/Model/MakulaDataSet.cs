@@ -34,28 +34,18 @@ namespace MakulaTest.Model
 
     }
 
+
     public void SaveData(List<Point> Points, bool backward, bool rightEye, int circleSize, Rectangle MyRectangle)
     {
-      double midX = MyRectangle.Width / 2.0 + MyRectangle.Margin.Left + circleSize / 2.0;
-      double midY = MyRectangle.Height / 2.0 + MyRectangle.Margin.Top + circleSize / 2.0;
-
       var day = DateTime.Now;
       var maxSequenceId = GetMaxSequenceIdFromFile();
       var entryId = 0;
 
       FileStream fs = new FileStream(pathInternal, FileMode.Append);
 
-
-
       foreach (var point in Points)
       {
-        var realPoint = point;
-
-        var relX = point.X + circleSize / 2 - midX;
-        var relY = point.Y + circleSize / 2 - midY;
-
-        realPoint.X = relX * 130.0 / MyRectangle.Width;
-        realPoint.Y = relY * 130.0 / MyRectangle.Height;
+        var realPoint = ConvertScreenToMillimeters(point, MyRectangle, circleSize);
 
         WriteCSV(fs, maxSequenceId + 1, entryId, day, backward, rightEye, realPoint);
         entryId++;
@@ -63,6 +53,24 @@ namespace MakulaTest.Model
 
       fs.Close();
     }
+
+
+    public Point ConvertScreenToMillimeters(Point point, Rectangle MyRectangle, int circleSize)
+    {
+      double midX = MyRectangle.Width / 2.0 + MyRectangle.Margin.Left + circleSize / 2.0;
+      double midY = MyRectangle.Height / 2.0 + MyRectangle.Margin.Top + circleSize / 2.0;
+      var realPoint = point;
+
+      var relX = point.X + circleSize / 2 - midX;
+      var relY = point.Y + circleSize / 2 - midY;
+
+      realPoint.X = relX * 130.0 / MyRectangle.Width;
+      realPoint.Y = relY * 130.0 / MyRectangle.Height;
+
+      return realPoint;
+
+    }
+
     public void DeleteRecord(int sequenceIdx)
     {
       List<string> fileContent = new List<string>();
@@ -177,7 +185,7 @@ namespace MakulaTest.Model
         while ((csv_line = fs.ReadLine()) != null)
         {
           var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
-          if (elements.Length < 8 || elements[7] == "True" || elements[7] == "False")
+          if (elements.Length < 8 || elements[7] == "True")
           {
             try
             {
@@ -261,7 +269,51 @@ namespace MakulaTest.Model
       }
     }
 
+    public bool ReadNewestForwardData()
+    {
+      data.actualSequence = -1;
 
+      if (File.Exists(pathInternal))
+      {
+        ReadSequences();
+
+        int recordNo = -1;
+
+        StreamReader fs = new StreamReader(pathInternal);
+        string csv_line;
+        char[] charSeparators = new char[] { ';' };
+
+        while ((csv_line = fs.ReadLine()) != null)
+        {
+          var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
+
+          try
+          {
+            if (Boolean.Parse(elements[3]) == false && // forward?
+                (elements.Length < 8 || Boolean.Parse(elements[7]) == false)) // not deleted?
+              recordNo = int.Parse(elements[0]);
+          }
+          catch (FormatException e) { }
+        }
+
+        fs.Close();
+
+        for (int seqIdx = _sequences.Count - 1; recordNo > 0 && seqIdx >= 0; seqIdx--)
+        { if (_sequences[seqIdx] == recordNo)
+          { data.actualSequence = seqIdx;
+            break;
+          }
+        }
+      }
+
+      if (data.actualSequence >= 0)
+      {
+        ReadData();
+        return true;
+      }
+
+      return false;
+    }
 
 
   }
