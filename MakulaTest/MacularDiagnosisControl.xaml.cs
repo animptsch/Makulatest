@@ -26,11 +26,11 @@ namespace MakulaTest
 
         private DispatcherTimer _moveTimer;
         private DispatcherTimer _removeTimer;
-        private double _centerX;
-        private double _centerY;
+        private Point _center;
         private Storyboard _sbTranslate;
         private MakulaSession _session;
         private Draw _draw;
+        private MakulaDataSet _mds;
 
         public MacularDiagnosisControl()
         {
@@ -44,7 +44,8 @@ namespace MakulaTest
             SettingsViewModel.IsMeasureStarted = false;
             _draw = new Draw(MyCanvas);
             _session = new MakulaSession();
-    }
+            _mds = new MakulaDataSet(FilePathSettings.Instance.CSVDataFilePath);
+        }
 
         public void SetSize(double width, double height)
         {
@@ -73,9 +74,10 @@ namespace MakulaTest
             if (!SettingsViewModel.IsMeasureStarted)
             {
                 MyCanvas.Background = SettingsViewModel.BackgroundBrush;                
-                
+  
                 drawLines();
                 drawCenterCircle();
+                DetermineStartingPoints(MyRectangle.Width / 2 + 30, MyRectangle.Height / 2 + 30);
 
                 SettingsViewModel.IsMeasureStarted = true;
 
@@ -100,9 +102,113 @@ namespace MakulaTest
                 _ellipse = moveCircle(pt, SettingsViewModel.IsBackwardChecked);
             }
         }
-
-
         
+ 
+        private void DetermineStartingPoints(double width, double height)
+        {
+          _session.StartingPoints.Clear();
+          _currentPointIndex = 0;
+
+          bool useNewestForwardData = false;
+          if (SettingsViewModel.IsBackwardChecked == false) // forward
+          {
+            if (_mds.ReadNewestForwardData())
+            { _mds.data.Points = ConvertDataToScreen(_mds.data.Points);
+              useNewestForwardData = true;
+            }
+          }
+
+          for (var i = 0; i < SettingsViewModel.Steps; i++)
+          {
+            double anglePart = CorrectedAngle(1.0 * (SettingsViewModel.Steps - i - 1) / SettingsViewModel.Steps + 0.25 + _offset);
+            double angle = anglePart * 2 * Math.PI;
+            //Console.WriteLine(i.ToString() + ". anglePart=" + anglePart.ToString());
+
+            Point pt = new Point(Math.Sin(angle) * width + _center.X, Math.Cos(angle) * height + _center.Y);
+
+            if (useNewestForwardData)
+            {
+              // convert data.Points --> StartingPoints
+              var dp = _mds.data.Points.ToArray();
+              if (_mds.data.Points.Count == SettingsViewModel.Steps)
+              { if (distanceSquared(dp[i], _center) > 400.0) pt = dp[i]; // should be 20 pixels or more
+              }
+              else
+              { for (int j = 0; j < dp.Length; j++)
+                { var next = (j == dp.Length - 1 ? 0 : j + 1);
+
+                  Point ip = FindIntersection(dp[j], dp[next], _center, pt);
+                  if (IsInsideBox(ip, dp[j], dp[next]) && distanceSquared(pt, ip) < distanceSquared(pt, _center))
+                  { if (distanceSquared(ip, _center) > 400.0) pt = ip; // should be 20 pixels or more
+                    break;
+                  }
+                }
+              }
+            }
+
+            _session.StartingPoints.Add(pt);
+          }
+        }
+        private List<Point> ConvertDataToScreen(List<Point> d)
+        {
+          var screenCoord = d.ToArray();
+          for (int i = 0; i < screenCoord.Length; i++)
+          {
+            screenCoord[i].X = screenCoord[i].X * MyRectangle.Width / 130.0 + _center.X;
+            screenCoord[i].Y = screenCoord[i].Y * MyRectangle.Height / 130.0 + _center.Y;
+          }
+          return screenCoord.ToList<Point>();
+        }
+
+        private Point ExtendLine(Point p1, Point p2, double factor)
+        {
+          Vector v = (p2 - p1) * factor;
+          
+          var realLength = _mds.ConvertScreenToMillimeters(new Point(v.Length + _center.X, _center.Y), MyRectangle, CircleSize);
+
+          if (realLength.X > 80.0) // max distance from center in mm
+            return p1;
+
+          return p2-v;
+        }
+
+
+        private double distanceSquared(Point p1, Point p2)
+        {
+          double dx = p1.X - p2.X;
+          double dy = p1.Y - p2.Y;
+          return dx * dx + dy * dy;
+        }
+
+        private bool IsInsideBox(Point p, Point boxCorner1, Point boxCorner2)
+        {
+          var left  = boxCorner1.X < boxCorner2.X ? boxCorner1 : boxCorner2;
+          var right = boxCorner1.X < boxCorner2.X ? boxCorner2 : boxCorner1;
+          var upper = boxCorner1.Y < boxCorner2.Y ? boxCorner1 : boxCorner2;
+          var lower = boxCorner1.Y < boxCorner2.Y ? boxCorner2 : boxCorner1;
+
+          if (p.X >= left.X && p.X <= right.X && p.Y >= upper.Y && p.Y <= lower.Y)
+            return true;
+
+          return false;
+        }
+
+        // https://rosettacode.org/wiki/Find_the_intersection_of_two_lines
+        static Point FindIntersection(Point s1, Point e1, Point s2, Point e2)
+        {
+          double a1 = e1.Y - s1.Y;
+          double b1 = s1.X - e1.X;
+          double c1 = a1 * s1.X + b1 * s1.Y;
+
+          double a2 = e2.Y - s2.Y;
+          double b2 = s2.X - e2.X;
+          double c2 = a2 * s2.X + b2 * s2.Y;
+
+          double delta = a1 * b2 - a2 * b1;
+          //If lines are parallel, the result will be (NaN, NaN).
+          return delta == 0 ? new Point(double.NaN, double.NaN)
+                 : new Point((b2* c1 - b1* c2) / delta, (a1* c2 - a2* c1) / delta);
+        }
 
         
         private void resetTimer()
@@ -174,12 +280,12 @@ namespace MakulaTest
 
             if (!backward)
             {
-                end = new Point(_centerX, _centerY);                
+                end = _center;                
             }
             else
             {
                 end = begin;
-                begin = new Point(_centerX, _centerY);                
+                begin =_center;                
             }
 
             var ellipse = _draw.DrawCircle(begin.X, begin.Y, CircleSize, SettingsViewModel.MovedBallBrush);
@@ -279,9 +385,7 @@ namespace MakulaTest
          
             MyCanvas.Children.Add(_polygon);
 
-            MakulaDataSet mds = new MakulaDataSet(FilePathSettings.Instance.CSVDataFilePath);
-
-            mds.SaveData(_session.Points,                
+            _mds.SaveData(_session.Points,                
                          SettingsViewModel.IsBackwardChecked,  // direction
                          SettingsViewModel.IsRightEyeChecked,  // rightEye
                          CircleSize,
@@ -302,7 +406,11 @@ namespace MakulaTest
           { Console.WriteLine("ERROR: _currentPointIndex=" + _currentPointIndex.ToString());
             _currentPointIndex = 0;
           }
-        
+
+      
+          if (SettingsViewModel.IsBackwardChecked == false) // from outside to midpoint (forward)
+            _session.StartingPoints[_currentPointIndex] = ExtendLine(_session.StartingPoints[_currentPointIndex], _center, 1.05);
+
           return _session.StartingPoints[_currentPointIndex];
         }
 
@@ -313,8 +421,8 @@ namespace MakulaTest
             double x = MyRectangle.Margin.Left;
             double y = MyRectangle.Margin.Top;
 
-            _centerX = width / 2.0 + x;
-            _centerY = height / 2.0 + y;
+            _center.X = width / 2.0 + x;
+            _center.Y = height / 2.0 + y;
 
             clearCanvas();
            
@@ -322,32 +430,13 @@ namespace MakulaTest
             {   double thickness = 3;
 
                 //draw horizontal Line
-                _draw.DrawLine(x, _centerY, width + x, _centerY, thickness, SettingsViewModel.LinesBrush);
+                _draw.DrawLine(x, _center.Y, width + x, _center.Y, thickness, SettingsViewModel.LinesBrush);
 
                 //draw vertical Line
-                _draw.DrawLine(_centerX, y, _centerX, height + y, thickness, SettingsViewModel.LinesBrush);
-
-                DetermineStartingPoints(width / 2 + 30, height / 2 + 30);
-      
+                _draw.DrawLine(_center.X, y, _center.X, height + y, thickness, SettingsViewModel.LinesBrush);
             }
         }
 
-
-        private void DetermineStartingPoints(double width, double height)
-        {
-          _session.StartingPoints.Clear();
-          _currentPointIndex = 0;
-
-          for (var i = 0; i < SettingsViewModel.Steps; i++)
-          {
-            double anglePart = CorrectedAngle(1.0*(SettingsViewModel.Steps - i - 1) / SettingsViewModel.Steps + 0.25 ); //+ 0.25+ _offset
-            double angle = anglePart * 2 * Math.PI;
-            //Console.WriteLine(i.ToString() + ". anglePart=" + anglePart.ToString());
-
-            Point pt = new Point(Math.Sin(angle) * width + _centerX, Math.Cos(angle) * height + _centerY);
-            _session.StartingPoints.Add(pt);
-          }
-        }
 
 
         private double CorrectedAngle(double anglePart)
@@ -388,7 +477,7 @@ namespace MakulaTest
 
         private void drawCenterCircle()
         {            
-            _draw.DrawCircle(_centerX, _centerY, CircleSize, SettingsViewModel.LinesBrush);
+            _draw.DrawCircle(_center.X, _center.Y, CircleSize, SettingsViewModel.LinesBrush);
         }
 
         private void MyCanvas_MouseDown(object sender, MouseButtonEventArgs e)
