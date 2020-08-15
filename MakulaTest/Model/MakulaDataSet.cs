@@ -269,7 +269,7 @@ namespace MakulaTest.Model
       }
     }
 
-    public bool ReadNewestForwardData()
+    public bool ReadNewestData(bool backward, bool rightEye)
     {
       data.actualSequence = -1;
 
@@ -289,7 +289,8 @@ namespace MakulaTest.Model
 
           try
           {
-            if (Boolean.Parse(elements[3]) == false && // forward?
+            if (Boolean.Parse(elements[3]) == backward &&
+                Boolean.Parse(elements[4]) == rightEye &&
                 (elements.Length < 8 || Boolean.Parse(elements[7]) == false)) // not deleted?
               recordNo = int.Parse(elements[0]);
           }
@@ -304,14 +305,16 @@ namespace MakulaTest.Model
             break;
           }
         }
+
+        if (recordNo >= 0)
+        {
+          ReadData();
+          return true;
+        }
+
       }
 
-      if (data.actualSequence >= 0)
-      {
-        ReadData();
-        return true;
-      }
-
+ 
       return false;
     }
 
