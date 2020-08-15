@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Collections.Generic;
 using System.Text;
 
+using System.Media;
+
 namespace MakulaTest
 {
     /// <summary>
@@ -71,6 +73,15 @@ namespace MakulaTest
 
         public void StartDiagnosis()
         {
+
+        //SystemSounds.Beep.Play();
+        /*
+        MediaPlayer mediaPlayer = new MediaPlayer();
+
+        mediaPlayer.Open(new Uri(@"C:\Users\Jörg\source\repos\Makulatest\MakulaTest\SoundFiles\losgehts.mp3"));
+        mediaPlayer.Play();
+        */
+
             if (!SettingsViewModel.IsMeasureStarted)
             {
                 MyCanvas.Background = SettingsViewModel.BackgroundBrush;                
@@ -98,8 +109,10 @@ namespace MakulaTest
                     _polygon = null;
                 }
 
-                Point pt = getPointInOuterCircle();
-                _ellipse = moveCircle(pt, SettingsViewModel.IsBackwardChecked);
+                Point start = getCurrentStartPoint();
+                Point end   = getCurrentEndPoint();
+                
+                _ellipse = moveCircle(start, end);
             }
         }
         
@@ -109,24 +122,19 @@ namespace MakulaTest
           _session.StartingPoints.Clear();
           _currentPointIndex = 0;
 
-          bool useNewestForwardData = false;
-          if (SettingsViewModel.IsBackwardChecked == false) // forward
-          {
-            if (_mds.ReadNewestForwardData())
-            { _mds.data.Points = ConvertDataToScreen(_mds.data.Points);
-              useNewestForwardData = true;
-            }
+          bool useNewestData = false;
+      
+          if (_mds.ReadNewestData(SettingsViewModel.IsBackwardChecked, SettingsViewModel.IsRightEyeChecked))
+          { _mds.data.Points = ConvertDataToScreen(_mds.data.Points);
+            useNewestData = true;
           }
+        
 
           for (var i = 0; i < SettingsViewModel.Steps; i++)
           {
-            double anglePart = CorrectedAngle(1.0 * (SettingsViewModel.Steps - i - 1) / SettingsViewModel.Steps + 0.25 + _offset);
-            double angle = anglePart * 2 * Math.PI;
-            //Console.WriteLine(i.ToString() + ". anglePart=" + anglePart.ToString());
+            Point pt = GetPointOnEllipse(i, width, height);
 
-            Point pt = new Point(Math.Sin(angle) * width + _center.X, Math.Cos(angle) * height + _center.Y);
-
-            if (useNewestForwardData)
+            if (useNewestData)
             {
               // convert data.Points --> StartingPoints
               var dp = _mds.data.Points.ToArray();
@@ -149,6 +157,15 @@ namespace MakulaTest
             _session.StartingPoints.Add(pt);
           }
         }
+
+        private Point GetPointOnEllipse(double stepNo, double width, double height)
+        {
+          double anglePart = CorrectedAngle(1.0 * (SettingsViewModel.Steps - stepNo - 1) / SettingsViewModel.Steps + 0.25 + _offset);
+          double angle = anglePart * 2 * Math.PI;
+          //Console.WriteLine(i.ToString() + ". anglePart=" + anglePart.ToString());
+          return new Point(Math.Sin(angle) * width + _center.X, Math.Cos(angle) * height + _center.Y);
+        }
+
         private List<Point> ConvertDataToScreen(List<Point> d)
         {
           var screenCoord = d.ToArray();
@@ -213,7 +230,8 @@ namespace MakulaTest
         
         private void resetTimer()
         {
-            Point pt = getPointInOuterCircle();
+            Point start = getCurrentStartPoint();
+            Point end   = getCurrentEndPoint();
 
             if (_moveTimer != null && _removeTimer != null && SettingsViewModel.IsMeasureStarted)
             {
@@ -222,7 +240,7 @@ namespace MakulaTest
                 _removeTimer.Start();
                 _moveTimer.Start();
 
-                _ellipse = moveCircle(pt, SettingsViewModel.IsBackwardChecked);
+                _ellipse = moveCircle(start, end);
             }
         }
 
@@ -234,7 +252,8 @@ namespace MakulaTest
 
         private void cancelMovement()
         {
-            //Point pt = getPointInOuterCircle();
+            //Point start = getCurrentStartPoint();
+            //Point end   = getCurrentEndPoint();
 
             _session.Points.Add(new Point(EmptyValue, EmptyValue));
             UpdateTextBox();
@@ -270,23 +289,11 @@ namespace MakulaTest
         }
 
 
-        private Ellipse moveCircle(Point begin, bool backward)
+        private Ellipse moveCircle(Point begin,Point end)
         {
             int durationInSeconds;
-            Point end;
-
+          
             durationInSeconds = SettingsViewModel.SelectedDuration;
-
-
-            if (!backward)
-            {
-                end = _center;                
-            }
-            else
-            {
-                end = begin;
-                begin =_center;                
-            }
 
             var ellipse = _draw.DrawCircle(begin.X, begin.Y, CircleSize, SettingsViewModel.MovedBallBrush);
 
@@ -395,9 +402,11 @@ namespace MakulaTest
             _session.Points.Clear();
         }
 
-        private Point getPointInOuterCircle()
-        {
-          if (_currentPointIndex >= SettingsViewModel.Steps)
+
+            
+
+        private Point getCurrentStartPoint()
+        { if (_currentPointIndex >= SettingsViewModel.Steps)
           { StopDiagnosis();
             return _session.StartingPoints[0];
           }
@@ -407,11 +416,40 @@ namespace MakulaTest
             _currentPointIndex = 0;
           }
 
-      
-          if (SettingsViewModel.IsBackwardChecked == false) // from outside to midpoint (forward)
-            _session.StartingPoints[_currentPointIndex] = ExtendLine(_session.StartingPoints[_currentPointIndex], _center, 1.05);
+          Point pt = _center;
+          double amount = 0.05;
+
+          if (SettingsViewModel.IsBackwardChecked)
+          { // from inside to outside (backward)
+            _session.StartingPoints[_currentPointIndex] = ExtendLine(_session.StartingPoints[_currentPointIndex], _center, 1.0-amount);
+          }
+          else
+          { // from outside to midpoint (forward)
+            _session.StartingPoints[_currentPointIndex] = ExtendLine(_session.StartingPoints[_currentPointIndex], _center, 1.0+amount);
+            
+          }
 
           return _session.StartingPoints[_currentPointIndex];
+        }
+
+        private Point getCurrentEndPoint()
+        {
+          Point pt = _center;
+
+          if (_currentPointIndex >= SettingsViewModel.Steps)
+          { return pt;
+          }
+
+
+          if (_currentPointIndex < 0)
+          { Console.WriteLine("ERROR: _currentPointIndex=" + _currentPointIndex.ToString());
+            _currentPointIndex = 0;
+          }
+
+          if (SettingsViewModel.IsBackwardChecked)
+            pt = GetPointOnEllipse(_currentPointIndex, MyRectangle.Width / 2 + 30, MyRectangle.Height / 2 + 30);
+
+          return pt;
         }
 
         private void drawLines(bool isDrawAmselGrid = true)
