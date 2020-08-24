@@ -273,7 +273,7 @@ namespace MakulaTest.Model
     {
       data.actualSequence = -1;
 
-      if (File.Exists(pathInternal))
+      if (!backward && File.Exists(pathInternal)) // forward only!
       {
         ReadSequences();
 
