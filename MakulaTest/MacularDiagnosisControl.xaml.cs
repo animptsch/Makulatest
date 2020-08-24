@@ -22,7 +22,6 @@ namespace MakulaTest
     {
         private Ellipse _ellipse;
         private const int LineNumber = 17;
-        private const double EmptyValue = -1;
         private const double _offset = 0.03;
         private Polygon _polygon;
 
@@ -252,10 +251,6 @@ namespace MakulaTest
 
         private void cancelMovement()
         {
-            //Point start = getCurrentStartPoint();
-            //Point end   = getCurrentEndPoint();
-
-            _session.Points.Add(new Point(EmptyValue, EmptyValue));
             UpdateTextBox();
 
             resetAnimation();
@@ -377,16 +372,6 @@ namespace MakulaTest
             drawCenterCircle();
 
             _polygon = new Polygon();
-
-            var removedPoints = (from p in _session.Points
-                                 where p.X == EmptyValue && p.Y == EmptyValue
-                                 select p).ToList();
-
-            foreach (var p in removedPoints)
-            {
-                _session.Points.Remove(p);
-            }
-
             _polygon.Points = new PointCollection(_session.Points);
             _polygon.Stroke = SettingsViewModel.PolygonBrush;            
          
@@ -417,11 +402,12 @@ namespace MakulaTest
           }
 
           Point pt = _center;
-          double amount = 0.05;
+          double amount = 0.10; // 10% (not 5%) - do we need a new property?
 
           if (SettingsViewModel.IsBackwardChecked)
           { // from inside to outside (backward)
-            _session.StartingPoints[_currentPointIndex] = ExtendLine(_session.StartingPoints[_currentPointIndex], _center, 1.0-amount);
+            //_session.StartingPoints[_currentPointIndex] = ExtendLine(_session.StartingPoints[_currentPointIndex], _center, 1.0-amount);
+            _session.StartingPoints[_currentPointIndex] = _center; // from inside to outside --> always center point!
           }
           else
           { // from outside to midpoint (forward)
@@ -529,6 +515,12 @@ namespace MakulaTest
             {
                 if (_ellipse != null)
                 {
+                    if (_currentPointIndex > 0)
+                    { _currentPointIndex--;
+                      if (_session.Points.Count > 0)
+                        _session.Points.RemoveAt(_session.Points.Count - 1);
+                    }
+
                     MyCanvas.Children.Remove(_ellipse);
                     _ellipse = null;
                 }
