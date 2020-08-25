@@ -269,11 +269,11 @@ namespace MakulaTest.Model
       }
     }
 
-    public bool ReadNewestData(bool backward, bool rightEye)
+    public bool ReadNewestData(bool forward, bool rightEye)
     {
       data.actualSequence = -1;
 
-      if (!backward && File.Exists(pathInternal)) // forward only!
+      if (forward && File.Exists(pathInternal)) // forward only!
       {
         ReadSequences();
 
