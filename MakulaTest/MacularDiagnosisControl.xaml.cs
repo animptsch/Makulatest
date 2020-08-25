@@ -33,6 +33,7 @@ namespace MakulaTest
         private Draw _draw;
         private MakulaDataSet _mds;
 
+
         public MacularDiagnosisControl()
         {
             InitializeComponent();
@@ -91,15 +92,18 @@ namespace MakulaTest
 
                 SettingsViewModel.IsMeasureStarted = true;
 
-                _removeTimer = new DispatcherTimer();
-                _removeTimer.Interval = new TimeSpan(0, 0, SettingsViewModel.SelectedDuration);
-                _removeTimer.Tick += new EventHandler(_removeTimer_Tick);
-                _removeTimer.Start();
+                if (!SettingsViewModel.IsFreestyleChecked)
+                {
+                  _removeTimer = new DispatcherTimer();
+                  _removeTimer.Interval = new TimeSpan(0, 0, SettingsViewModel.SelectedDuration);
+                  _removeTimer.Tick += new EventHandler(_removeTimer_Tick);
+                  _removeTimer.Start();
 
-                _moveTimer = new DispatcherTimer();
-                _moveTimer.Interval = new TimeSpan(0, 0, SettingsViewModel.SelectedDuration + 2);
-                _moveTimer.Tick += new EventHandler(_timer_Tick);
-                _moveTimer.Start();
+                  _moveTimer = new DispatcherTimer();
+                  _moveTimer.Interval = new TimeSpan(0, 0, SettingsViewModel.SelectedDuration + 2);
+                  _moveTimer.Tick += new EventHandler(_timer_Tick);
+                  _moveTimer.Start();
+                }
                 _currentPointIndex = 0;
 
                 if (_polygon != null)
@@ -111,7 +115,8 @@ namespace MakulaTest
                 Point start = getCurrentStartPoint();
                 Point end   = getCurrentEndPoint();
                 
-                _ellipse = moveCircle(start, end);
+                if (!SettingsViewModel.IsFreestyleChecked)
+                  _ellipse = moveCircle(start, end);
             }
         }
         
@@ -123,7 +128,7 @@ namespace MakulaTest
 
           bool useNewestData = false;
       
-          if (_mds.ReadNewestData(SettingsViewModel.IsBackwardChecked, SettingsViewModel.IsRightEyeChecked))
+          if (_mds.ReadNewestData(SettingsViewModel.IsForwardChecked, SettingsViewModel.IsRightEyeChecked))
           { _mds.data.Points = ConvertDataToScreen(_mds.data.Points);
             useNewestData = true;
           }
@@ -239,7 +244,8 @@ namespace MakulaTest
                 _removeTimer.Start();
                 _moveTimer.Start();
 
-                _ellipse = moveCircle(start, end);
+                if (!SettingsViewModel.IsFreestyleChecked)
+                  _ellipse = moveCircle(start, end);
             }
         }
 
@@ -330,7 +336,7 @@ namespace MakulaTest
 
         public void MarkPoint()
         {
-            if (_sbTranslate != null && _ellipse != null)
+            if (_ellipse != null)
             {
                 Point relativePoint = _ellipse.TransformToAncestor(MyCanvas)
                                               .Transform(new Point(CircleSize / 2.0, CircleSize / 2.0));
@@ -338,9 +344,13 @@ namespace MakulaTest
                 _session.Points.Add(relativePoint);
                 _currentPointIndex++;
                 UpdateTextBox();
-                _sbTranslate.Stop();
+                if (_sbTranslate != null) _sbTranslate.Stop();
 
                 MyCanvas.Children.Remove(_ellipse);
+
+                if (SettingsViewModel.IsFreestyleChecked)
+                  CheckMousePosition();
+
                 if (SettingsViewModel.IsMeasureStarted)
                 {
                     resetTimer();
@@ -350,9 +360,11 @@ namespace MakulaTest
 
         public void StopDiagnosis()
         {
+            Mouse.OverrideCursor = Cursors.Arrow;
+
             SettingsViewModel.IsMeasureStarted = false;
-            _moveTimer.Stop();
-            _removeTimer.Stop();
+            if (_moveTimer   != null) _moveTimer.Stop();
+            if (_removeTimer != null) _removeTimer.Stop();
 
             _moveTimer = null;
             _removeTimer = null;
@@ -404,18 +416,17 @@ namespace MakulaTest
           Point pt = _center;
           double amount = 0.10; // 10% (not 5%) - do we need a new property?
 
-          if (SettingsViewModel.IsBackwardChecked)
+          if (SettingsViewModel.IsBackwardChecked || SettingsViewModel.IsFreestyleChecked)
           { // from inside to outside (backward)
             //_session.StartingPoints[_currentPointIndex] = ExtendLine(_session.StartingPoints[_currentPointIndex], _center, 1.0-amount);
-            _session.StartingPoints[_currentPointIndex] = _center; // from inside to outside --> always center point!
           }
           else
           { // from outside to midpoint (forward)
-            _session.StartingPoints[_currentPointIndex] = ExtendLine(_session.StartingPoints[_currentPointIndex], _center, 1.0+amount);
-            
+            pt =  ExtendLine(_session.StartingPoints[_currentPointIndex], _center, 1.0+amount);
+            _session.StartingPoints[_currentPointIndex] = pt;
           }
 
-          return _session.StartingPoints[_currentPointIndex];
+          return pt;
         }
 
         private Point getCurrentEndPoint()
@@ -432,7 +443,7 @@ namespace MakulaTest
             _currentPointIndex = 0;
           }
 
-          if (SettingsViewModel.IsBackwardChecked)
+          if (SettingsViewModel.IsBackwardChecked || SettingsViewModel.IsFreestyleChecked)
             pt = GetPointOnEllipse(_currentPointIndex, MyRectangle.Width / 2 + 30, MyRectangle.Height / 2 + 30);
 
           return pt;
@@ -513,20 +524,80 @@ namespace MakulaTest
 
             if (e.RightButton == MouseButtonState.Pressed)
             {
-                if (_ellipse != null)
-                {
-                    if (_currentPointIndex > 0)
-                    { _currentPointIndex--;
-                      if (_session.Points.Count > 0)
-                        _session.Points.RemoveAt(_session.Points.Count - 1);
-                    }
+                RemoveLastPoint();
 
-                    MyCanvas.Children.Remove(_ellipse);
-                    _ellipse = null;
-                }
-                cancelMovement();
+                if (!SettingsViewModel.IsFreestyleChecked)
+                  cancelMovement();
             }
 
+        }
+
+        private void RemoveLastPoint()
+        {
+          if (_ellipse != null)
+          {
+            if (_currentPointIndex > 0)
+            {
+              _currentPointIndex--;
+              if (_session.Points.Count > 0)
+              {
+                _session.Points.RemoveAt(_session.Points.Count - 1);
+                UpdateTextBox();
+              }
+            }
+
+            MyCanvas.Children.Remove(_ellipse);
+            _ellipse = null;
+
+            if (SettingsViewModel.IsFreestyleChecked)
+              CheckMousePosition();
+          }
+        }
+
+        private void MyCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+          if (!SettingsViewModel.IsFreestyleChecked) return;
+          if (_session.StartingPoints.Count <= 0) return;
+
+          CheckMousePosition();
+        }
+
+        private void CheckMousePosition()
+        {
+          if (_currentPointIndex < 0 || _currentPointIndex >= _session.StartingPoints.Count) return;
+
+          Point endPoint = _session.StartingPoints[_currentPointIndex];
+          Point ip;
+
+          var mousePos = Mouse.GetPosition(MyCanvas);
+
+          Vector targetVector = endPoint - _center;
+          var dx = (mousePos.X - _center.X);
+          var dy = (mousePos.Y - _center.Y);
+
+          if (Math.Abs(targetVector.X) > Math.Abs(targetVector.Y))
+            ip = new Point(mousePos.X,_center.Y + (targetVector.Y / targetVector.X) * dx);
+          else
+            ip = new Point(_center.X + (targetVector.X / targetVector.Y) * dy, mousePos.Y);
+
+          drawLines();
+          drawCenterCircle();
+
+          _ellipse = null;
+          Mouse.OverrideCursor = Cursors.None;
+
+          //Console.WriteLine("Mouse:"+mousePos.ToString()+" ip="+ip.ToString()+" _center="+_center.ToString()+" endPoint="+endPoint.ToString());
+
+          //&& distanceSquared(endPoint, ip) < distanceSquared(endPoint, _center)
+          if (IsInsideBox(ip, _center, endPoint) )
+            _ellipse = _draw.DrawCircle(ip.X, ip.Y, CircleSize, SettingsViewModel.MovedBallBrush);
+          else
+          { _draw.DrawLine(_center.X, _center.Y, endPoint.X, endPoint.Y, 1, SettingsViewModel.MovedBallBrush);
+            _draw.DrawCircle(_center.X, _center.Y, CircleSize*1.0, SettingsViewModel.MovedBallBrush);
+            _draw.DrawCircle(endPoint.X, endPoint.Y, CircleSize*1.0, SettingsViewModel.MovedBallBrush);
+            _draw.DrawCircle(ip.X, ip.Y, CircleSize*2.0, SettingsViewModel.MovedBallBrush);
+            _draw.DrawCircle(ip.X, ip.Y, CircleSize*1.8, SettingsViewModel.MovedBallForbidden);
+          }
         }
 
         private void UpdateTextBox()
@@ -545,14 +616,7 @@ namespace MakulaTest
             if (e.Delta < 0 && _currentPointIndex > 0)
             {
                 double pos = 2.0 / (double)SettingsViewModel.Steps;
-                _currentPointIndex--;
-
-                var lastPoint = _session.Points.Last();
-                if (lastPoint != null)
-                {
-                    _session.Points.Remove(lastPoint);
-                    UpdateTextBox();
-                }
+                RemoveLastPoint();
             }
 
             resetAnimation();
@@ -563,4 +627,21 @@ namespace MakulaTest
 
 
     }
+
+    /*
+    // using System.IO; // for CursorHelper (MemoryStream)
+    // private Cursor DotCursor = CursorHelper.FromByteArray(Properties.Resources.dot);
+    // Mouse.OverrideCursor = DotCursor;
+    public static class CursorHelper
+    {
+      public static Cursor FromByteArray(byte[] array)
+      {
+        using (MemoryStream memoryStream = new MemoryStream(array))
+        {
+            return new Cursor(memoryStream);
+        }
+      }
+    }
+    */
+
 }
