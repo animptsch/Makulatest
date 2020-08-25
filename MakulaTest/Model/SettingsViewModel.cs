@@ -8,7 +8,10 @@ namespace MakulaTest.Model
 {
     public class SettingsViewModel :INotifyPropertyChanged
     {
-                
+        public const int ModeBackward  = 1;
+        public const int ModeForward   = 2;
+        public const int ModeFreestyle = 3;
+
         public int Duration
         {
             get { return Model.Duration; }
@@ -88,6 +91,7 @@ namespace MakulaTest.Model
 
 
         public Brush MovedBallBrush { get => (SolidColorBrush)_brushConv.ConvertFrom(BallColor); }
+        public Brush MovedBallForbidden { get => (SolidColorBrush)_brushConv.ConvertFrom("#ffff0000"); }
 
         public string BallColor
         {
@@ -139,30 +143,37 @@ namespace MakulaTest.Model
             }
         }
 
-        private bool _isBackwardChecked;
+        private int _modus;
+
+        public bool IsFreestyleChecked
+        {
+            get { return (_modus == ModeFreestyle); }
+            set
+            {
+              if (value) _modus = ModeFreestyle;
+              OnPropertyChanged(nameof(IsFreestyleChecked));
+              UpdateSelectedDuration();
+            }
+        }
 
         public bool IsBackwardChecked
         {
-            get { return _isBackwardChecked; }
+            get { return (_modus == ModeBackward); }
             set
             {
-                _isBackwardChecked = value;
-                _isForwardChecked = value == false;                
+                if (value) _modus = ModeBackward;
                 OnPropertyChanged(nameof(IsBackwardChecked));
                 UpdateSelectedDuration();
             }
         }
 
-        private bool _isForwardChecked;
-
         public bool IsForwardChecked
         {
-            get { return _isForwardChecked; }
+            get { return (_modus == ModeForward); }
             set
             {
-                _isForwardChecked = value;
-                _isBackwardChecked = value == false;                
-                OnPropertyChanged(nameof(IsForwardChecked));
+               if (value) _modus = ModeForward;
+               OnPropertyChanged(nameof(IsForwardChecked));
             }
         }
 
@@ -177,9 +188,6 @@ namespace MakulaTest.Model
                 OnPropertyChanged(nameof(IsMeasureStarted));
             }
         }
-
-
-
         public Settings Model { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
