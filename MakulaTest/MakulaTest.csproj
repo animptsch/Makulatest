@@ -93,7 +93,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ColorResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ErrorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IconsResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -157,22 +165,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\back.png" />
-    <Resource Include="Images\grid.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\daybefore.png" />
-    <Resource Include="Images\nextday.png" />
-    <Resource Include="Images\printer.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\daten.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Custom-Icon-Design-Mono-General-4-Eye.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\delrecord.png" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
@@ -202,6 +195,20 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\backward.PNG" />
+    <Resource Include="Images\forward.PNG" />
+    <Resource Include="Images\info.PNG" />
+    <Resource Include="Images\leftEye.PNG" />
+    <Resource Include="Images\print.PNG" />
+    <Resource Include="Images\rightEye.PNG" />
+    <Resource Include="Images\trash.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Analyse.PNG" />
+    <Resource Include="Images\Diagnose.PNG" />
+    <Resource Include="Images\Einstellungen.PNG" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

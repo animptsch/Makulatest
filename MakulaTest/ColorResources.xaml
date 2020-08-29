@@ -1,0 +1,10 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:MakulaTest">
+    <Color x:Key="Light">#FFFFFEFB</Color>
+    <Color x:Key="Medium">#FFFEF4E5</Color>
+    <Color x:Key="Dark">#FFFCB558</Color>
+    <SolidColorBrush x:Key="LightBrush" Color="{StaticResource Light}"/>
+    <SolidColorBrush x:Key="MediumBrush" Color="{StaticResource Medium}"/>
+    <SolidColorBrush x:Key="DarkBrush" Color="{StaticResource Dark}"/>
+</ResourceDictionary>
