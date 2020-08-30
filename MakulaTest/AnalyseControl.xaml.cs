@@ -273,6 +273,7 @@ namespace MakulaTest
 
         private void DrawLegend(double xOffset, double yOffset, string text1, double pct2, string text2, double pct1)
         {
+            return;
             double radius = GetRadius(40.0, 40.0);
             Vector center = new Vector(radius, radius);
 

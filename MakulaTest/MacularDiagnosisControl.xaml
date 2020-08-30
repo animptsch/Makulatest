@@ -11,7 +11,7 @@
             <local:BoolToOppositeBoolConverter x:Key="BoolToOppositeBoolConverter_ValueConverter" Inverse="True"/>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
