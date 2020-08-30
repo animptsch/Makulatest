@@ -15,6 +15,7 @@ using System.Printing;
 using System.Windows.Documents;
 using System.Linq;
 using System.Diagnostics.Eventing.Reader;
+using MakulaTest.Properties;
 
 namespace MakulaTest
 {
@@ -262,6 +263,25 @@ namespace MakulaTest
             var pct2 = 100 - pct1;
 
             DrawLegend(80, 20, "Sehbereich:", pct2, "Ausfallbereich:", pct1);
+            txtViewArea.Text = string.Format("{0:N2}%", pct2);
+            txtDefaultArea.Text = string.Format("{0:N2}%", pct1);
+            txtMinDistance.Text = string.Format("minimaler Abstand: {0:N2} mm",_mds.minDistance);
+
+            txtDateTime.Text = _mds.data.actualDate.ToString();
+            txtDirection.Text = _mds.backward ? "von Innen nach Außen" : "von Außen nach Innen";
+            txtWhichEye.Text = _mds.rightEye ? "rechtes Auge" : "linkes Auge";
+
+
+#if DEBUG
+            txtDebugInformation.Text = "(" + _mds.data.record_no + ", " + _mds.data.deleted + ")";
+            lblDebugInformation.Visibility = txtDebugInformation.Visibility = Visibility.Visible;
+#else
+        lblDebugInformation.Visibility = txtDebugInformation.Visibility = Visibility.Collapsed;
+#endif
+
+
+
+
 
             //Console.WriteLine("Die Fläche des Polygons beträgt: " + a.ToString());
             //DrawXAxis(20, 400, cursor_y + 150, 50);
@@ -273,6 +293,7 @@ namespace MakulaTest
 
         private void DrawLegend(double xOffset, double yOffset, string text1, double pct2, string text2, double pct1)
         {
+        
             return;
             double radius = GetRadius(40.0, 40.0);
             Vector center = new Vector(radius, radius);
@@ -382,7 +403,7 @@ namespace MakulaTest
             x++;
             y++;
 
-            testRect = _draw.DrawRectangle(x, y, 40, 20, Colors.LightGreen);
+            testRect = _draw.DrawRectangle(x, y, 40, 20, (Color)this.Resources["Dark"] );
             //Console.WriteLine("Timer Tick Event "+x.ToString()+","+y.ToString());
 
         }
@@ -473,8 +494,9 @@ namespace MakulaTest
                     //Console.WriteLine(count.ToString() + ". TestPoints=" + Points[count, 0].ToString() + "," + Points[count, 1].ToString());
                     count++;
                 }
-
-                _draw.DrawPolygon(Points, x, y, Colors.Black, Colors.LightGreen, 2, false);
+                
+                var obj = (Color)Application.Current.Resources["Dark"];
+                _draw.DrawPolygon(Points, x, y, Colors.Black, obj, 2, false);
             }
 
         }
@@ -505,7 +527,7 @@ namespace MakulaTest
                     count++;
                 }
 
-                _draw.DrawPolygon(Points, x, y, Colors.Black, Colors.LightPink, 2, false);
+                _draw.DrawPolygon(Points, x, y, Colors.Black, Colors.DarkGray, 2, false);
             }
             
         }

@@ -10,9 +10,9 @@
              SizeChanged="MyCanvas_SizeChanged" 
              Loaded="MyCanvas_Loaded">
 
-
     <Grid Margin="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -45,41 +45,64 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="BtnDayBefore" ToolTip="1 Tag zurück" 
-              Click="BtnDayBefore_Click" HorizontalAlignment="Right"
-              DockPanel.Dock="Bottom">
-                <Ellipse Width="50" Height="50">
-                    <Ellipse.Fill>
-                        <ImageBrush ImageSource="{StaticResource Backward}" />
-                    </Ellipse.Fill>
-                </Ellipse>
-
+            <Button x:Name="BtnDayBefore" ToolTip="1 Tag zurück"  
+              Click="BtnDayBefore_Click" Background="White"
+              Style="{DynamicResource CircleButton}">
+                <Image Source="{StaticResource Backward}" Width="25" Height="25" />
             </Button>
 
             <Button Grid.Column="1" x:Name="BtnPrint" ToolTip="Drucken des Fensters" 
-              Click="BtnPrint_Click" HorizontalAlignment="Right"              
-              DockPanel.Dock="Bottom">
-                <Image Source="{StaticResource Print}" />
+              Click="BtnPrint_Click" Background="White" 
+              Style="{DynamicResource CircleButton}">
+                <Image Source="{StaticResource Print}" Width="25" Height="25" />
             </Button>
 
 
             <Button Grid.Column="2" x:Name="BtnDaten" ToolTip="Datensatz löschen" 
-              Click="BtnDaten_Click" HorizontalAlignment="Right"
-              DockPanel.Dock="Bottom">
-                <Image Source="{StaticResource Trash}" />
+              Click="BtnDaten_Click" Background="White" 
+              Style="{DynamicResource CircleButton}">
+                <Image Source="{StaticResource Trash}" Width="25" Height="25" />
             </Button>
 
             <Button Grid.Column="3" x:Name="BtnNextDay" ToolTip="1 Tag vor" 
-                  Click="BtnNextDay_Click" HorizontalAlignment="Right"
-                  DockPanel.Dock="Bottom">
-                <Image Source="{StaticResource Forward}" />
+                  Click="BtnNextDay_Click" Background="White" 
+              Style="{DynamicResource CircleButton}" >
+                <Image Source="{StaticResource Forward}" Width="25" Height="25" />
             </Button>
 
         </Grid>
-            
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+
+            <Label Content="Zeitpunkt:" Grid.Column="0" Grid.Row="0"/>
+            <TextBlock x:Name="txtDateTime" Text="Datum" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" />
+
+            <Label Content="Richtung:" Grid.Column="0" Grid.Row="1"/>
+            <TextBlock x:Name="txtDirection" Text="Richtung Text" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" />
+
+            <Label Content="Auge:" Grid.Column="0" Grid.Row="2"/>
+            <TextBlock x:Name="txtWhichEye" Text="Welches Auge" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" />
+
+            <Label x:Name="lblDebugInformation" Content="Debug Informationen:" Grid.Column="0" Grid.Row="3" Visibility="Collapsed" />
+            <TextBlock x:Name="txtDebugInformation" Text="Debug" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Visibility="Collapsed" />
 
 
-        <Grid Grid.Row="2" >
+
+        </Grid>
+
+
+
+        <Grid Grid.Row="2" Visibility="Collapsed" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -120,10 +143,10 @@
                 Checked="CbLeftEye_IsChecked"
                 Unchecked="CbLeftEye_IsChecked"
                 IsChecked="False">linkes Auge</CheckBox>
-            
+
         </Grid>
 
-        <Grid Grid.Row="3" HorizontalAlignment="Left">
+        <Grid Grid.Row="3"  HorizontalAlignment="Left" VerticalAlignment="Top">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -136,20 +159,21 @@
             </Grid.RowDefinitions>
 
             <Border Background="{StaticResource DarkBrush}" CornerRadius="10" Height="35" Width="75" Margin="0,0,0,20">
-                <TextBlock Text="89,22 %" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="15" />
+                <TextBlock x:Name="txtViewArea" Text="89,22 %" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="15" />
             </Border>
 
-            <TextBlock Text="Sehbereich" Grid.Column="2" />
-
+            <TextBlock Text="Sehbereich" Grid.Column="2"  />
 
             <Border Grid.Row="1" Background="DarkGray" CornerRadius="10" Height="35" Width="75">
-                <TextBlock Text="89,22 %" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="15" />
+                <TextBlock x:Name="txtDefaultArea" Text="89,22 %" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="15" />
             </Border>
 
-            <TextBlock Text="Außenbereich" Grid.Row="1" Grid.Column="2" />
-
+            <TextBlock Text="Ausfallbereich" Grid.Row="1" Grid.Column="2" />
+                       
         </Grid>
 
+        <TextBlock x:Name="txtMinDistance" Text="Minimaler Abstand: 18,75 mm" Grid.Row="4"/>
+        
         <Canvas Grid.Column="1" Grid.RowSpan="5" Visibility="Visible" Height="650" x:Name="MyCanvas"/>
 
     </Grid>
