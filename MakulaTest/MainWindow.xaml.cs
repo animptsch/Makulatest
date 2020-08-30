@@ -31,8 +31,7 @@ namespace MakulaTest
             {
                 DiagnoseControl.SetSize(_canvasWidth, _canvasHeight);
             }
-            MyAnalyse.Parent = this;
-            DiagnoseControl.Parent = this;
+            MyAnalyse.Start(_filePathSettings.CSVDataFilePath);
         }
 
 
@@ -60,32 +59,13 @@ namespace MakulaTest
 
         }
 
-        private void BtnAnalyse_Click(object sender, RoutedEventArgs e)
-        {
-            MyAnalyse.Visibility = Visibility.Visible;
-            DiagnoseControl.Visibility = Visibility.Collapsed;
-            MainWindowToolbar.Visibility = Visibility.Collapsed;
-            MyAnalyse.Start(_filePathSettings.CSVDataFilePath);
-        }
-
         private void BtnSettingSize_Click(object sender, RoutedEventArgs e)
         {
             SaveWindowSettings();
             MessageBox.Show("Windowsdaten wurden gespeichert.");
         }
 
-        private void BtnDiagnose_Click(object sender, RoutedEventArgs e)
-        {
-            MyAnalyse.Visibility = Visibility.Collapsed;
-            DiagnoseControl.Visibility = Visibility.Visible;
-        }
-
-        private void BtnStartMacularDiagnosis_Click(object sender, RoutedEventArgs e)
-        {
-            btnStartMacularDiagnosis.IsEnabled = false;
-            DiagnoseControl.StartDiagnosis();
-        }
-
+               
         public void SaveWindowSettings()
         {
             SerializedWindowsState rect = new SerializedWindowsState()
@@ -116,13 +96,6 @@ namespace MakulaTest
             }
         }
         
-        public void AnalyseStop()
-        {
-            MyAnalyse.Visibility = Visibility.Collapsed;
-            DiagnoseControl.Visibility = Visibility.Visible;
-            MainWindowToolbar.Visibility = Visibility.Visible;
-        }
-
         public void LoadSettings()
         {
             SerializedWindowsState rect = null;
@@ -156,14 +129,7 @@ namespace MakulaTest
             }
 
         }
-
-        private void BtnSettings_Click(object sender, RoutedEventArgs e)
-        {
-            SettingsViewModel vm = DiagnoseControl.SettingsViewModel;
-            SettingsView settings = new SettingsView(vm);
-
-            bool? result = settings.ShowDialog();            
-        }
+        
 
         private void BtnScreenCalib_Click(object sender, RoutedEventArgs e)
         {

@@ -1,4 +1,4 @@
-﻿<Window x:Class="MakulaTest.SettingsView"
+﻿<UserControl x:Class="MakulaTest.SettingsView"
         x:Name="wndSettings"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,13 +7,10 @@
         xmlns:local="clr-namespace:MakulaTest"
         xmlns:model="clr-namespace:MakulaTest.Model"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        mc:Ignorable="d" Background="LightGray"
-        Title="Einstellungen" Height="310" Width="300"
-        WindowStartupLocation ="Manual">
-    <Grid >
-        
+        mc:Ignorable="d" 
+        Height="310" Width="300">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -28,13 +25,13 @@
         </Grid.ColumnDefinitions>
 
         <Label Content="Anzahl der Schritte:" Grid.Row="0" />
-        <TextBox Margin="5" Width="100" Height="20" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Steps}"/>
+        <TextBox Style="{StaticResource GrayTextbox}"  Margin="5" Width="100" Height="20" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" Text="{Binding Path=Steps}"/>
 
         <Label Content="Dauer der Animation vorwärts:" Grid.Row="1" />
-        <TextBox Margin="5" Width="100" Height="20" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Duration}"/>
+        <TextBox Style="{StaticResource GrayTextbox}" Margin="5" Width="100" Height="20" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="1" Text="{Binding Path=Duration}" />
 
-        <Label Content="Dauer der Animation rückwärts:" Grid.Row="2" />
-        <TextBox Margin="5" Width="100" Height="20" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1" Text="{Binding Path=DurationBackwards}"/>
+        <Label Content="Dauer der Animation rückwärts:" Grid.Row="2" Margin="0,0,0,60" />
+        <TextBox Style="{StaticResource GrayTextbox}" Margin="5" Width="100" Height="20" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1" Text="{Binding Path=DurationBackwards}" VerticalAlignment="Top"/>
 
         <Label Content="Hintergrundfarbe:" Grid.Row="3" />
         <xctk:ColorPicker Grid.Row="3" Grid.Column="1" Margin="5" SelectedColor="{Binding Path=BackgroundColor}" />
@@ -48,10 +45,5 @@
         <Label Content="Polygon Farbe:" Grid.Row="6" />
         <xctk:ColorPicker Grid.Row="6" Grid.Column="1" Margin="5" SelectedColor="{Binding Path=PolygonColor}" />
 
-        <StackPanel Grid.Column="1" Grid.Row="7" Orientation="Horizontal" Grid.ColumnSpan="2">
-            <Button x:Name="btnOk" IsDefault="True" Margin="10" FontSize="10" Padding="5" Click="BtnOk_Click"  >OK</Button>
-            <Button x:Name="btnCancel" IsCancel="True" Margin="10" FontSize="10" Padding="5" Click="BtnCancel_Click" >Cancel</Button>
-        </StackPanel>
-                
     </Grid>
-</Window>
+</UserControl>

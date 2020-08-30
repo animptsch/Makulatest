@@ -13,8 +13,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="IconsResources.xaml"/>
-                <ResourceDictionary Source="ColorResources.xaml"/>
+                <ResourceDictionary Source="Resources/IconsResources.xaml"/>
+                <ResourceDictionary Source="Resources/ColorResources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -25,12 +25,6 @@
     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Height="50">
 
       
-       <Button x:Name="BtnBack" ToolTip="Zurück zur Hauptseite" 
-               Click="BtnBack_Click" HorizontalAlignment="Left"
-               DockPanel.Dock="Bottom">
-           <Image Source="{StaticResource Backward}" />
-       </Button>
-
        <Button x:Name="BtnDayBefore" ToolTip="1 Tag zurück" 
               Click="BtnDayBefore_Click" HorizontalAlignment="Right"
               DockPanel.Dock="Bottom">

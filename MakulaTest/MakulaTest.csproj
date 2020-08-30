@@ -36,6 +36,8 @@
     <ApplicationIcon>Custom-Icon-Design-Mono-General-4-Eye.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Printing" />
@@ -93,7 +95,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ColorResources.xaml">
+    <Page Include="Resources\ColorResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -101,7 +103,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="IconsResources.xaml">
+    <Page Include="Resources\ControlTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\IconsResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -209,6 +215,12 @@
     <Resource Include="Images\Analyse.PNG" />
     <Resource Include="Images\Diagnose.PNG" />
     <Resource Include="Images\Einstellungen.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Hubert.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\startButton.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

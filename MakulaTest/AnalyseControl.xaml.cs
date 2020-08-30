@@ -39,13 +39,7 @@ namespace MakulaTest
         private Draw _draw;
         private MakulaDataSet _mds;
     
-        private bool _rightEyeFilter;
-
-
-        public new MainWindow Parent { get; set; }
-
-
-
+        private bool _rightEyeFilter;        
 
         public AnalyseControl()
         {
@@ -133,12 +127,6 @@ namespace MakulaTest
             GoBackInTime();
         }
 
-        private void BtnBack_Click(object sender, RoutedEventArgs e)
-        {
-            //Console.WriteLine("btnBack_Click");
-            Parent.AnalyseStop();
-
-        }
 
         private void BtnDayBefore_Click(object sender, RoutedEventArgs e)
         {
@@ -338,11 +326,15 @@ namespace MakulaTest
             else
                 v = new Vector(e.NewSize.Width, e.NewSize.Height);
 
-            v -= new Vector(BtnBack.ActualWidth, BtnBack.ActualHeight);
+            //v -= new Vector(BtnBack.ActualWidth, BtnBack.ActualHeight);
 
             windowSize = new Size(v.X, v.Y);
 
-            RefreshScreen();
+            if (_mds != null)
+            {
+                RefreshScreen();
+            }
+            
 
         }
 
@@ -459,28 +451,31 @@ namespace MakulaTest
             {
                 return;
             }
-
-            int steps = _mds.data.Points.Count;
-            double[,] Points = new double[steps, 2];
-
-            var minWinExtend = Math.Min(windowSize.Width, windowSize.Height);
-
-            double radius = GetRadius(40.0,40.0);
-
-            Vector center = new Vector(radius, radius);
-
-            int count = 0;
-            for (var i = 0; i < steps; i++)
+            if (_mds != null)
             {
-                Vector start = GetStartingPoint(i, steps, center, radius);
+                int steps = _mds.data.Points.Count;
+                double[,] Points = new double[steps, 2];
 
-                Points[count, 0] = start.X;
-                Points[count, 1] = start.Y;
-                //Console.WriteLine(count.ToString() + ". TestPoints=" + Points[count, 0].ToString() + "," + Points[count, 1].ToString());
-                count++;
+                var minWinExtend = Math.Min(windowSize.Width, windowSize.Height);
+
+                double radius = GetRadius(40.0, 40.0);
+
+                Vector center = new Vector(radius, radius);
+
+                int count = 0;
+                for (var i = 0; i < steps; i++)
+                {
+                    Vector start = GetStartingPoint(i, steps, center, radius);
+
+                    Points[count, 0] = start.X;
+                    Points[count, 1] = start.Y;
+                    //Console.WriteLine(count.ToString() + ". TestPoints=" + Points[count, 0].ToString() + "," + Points[count, 1].ToString());
+                    count++;
+                }
+
+                _draw.DrawPolygon(Points, x, y, Colors.Black, Colors.LightGreen, 2, false);
             }
 
-            _draw.DrawPolygon(Points, x, y, Colors.Black, Colors.LightGreen, 2, false);
         }
 
 
@@ -491,23 +486,27 @@ namespace MakulaTest
                 return;
             }
 
-            double radius = GetRadius(40.0, 40.0);
-            //double scaleFactor = radius * 2.0 / data.Points[0].X;
-            double scaleFactor = radius / 65;
-
-            int steps = _mds.data.Points.Count;
-            double[,] Points = new double[steps, 2];
-
-            int count = 0;
-            foreach (var point in _mds.data.Points)
+            if (_mds != null)
             {
-                Points[count, 0] = point.X * scaleFactor + radius;
-                Points[count, 1] = point.Y * scaleFactor + radius;
-                //Console.WriteLine(count.ToString() + ". Points=" + Points[count, 0].ToString() +"," + Points[count, 1].ToString());
-                count++;
-            }
+                double radius = GetRadius(40.0, 40.0);
+                //double scaleFactor = radius * 2.0 / data.Points[0].X;
+                double scaleFactor = radius / 65;
 
-            _draw.DrawPolygon(Points, x, y, Colors.Black, Colors.LightPink, 2, false);
+                int steps = _mds.data.Points.Count;
+                double[,] Points = new double[steps, 2];
+
+                int count = 0;
+                foreach (var point in _mds.data.Points)
+                {
+                    Points[count, 0] = point.X * scaleFactor + radius;
+                    Points[count, 1] = point.Y * scaleFactor + radius;
+                    //Console.WriteLine(count.ToString() + ". Points=" + Points[count, 0].ToString() +"," + Points[count, 1].ToString());
+                    count++;
+                }
+
+                _draw.DrawPolygon(Points, x, y, Colors.Black, Colors.LightPink, 2, false);
+            }
+            
         }
 
 
@@ -519,7 +518,11 @@ namespace MakulaTest
 
             windowSize = MyCanvas.RenderSize;
             
-            RefreshScreen();
+            if(_mds != null)
+            {
+                RefreshScreen();
+            }
+            
 
             return base.ArrangeOverride(arrangeBounds);
         }

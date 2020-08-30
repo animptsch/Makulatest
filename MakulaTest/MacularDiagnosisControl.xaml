@@ -9,55 +9,55 @@
     <Grid>
         <Grid.Resources>
             <local:BoolToOppositeBoolConverter x:Key="BoolToOppositeBoolConverter_ValueConverter" Inverse="True"/>
-            <Style TargetType="TextBox">
-                <Setter Property="Width" Value="200"/>
-                <Setter Property="Height" Value="250"/>
-                <Setter Property="VerticalAlignment" Value="Stretch"/>
-                <Setter Property="TextWrapping" Value="Wrap"/>
-                <Setter Property="FontSize" Value="20"/>
-            </Style>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <Canvas Grid.RowSpan="2" Visibility="Visible" HorizontalAlignment="Left"
-                VerticalAlignment="Top" Background="White" Height="300" Width="300"
-                x:Name="MyCanvas"
+        <StackPanel Orientation="Horizontal" Margin="20,10,20,10">
+            <Ellipse Height="50" Width="50" >
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="{StaticResource ProfilBild}"/>
+                </Ellipse.Fill>
+            </Ellipse>
+            <TextBlock Margin="20,0,10,0" FontSize="25" Text="Hubert Nimptsch" VerticalAlignment="Center"/>
+            <Image Source="{StaticResource Info}" Width="20" Height="20" />
+        </StackPanel>
+
+        <GroupBox Margin="5" IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}" Grid.Row="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                <RadioButton Style="{StaticResource Eyes}" IsChecked="{Binding Path=IsLeftEyeChecked}"
+                         Content="{StaticResource LeftEye}" Tag="Links" BorderBrush="{StaticResource DarkBrush}"/>
+                <RadioButton Margin="50,0,0,0" Style="{StaticResource Eyes}" IsChecked="{Binding Path=IsRightEyeChecked}"
+                             Content="{StaticResource RightEye}" Tag="Rechts" BorderBrush="{StaticResource DarkBrush}" />
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Margin="5" IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}" Grid.Row="2" >
+            <StackPanel HorizontalAlignment="Center">
+                <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Freihand"             IsChecked="{Binding Path=IsFreestyleChecked}"/>
+                <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Von außen nach innen" IsChecked="{Binding Path=IsForwardChecked}"/>
+                <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Von innen nach außen" IsChecked="{Binding Path=IsBackwardChecked}"/>
+            </StackPanel>
+        </GroupBox>
+
+        <Button Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="btnStartDiagnose" Click="btnStartDiagnose_Click">
+            <Image Source="{StaticResource StartDiagnose}" Width="75" Height="75"/>
+        </Button>
+
+        <Canvas Grid.Column="1" Grid.RowSpan="4"
+                Height="300" Width="300"
+                x:Name="MyCanvas" VerticalAlignment="Center"
                 MouseDown="MyCanvas_MouseDown"
                 PreviewMouseWheel="MyCanvas_PreviewMouseWheel"
                 MouseMove="MyCanvas_MouseMove">
             <Rectangle x:Name="MyRectangle" Stroke="Black" Fill="White" Width="200" Height="200"  Margin="50" />
         </Canvas>
-
-        <StackPanel  Grid.Column="1" >
-            <GroupBox Margin="5" IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}"  BorderBrush="Black" BorderThickness="1">
-                <StackPanel>
-                    <RadioButton Content="Linkes Auge" IsChecked="{Binding Path=IsLeftEyeChecked}"/>
-                    <RadioButton Content="Rechtes Auge" IsChecked="{Binding Path=IsRightEyeChecked}"/>
-                </StackPanel>
-            </GroupBox>
-            <GroupBox Margin="5" IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}" BorderBrush="Black" BorderThickness="1">
-                <StackPanel>
-                    <RadioButton Content="Freihand"             IsChecked="{Binding Path=IsFreestyleChecked}"/>
-                    <RadioButton Content="Von außen nach innen" IsChecked="{Binding Path=IsForwardChecked}"/>
-                    <RadioButton Content="Von innen nach außen" IsChecked="{Binding Path=IsBackwardChecked}"/>
-                </StackPanel>
-            </GroupBox>
-        </StackPanel>
-
-
-
-
-
-
-
-        <TextBox x:Name="txtPointList" Visibility="Collapsed" Grid.Column="1" />
-        <TextBox x:Name="txtLastPos" Visibility="Collapsed" Grid.Column="1" Grid.Row="1" />
-
     </Grid>
 </UserControl>

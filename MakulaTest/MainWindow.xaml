@@ -5,25 +5,51 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MakulaTest"
         mc:Ignorable="d" Loaded="Window_Loaded" KeyDown="Window_KeyDown"
-        Title="MainWindow" Height="700" Width="700" Background="LightGray" MinWidth="550" MinHeight="250">
+        Title="MainWindow" Height="700" Width="700" Background="{StaticResource DarkBrush}" MinWidth="550" MinHeight="250">
 
-    <Grid Margin="0,14,0.333,-14.333">
-        <Grid.Resources>
-            <Style TargetType="Button">
-                <Setter Property="Margin" Value="10"/>
-                <Setter Property="FontSize" Value="20"/>
-                <Setter Property="Padding" Value="5"/>
-            </Style>
-        </Grid.Resources>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
+    <TabControl Margin="10" Background="{StaticResource MediumBrush}"  TabStripPlacement="Left" >
+        <TabItem>
+            <TabItem.Header>
+                <StackPanel Orientation="Horizontal" >
+                    <Image Source="{StaticResource Analyse}" Height="20" Width="20"/>
+                    <TextBlock Text="Analyse" VerticalAlignment="Center"/>
+                </StackPanel>
+            </TabItem.Header>
+            <TabItem.Content>
+                <local:AnalyseControl x:Name="MyAnalyse" />        
+            </TabItem.Content>
+        </TabItem>
 
-        <local:MacularDiagnosisControl x:Name="DiagnoseControl" Visibility="Collapsed" />
-        <local:AnalyseControl x:Name="MyAnalyse" Visibility="Collapsed" />
+        <TabItem>
+            <TabItem.Header>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{StaticResource Diagnose}" Height="20" Width="20"/>
+                    <TextBlock Text="Diagnose" VerticalAlignment="Center"/>
+                </StackPanel>
+            </TabItem.Header>
+            <TabItem.Content>
+                <local:MacularDiagnosisControl x:Name="DiagnoseControl"/>        
+            </TabItem.Content>
+        </TabItem>
 
-        <WrapPanel Margin="10" x:Name="MainWindowToolbar" Orientation="Horizontal" Grid.Row="1" >
+        <TabItem  >
+            <TabItem.Header>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{StaticResource Settings}" Height="20" Width="20"/>
+                    <TextBlock Text="Einstellungen" VerticalAlignment="Center"/>
+                </StackPanel>
+            </TabItem.Header>
+            <TabItem.Content>
+                <local:SettingsView x:Name="Settings"/>
+            </TabItem.Content>
+        </TabItem>
+        
+    </TabControl>    
+
+        
+        
+
+        <!--<WrapPanel Margin="10" x:Name="MainWindowToolbar" Orientation="Horizontal" Grid.Row="1" >
             <Button x:Name="btnAnalyse" Content="Analyse" Click="BtnAnalyse_Click" />
             <Button x:Name="btnDiagnose" Content="Diagnose" Click="BtnDiagnose_Click"  />
             <Button x:Name="btnSettingSize" Content="Größe speichern" Click="BtnSettingSize_Click"/>
@@ -31,6 +57,6 @@
             <Button x:Name="btnSettings" Content="Einstellungen" Click="BtnSettings_Click"/>
             <Button x:Name="btnScreenCalib" Content="Kalibrieren" Click="BtnScreenCalib_Click"/>
             <Button x:Name="btnSendMail" Content="Mail senden" Click="btnSendMail_Click"/>
-        </WrapPanel>
-    </Grid>
+        </WrapPanel>-->
+    
 </Window>

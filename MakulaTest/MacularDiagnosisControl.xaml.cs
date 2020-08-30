@@ -68,8 +68,6 @@ namespace MakulaTest
         
         public Model.SettingsViewModel SettingsViewModel { get; set; }
 
-        public MainWindow Parent { get; set; }
-
 
         public void StartDiagnosis()
         {
@@ -395,11 +393,9 @@ namespace MakulaTest
                          CircleSize,
                          MyRectangle);
 
-            Parent.btnStartMacularDiagnosis.IsEnabled = true;
+            btnStartDiagnose.IsEnabled = true;            
             _session.Points.Clear();
         }
-
-
             
 
         private Point getCurrentStartPoint()
@@ -607,8 +603,6 @@ namespace MakulaTest
             {
                 sb.AppendLine(string.Format("{0:000.00}, {1:000.00}", item.X, item.Y));
             }
-            txtPointList.Text = sb.ToString();
-            txtPointList.ScrollToEnd();
         }
 
         private void MyCanvas_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
@@ -625,7 +619,11 @@ namespace MakulaTest
             e.Handled = true;
         }
 
-
+        private void btnStartDiagnose_Click(object sender, RoutedEventArgs e)
+        {
+            btnStartDiagnose.IsEnabled = false;
+            StartDiagnosis();
+        }
     }
 
     /*

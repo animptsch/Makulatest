@@ -18,34 +18,26 @@ namespace MakulaTest
     /// <summary>
     /// Interaction logic for Settings.xaml
     /// </summary>
-    public partial class SettingsView : Window
+    public partial class SettingsView : UserControl
     {
-        public SettingsView(SettingsViewModel viewModel)
+        public SettingsView()
         {
             InitializeComponent();
-
-            // place the new window in the middle of the screen
-            wndSettings.Left = SystemParameters.PrimaryScreenWidth / 2 - wndSettings.Width;
-            wndSettings.Top = SystemParameters.PrimaryScreenHeight / 2 - wndSettings.Height / 2;
-
-            _vm = viewModel;
+                        
+            _vm = new SettingsViewModel();
             this.DataContext = _vm;
         }
 
         private SettingsViewModel _vm;
 
         private void BtnOk_Click(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = true;
-            _vm.SaveSettings();
-            this.Close();
+        {          
+            _vm.SaveSettings();          
         }
         
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = false;
-            this.Close();
+        {            
         }
     }
 }
