@@ -513,6 +513,9 @@ namespace MakulaTest
 
         private void MyCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (!SettingsViewModel.IsMeasureStarted) 
+                return;
+
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 MarkPoint();

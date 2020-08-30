@@ -19,7 +19,8 @@ namespace MakulaTest
         public MainWindow()
         {
             InitializeComponent();
-            _filePathSettings = FilePathSettings.Instance;            
+            _filePathSettings = FilePathSettings.Instance;
+            MyAnalyse.Start(_filePathSettings.CSVDataFilePath);
         }
 
         private FilePathSettings _filePathSettings;
@@ -30,19 +31,20 @@ namespace MakulaTest
             if (_canvasHeight != 0.0 && _canvasWidth != 0.0)
             {
                 DiagnoseControl.SetSize(_canvasWidth, _canvasHeight);
-            }
-            MyAnalyse.Start(_filePathSettings.CSVDataFilePath);
+            }            
         }
 
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Space)
+            
+
+            if (e.Key == Key.Space && DiagnoseControl.SettingsViewModel.IsMeasureStarted)
             {
                 DiagnoseControl.MarkPoint();
             }
 
-            if (e.Key == Key.Enter)
+            if (e.Key == Key.Enter && DiagnoseControl.SettingsViewModel.IsMeasureStarted)
             {
                 DiagnoseControl.StopDiagnosis();
             }
