@@ -33,13 +33,14 @@ namespace MakulaTest
         private DispatcherTimer _moveTimer;
         private Rectangle testRect;
         private int maxSequenceId;
-        private Size windowSize;
+        private Size _windowSize;
         private bool timeMeasure = false;
         private bool _showGrid = true;
         //private Rectangle _rect;
         private Draw _draw;
         private MakulaDataSet _mds;
-    
+        private double _radius;
+
         private bool _rightEyeFilter;        
 
         public AnalyseControl()
@@ -53,8 +54,8 @@ namespace MakulaTest
         public void Start(string path)
         {
             _draw = new Draw(MyCanvas);
-
             _mds = new MakulaDataSet(path);
+
             //_rect = MyRectangle;
 /*********************************
                   var steps = 17;
@@ -234,8 +235,9 @@ namespace MakulaTest
         {
             TimeMeasureStart();
 
-            //Console.WriteLine("*********** Analyse.MyCanvas.Width (new): " + windowSize.Width.ToString());
-            //Console.WriteLine("*********** Analyse.MyCanvas.Height (new): " + windowSize.Height.ToString());
+            //Console.WriteLine("*********** Analyse.MyCanvas.Width (new): " + _windowSize.Width.ToString());
+            //Console.WriteLine("*********** Analyse.MyCanvas.Height (new): " + _windowSize.Height.ToString());
+            _radius = GetRadius(390.0,99.0);
 
             //Console.WriteLine("MyCanvas.ActualHeight="+ MyCanvas.Width.ToString());
 
@@ -295,10 +297,9 @@ namespace MakulaTest
         {
         
             return;
-            double radius = GetRadius(40.0, 40.0);
-            Vector center = new Vector(radius, radius);
+            Vector center = new Vector(_radius, _radius);
 
-            var x_pos = radius * 2.0 + xOffset;
+            var x_pos = _radius * 2.0 + xOffset;
             var y_pos1 = center.Y + 30.0 - yOffset;
             var y_pos2 = center.Y + 30.0 + yOffset;
 
@@ -333,7 +334,7 @@ namespace MakulaTest
         textBelowPicture += " ("+ _mds.data.record_no + ", "+ _mds.data.deleted + ")";
       #endif
 
-            _draw.DrawStringAtPos(textBelowPicture, Convert.ToInt32(radius) + 40, Convert.ToInt32(radius) * 2 + 60, 16, TextAlignment.Center);
+            _draw.DrawStringAtPos(textBelowPicture, Convert.ToInt32(_radius) + 40, Convert.ToInt32(_radius) * 2 + 60, 16, TextAlignment.Center);
             //_draw.DrawBlackLine(0, Convert.ToInt32(center.Y)+40,1000, Convert.ToInt32(center.Y)+40, 2);
         }
 
@@ -350,13 +351,9 @@ namespace MakulaTest
 
             //v -= new Vector(BtnBack.ActualWidth, BtnBack.ActualHeight);
 
-            windowSize = new Size(v.X, v.Y);
+            _windowSize = new Size(v.X, v.Y);
 
-            if (_mds != null)
-            {
-                RefreshScreen();
-            }
-            
+            RefreshScreen();
 
         }
 
@@ -445,23 +442,23 @@ namespace MakulaTest
         }
 
         private double GetRadius(double xOffset, double yOffset)
-    { double radius;
+        {   double radius;
+            double w = _windowSize.Width - xOffset;
+            double h = _windowSize.Height- yOffset;
 
-            if (windowSize.Width - xOffset > windowSize.Height - yOffset - 50)
-                radius = (windowSize.Height - yOffset - 50) / 2.0;
+            if (w  > h)
+                radius = h / 2.0;
             else
-                radius = (windowSize.Width - xOffset) / 2.0;
+                radius = w / 2.0;
 
-            if (radius * 2.0 > (windowSize.Width - xOffset) - 200.0)
-                radius = ((windowSize.Width - xOffset) - 200.0) / 2.0;
+            //Console.WriteLine("Radius=" + radius.ToString());
 
             return radius;
         }
 
         private void DrawMidPoint(int x, int y)
         {
-            double radius = GetRadius(40.0, 40.0);
-            Vector center = new Vector(radius, radius);
+            Vector center = new Vector(_radius, _radius);
 
             _draw.DrawEllipse(x + center.X, y + center.Y, 15.0, 15.0, Colors.Black, Colors.Black);
         }
@@ -478,16 +475,14 @@ namespace MakulaTest
                 int steps = _mds.data.Points.Count;
                 double[,] Points = new double[steps, 2];
 
-                var minWinExtend = Math.Min(windowSize.Width, windowSize.Height);
+                var minWinExtend = Math.Min(_windowSize.Width, _windowSize.Height);
 
-                double radius = GetRadius(40.0, 40.0);
-
-                Vector center = new Vector(radius, radius);
+                Vector center = new Vector(_radius, _radius);
 
                 int count = 0;
                 for (var i = 0; i < steps; i++)
                 {
-                    Vector start = GetStartingPoint(i, steps, center, radius);
+                    Vector start = GetStartingPoint(i, steps, center, _radius);
 
                     Points[count, 0] = start.X;
                     Points[count, 1] = start.Y;
@@ -511,9 +506,8 @@ namespace MakulaTest
 
             if (_mds != null)
             {
-                double radius = GetRadius(40.0, 40.0);
                 //double scaleFactor = radius * 2.0 / data.Points[0].X;
-                double scaleFactor = radius / 65;
+                double scaleFactor = _radius / 65;
 
                 int steps = _mds.data.Points.Count;
                 double[,] Points = new double[steps, 2];
@@ -521,8 +515,8 @@ namespace MakulaTest
                 int count = 0;
                 foreach (var point in _mds.data.Points)
                 {
-                    Points[count, 0] = point.X * scaleFactor + radius;
-                    Points[count, 1] = point.Y * scaleFactor + radius;
+                    Points[count, 0] = point.X * scaleFactor + _radius;
+                    Points[count, 1] = point.Y * scaleFactor + _radius;
                     //Console.WriteLine(count.ToString() + ". Points=" + Points[count, 0].ToString() +"," + Points[count, 1].ToString());
                     count++;
                 }
@@ -539,12 +533,9 @@ namespace MakulaTest
 
             MyCanvas.Arrange(new Rect(arrangeBounds));
 
-            windowSize = MyCanvas.RenderSize;
+            _windowSize = MyCanvas.RenderSize;
             
-            if(_mds != null)
-            {
-                RefreshScreen();
-            }
+            //RefreshScreen();
             
 
             return base.ArrangeOverride(arrangeBounds);
@@ -557,9 +548,8 @@ namespace MakulaTest
         {
             int LineNumber = 20;
 
-            double radius = GetRadius(x, y);
-            double width = radius;
-            double height = radius;
+            double width = _radius;
+            double height = _radius;
 
             double centerIndex = Math.Floor(LineNumber / 2.0);
 
