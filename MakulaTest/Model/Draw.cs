@@ -183,10 +183,11 @@ namespace MakulaTest.Model
 
     public Rectangle DrawRectangle(double x, double y, double x_size, double y_size, Color fillColor)
     {
-      return DrawRectangle(x, y, x_size, y_size, fillColor, 2);
+      return DrawRectangle(x, y, x_size, y_size, fillColor, 2 , 0.0, 0.0);
     }
 
-    public Rectangle DrawRectangle(double x, double y, double x_size, double y_size, Color fillColor, int thickness)
+    public Rectangle DrawRectangle(double x, double y, double x_size, double y_size, 
+                                   Color fillColor, int thickness, double radiusX, double radiusY)
     {
       var MyStroke = new SolidColorBrush(fillColor);
 
@@ -198,7 +199,9 @@ namespace MakulaTest.Model
         HorizontalAlignment = HorizontalAlignment.Left,
         VerticalAlignment = VerticalAlignment.Center,
         Width = x_size,
-        Height = y_size
+        Height = y_size,
+        RadiusX = radiusX,
+        RadiusY = radiusY
       };
 
       _canvas.Children.Add(myRect);
@@ -210,7 +213,12 @@ namespace MakulaTest.Model
 
     public void DrawStringAtPos(string text, double x, double y, double size)
     {
-      DrawStringAtPos(text, x, y, size, TextAlignment.Left);
+      DrawStringAtPos(text, x, y, size, TextAlignment.Left, Colors.Black);
+    }
+
+    public void DrawStringAtPos(string text, double x, double y, double size, TextAlignment align)
+    {
+      DrawStringAtPos(text, x, y, size, align, Colors.Black);
     }
 
     public void DrawString(string text, double size)
@@ -219,12 +227,15 @@ namespace MakulaTest.Model
       cursor_y += size * 2;
     }
 
-    public void DrawStringAtPos(string text, double x, double y, double size, TextAlignment align)
+    public void DrawStringAtPos(string text, double x, double y, double size, TextAlignment align, Color strokeColor)
     {
+      SolidColorBrush strokeBrush = new SolidColorBrush { Color = strokeColor };
+
       TextBlock txt1 = new TextBlock
       { //TextAlignment = TextAlignment.Center,
         FontSize = size,
         Text = text,
+        Foreground = strokeBrush
         //FontWeight = FontWeights.UltraBold
       };
 
