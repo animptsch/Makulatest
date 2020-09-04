@@ -16,6 +16,7 @@ using System.Windows.Documents;
 using System.Linq;
 using System.Diagnostics.Eventing.Reader;
 using MakulaTest.Properties;
+using System.Windows.Media.Imaging;
 
 namespace MakulaTest
 {
@@ -143,7 +144,7 @@ namespace MakulaTest
 
         private void BtnPrint_Click(object sender, RoutedEventArgs e)
         {
-            CanvasPrint();
+            PrintFlowDocument();
         }
 
         private void CanvasPrint()
@@ -169,25 +170,24 @@ namespace MakulaTest
 
         private void PrintFlowDocument()
         {
-
             PrintDialog prnt = new PrintDialog();
 
-            // Create a FlowDocument dynamically.  
+            //PrintDialog object's UseEXDialog to true.
+            if (prnt.ShowDialog() != true) return;
 
-            FlowDocument doc = new FlowDocument(new Paragraph(new Run("Some text goes here")));
+            // Create a FlowDocument dynamically.
 
+            //FlowDocument doc = new FlowDocument(new Paragraph(new Run("Some text goes here")));
+            FlowDocument doc = CreateFlowDocument();
             doc.Name = "FlowDoc";
 
             // Create IDocumentPaginatorSource from FlowDocument  
-
             IDocumentPaginatorSource idpSource = doc;
 
             // Call PrintDocument method to send document to printer  
-
             prnt.PrintDocument(idpSource.DocumentPaginator, "Hello WPF Printing.");
-
-
         }
+
         /// <summary>  
         /// This method creates a dynamic FlowDocument. You can add anything to this  
         /// FlowDocument that you would like to send to the printer  
@@ -197,12 +197,17 @@ namespace MakulaTest
         {
             // Create a FlowDocument  
             FlowDocument doc = new FlowDocument();
+
+            doc.ColumnWidth = ConvertPrinterPixel(190.0);
+
             // Create a Section  
             Section sec = new Section();
             // Create first Paragraph  
             Paragraph p1 = new Paragraph();
             // Create and add a new Bold, Italic and Underline  
             Bold bld = new Bold();
+
+            /*
             bld.Inlines.Add(new Run("First Paragraph"));
             Italic italicBld = new Italic();
             italicBld.Inlines.Add(bld);
@@ -214,7 +219,95 @@ namespace MakulaTest
             sec.Blocks.Add(p1);
             // Add Section to FlowDocument  
             doc.Blocks.Add(sec);
+
+            Paragraph myParagraph = new Paragraph();
+
+            // Add some Bold text to the paragraph
+            myParagraph.Inlines.Add(new Bold(new Run("Some bold text in the paragraph.")));
+
+            // Add some plain text to the paragraph
+            myParagraph.Inlines.Add(new Run(" Some text that is not bold."));
+
+            // Create a List and populate with three list items.
+            List myList = new List();
+
+            // First create paragraphs to go into the list item.
+            Paragraph paragraphListItem1 = new Paragraph(new Run("ListItem 1"));
+            Paragraph paragraphListItem2 = new Paragraph(new Run("ListItem 2"));
+            Paragraph paragraphListItem3 = new Paragraph(new Run("ListItem 3"));
+
+            // Add ListItems with paragraphs in them.
+            myList.ListItems.Add(new ListItem(paragraphListItem1));
+            myList.ListItems.Add(new ListItem(paragraphListItem2));
+            myList.ListItems.Add(new ListItem(paragraphListItem3));
+
+            // Create a FlowDocument with the paragraph and list.
+            doc.Blocks.Add(myParagraph);
+            doc.Blocks.Add(myList);
+*/
+            Canvas printerCanvas = new Canvas();
+            Draw printer = new Draw(printerCanvas);
+
+            var cm = ConvertPrinterPixel(10.0);
+            var xPos = ConvertPrinterPixel(36.75+15.0);
+            var lineSize = ConvertPrinterPixel(10.0);
+
+            var darkYellow =  (Color)Application.Current.Resources["Dark"];
+            var lightYellow = Color.FromArgb(255, 254, 244, 229);
+            printer.DrawRectangle(cm * 1.5, cm * 2.0, cm * 18.0, cm * 25.0, darkYellow,  0, cm, cm);
+            printer.DrawRectangle(cm * 2.5, cm * 3.0, cm * 16.0, cm * 23.0, lightYellow, 0, cm*16.0/18.0, cm*23.0/25.0);
+
+            printer.DrawStringAtPos("Hubert Nimptsch",  xPos, lineSize * 3.5, 36, TextAlignment.Left);
+            printer.DrawStringAtPos("Angerweg 2",  xPos, lineSize * 4.5, 16, TextAlignment.Left);
+            printer.DrawStringAtPos("31028 Gronau/Leine", xPos, lineSize * 5.0, 22, TextAlignment.Left);
+            printer.DrawStringAtPos("Mobil: 01575 1086320", xPos, lineSize * 6.0, 16, TextAlignment.Left);
+
+            var originalRadius = _radius;
+            _radius = 201.135;
+
+            DrawTestfield(xPos, lineSize * 7.0, printer);
+            DrawTestPolygon(xPos, lineSize * 7.0, printer);
+            DrawMidPoint(xPos, lineSize * 7.0, printer);
+
+            DrawGrid(xPos, lineSize * 7.0, printer);
+
+            _radius = originalRadius;
+
+            var a = CalculatePolygonArea();
+            var pct1 = a * 100.0 / (Math.PI * 65 * 65);
+            var pct2 = 100 - pct1;
+
+            printer.DrawRectangle(xPos, lineSize * 18.0,  cm*2.0, lineSize*0.75, darkYellow,  0, 5.0, 5.0); 
+            printer.DrawStringAtPos(string.Format("{0:N2}%", pct2), xPos+cm*0.3, lineSize * 18.1, 16, TextAlignment.Left, Colors.Black);
+            printer.DrawStringAtPos("Sehbereich", xPos+cm*2.3, lineSize * 18.1, 16);
+
+            printer.DrawRectangle(xPos+cm*5.7, lineSize * 18.0, cm*2.0, lineSize*0.75, Colors.DarkGray,  0, 5.0, 5.0); 
+            printer.DrawStringAtPos(string.Format("{0:N2}%", pct1), xPos+cm*6.0, lineSize * 18.1, 16, TextAlignment.Left, Colors.Black);
+            printer.DrawStringAtPos("Ausfallbereich",  xPos+cm*8.0, lineSize * 18.1, 16);
+
+            printer.DrawStringAtPos("minimaler Abstand: "+ string.Format("{0:N2} mm", _mds.minDistance),  xPos, lineSize * 19.0, 16);
+
+            printer.DrawStringAtPos(_mds.data.actualDate.ToString(), xPos, lineSize * 20.0, 16);
+
+            if (_mds.backward)
+              printer.DrawStringAtPos("von Innen nach Außen", xPos, lineSize * 20.5, 16);
+            else
+              printer.DrawStringAtPos("von Außen nach Innen", xPos, lineSize * 20.5, 16);
+
+            if (_mds.rightEye)
+              printer.DrawStringAtPos("rechtes Auge", xPos, lineSize * 21.0, 16);
+            else
+              printer.DrawStringAtPos("linkes Auge", xPos, lineSize * 21.5, 16);
+
+            var buiContainer = new BlockUIContainer(printerCanvas);
+            doc.Blocks.Add(buiContainer);
+
             return doc;
+        }
+
+        private double ConvertPrinterPixel(double mm)  // millimeter to pixel
+        {
+          return mm * 96 / 2.54 / 10 ;  // 96 dots per inch (2.54 cm)
         }
 
         private void BtnGrid_Click(object sender, RoutedEventArgs e)
@@ -227,7 +320,7 @@ namespace MakulaTest
         private void RefreshScreen_xxx()
         {
             MyCanvas.Children.Clear();
-            DrawTestfield(40, 40);
+            DrawTestfield(40, 40, _draw);
         }
 
 
@@ -255,10 +348,10 @@ namespace MakulaTest
                 return;
             }
 
-            DrawTestfield(40, 40);
-            DrawTestPolygon(40, 40);
-            DrawMidPoint(40, 40);
-            if (_showGrid) DrawGrid(40.0, 40.0);
+            DrawTestfield(40, 40, _draw);
+            DrawTestPolygon(40, 40, _draw);
+            DrawMidPoint(40, 40, _draw);
+            if (_showGrid) DrawGrid(40.0, 40.0, _draw);
 
             var a = CalculatePolygonArea();
             var pct1 = a * 100.0 / (Math.PI * 65 * 65);
@@ -456,15 +549,15 @@ namespace MakulaTest
             return radius;
         }
 
-        private void DrawMidPoint(int x, int y)
+        private void DrawMidPoint(double x, double y, Draw draw)
         {
             Vector center = new Vector(_radius, _radius);
 
-            _draw.DrawEllipse(x + center.X, y + center.Y, 15.0, 15.0, Colors.Black, Colors.Black);
+            draw.DrawEllipse(x + center.X, y + center.Y, 15.0, 15.0, Colors.Black, Colors.Black);
         }
 
 
-        private void DrawTestfield(double x, double y)
+        private void DrawTestfield(double x, double y, Draw draw)
         {
             if (IsFatalError)
             {
@@ -491,13 +584,13 @@ namespace MakulaTest
                 }
                 
                 var obj = (Color)Application.Current.Resources["Dark"];
-                _draw.DrawPolygon(Points, x, y, Colors.Black, obj, 2, false);
+                draw.DrawPolygon(Points, x, y, Colors.Black, obj, 2, false);
             }
 
         }
 
 
-        private void DrawTestPolygon(double x, double y)
+        private void DrawTestPolygon(double x, double y, Draw draw)
         {
             if (IsFatalError)
             {
@@ -521,7 +614,7 @@ namespace MakulaTest
                     count++;
                 }
 
-                _draw.DrawPolygon(Points, x, y, Colors.Black, Colors.DarkGray, 2, false);
+                draw.DrawPolygon(Points, x, y, Colors.Black, Colors.DarkGray, 2, false);
             }
             
         }
@@ -544,7 +637,7 @@ namespace MakulaTest
         public static bool IsFatalError { get; set; }
 
 
-        private void DrawGrid(double x, double y)
+        private void DrawGrid(double x, double y, Draw draw)
         {
             int LineNumber = 20;
 
@@ -562,7 +655,7 @@ namespace MakulaTest
             double lineHeight = yLoop, lineWidth = xLoop;
 
             //draw frame
-            _draw.DrawRectangle(x, y, width * 2, height * 2, Colors.Transparent, 1);
+            draw.DrawRectangle(x, y, width * 2, height * 2, Colors.Transparent, 1, 0.0, 0.0);
 
             //draw Lines
             for (int i = 0; i < LineNumber; i++)
@@ -570,8 +663,8 @@ namespace MakulaTest
                 double thickness = 1.0;
                 if (centerIndex == i) thickness = 3.0;
 
-                _draw.DrawBlackLine(x, yLoop + i * deltaVert, x + width * 2, yLoop + i * deltaVert, thickness);
-                _draw.DrawBlackLine(xLoop + i * deltaHorz, y, xLoop + i * deltaHorz, y + height * 2, thickness);
+                draw.DrawBlackLine(x, yLoop + i * deltaVert, x + width * 2, yLoop + i * deltaVert, thickness);
+                draw.DrawBlackLine(xLoop + i * deltaHorz, y, xLoop + i * deltaHorz, y + height * 2, thickness);
             }
 
         }
