@@ -6,5 +6,12 @@
     <Color x:Key="Dark">#FFFCB558</Color>
     <SolidColorBrush x:Key="LightBrush" Color="{StaticResource Light}"/>
     <SolidColorBrush x:Key="MediumBrush" Color="{StaticResource Medium}"/>
-    <SolidColorBrush x:Key="DarkBrush" Color="{StaticResource Dark}"/>
+
+    <LinearGradientBrush x:Key="DarkBrush"  StartPoint="0,1" EndPoint="1,0">
+      <GradientStop Color="#FFFFC058" Offset="0.00" />
+      <GradientStop Color="#FFFEBE45" Offset="0.25" />
+      <GradientStop Color="#FFFEC22F" Offset="0.75" />
+      <GradientStop Color="#FFF8A78E" Offset="1.00" />
+    </LinearGradientBrush>
+
 </ResourceDictionary>
