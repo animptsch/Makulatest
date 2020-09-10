@@ -124,28 +124,79 @@ namespace MakulaTest
               _rightEyeFilter = false;
         }
 
+        // ***************************************************************
+        // BtnDaten
+        // ***************************************************************
         private void BtnDaten_Click(object sender, RoutedEventArgs e)
         {   _mds.DeleteRecord(_mds.data.actualSequence);
             _mds.ReadSequences();
             GoBackInTime();
         }
+        private void BtnDaten_Enter(object sender, RoutedEventArgs e)
+        {
+            BtnDatenImage.Source = (ImageSource) Application.Current.Resources["Trash2"];
+        }
 
+        private void BtnDaten_Leave(object sender, RoutedEventArgs e)
+        {
+            BtnDatenImage.Source = (ImageSource) Application.Current.Resources["Trash"];
+        }
 
+        // ***************************************************************
+        // BtnDayBefore
+        // ***************************************************************
         private void BtnDayBefore_Click(object sender, RoutedEventArgs e)
         {
             GoBackInTime();
         }
 
+        private void BtnDayBefore_Enter(object sender, RoutedEventArgs e)
+        {
+            BtnDayBeforeImage.Source = (ImageSource) Application.Current.Resources["Backward2"];
+        }
+
+        private void BtnDayBefore_Leave(object sender, RoutedEventArgs e)
+        {
+            BtnDayBeforeImage.Source = (ImageSource) Application.Current.Resources["Backward"];
+        }
+
+        // ***************************************************************
+        // BtnNextDay
+        // ***************************************************************
         private void BtnNextDay_Click(object sender, RoutedEventArgs e)
         {
             GoForwardInTime();
         }
 
+        private void BtnNextDay_Enter(object sender, RoutedEventArgs e)
+        {
+            BtnNextDayImage.Source = (ImageSource) Application.Current.Resources["Forward2"];
+        }
 
+        private void BtnNextDay_Leave(object sender, RoutedEventArgs e)
+        {
+            BtnNextDayImage.Source = (ImageSource) Application.Current.Resources["Forward"];
+        }
+
+        // ***************************************************************
+        // BtnPrint
+        // ***************************************************************
         private void BtnPrint_Click(object sender, RoutedEventArgs e)
         {
             PrintFlowDocument();
         }
+        private void BtnPrint_Enter(object sender, RoutedEventArgs e)
+        {
+            BtnPrintImage.Source = (ImageSource) Application.Current.Resources["Print2"];
+        }
+
+        private void BtnPrint_Leave(object sender, RoutedEventArgs e)
+        {
+            BtnPrintImage.Source = (ImageSource) Application.Current.Resources["Print"];
+        }
+
+
+
 
         private void CanvasPrint()
         {
@@ -310,13 +361,6 @@ namespace MakulaTest
           return mm * 96 / 2.54 / 10 ;  // 96 dots per inch (2.54 cm)
         }
 
-        private void BtnGrid_Click(object sender, RoutedEventArgs e)
-        {
-            _showGrid = !_showGrid;
-            RefreshScreen();
-        }
-
-
         private void RefreshScreen_xxx()
         {
             MyCanvas.Children.Clear();
@@ -369,9 +413,8 @@ namespace MakulaTest
 
 #if DEBUG
             txtDebugInformation.Text = "(" + _mds.data.record_no + ", " + _mds.data.deleted + ")";
-            lblDebugInformation.Visibility = txtDebugInformation.Visibility = Visibility.Visible;
 #else
-        lblDebugInformation.Visibility = txtDebugInformation.Visibility = Visibility.Collapsed;
+        txtDebugInformation.Visibility = txtDebugInformation.Visibility = Visibility.Collapsed;
 #endif
 
 
