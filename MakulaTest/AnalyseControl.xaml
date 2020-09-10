@@ -26,14 +26,14 @@
         </Grid.ColumnDefinitions>
 
 
-        <StackPanel Orientation="Horizontal" Margin="20,10,20,10">
-            <Ellipse Height="50" Width="50" >
-                <Ellipse.Fill>
-                    <ImageBrush ImageSource="{StaticResource ProfilBild}"/>
-                </Ellipse.Fill>
-            </Ellipse>
-            <TextBlock Margin="20,0,10,0" FontSize="25" Text="Hubert Nimptsch" VerticalAlignment="Center"/>
-            <Image Source="{StaticResource Info}" Width="20" Height="20" />
+        <StackPanel Orientation="Horizontal" Margin="10,10,20,10">
+          <Ellipse Height="80" Width="80" >
+            <Ellipse.Fill>
+              <ImageBrush ImageSource="{StaticResource ProfilBild}"/>
+            </Ellipse.Fill>
+          </Ellipse>
+          <TextBlock Margin="20,0,10,0" FontSize="25" Text="Hubert Nimptsch" VerticalAlignment="Center"/>
+          <Image Source="{StaticResource Info}" Width="20" Height="20" />
         </StackPanel>
 
         <Grid Grid.Row="1" VerticalAlignment="Top" >
@@ -47,34 +47,41 @@
 
             <Button x:Name="BtnDayBefore" ToolTip="1 Tag zurück"  
               Click="BtnDayBefore_Click" Background="White"
+              MouseEnter="BtnDayBefore_Enter"
+              MouseLeave="BtnDayBefore_Leave"
               Style="{DynamicResource CircleButton}">
-                <Image Source="{StaticResource Backward}" Width="25" Height="25" />
+                <Image x:Name="BtnDayBeforeImage" Source="{StaticResource Backward}" Width="25" Height="25" />
             </Button>
 
             <Button Grid.Column="1" x:Name="BtnPrint" ToolTip="Drucken des Fensters" 
-              Click="BtnPrint_Click" Background="White" 
+              Click="BtnPrint_Click" Background="White"
+              MouseEnter="BtnPrint_Enter"
+              MouseLeave="BtnPrint_Leave"
               Style="{DynamicResource CircleButton}">
-                <Image Source="{StaticResource Print}" Width="25" Height="25" />
+                <Image x:Name="BtnPrintImage" Source="{StaticResource Print}" Width="30" Height="30"/>
             </Button>
 
 
             <Button Grid.Column="2" x:Name="BtnDaten" ToolTip="Datensatz löschen" 
-              Click="BtnDaten_Click" Background="White" 
+              Click="BtnDaten_Click" Background="White"
+              MouseEnter="BtnDaten_Enter"
+              MouseLeave="BtnDaten_Leave"
               Style="{DynamicResource CircleButton}">
-                <Image Source="{StaticResource Trash}" Width="25" Height="25" />
+                <Image x:Name="BtnDatenImage" Source="{StaticResource Trash}" Width="25" Height="32" />
             </Button>
 
             <Button Grid.Column="3" x:Name="BtnNextDay" ToolTip="1 Tag vor" 
-                  Click="BtnNextDay_Click" Background="White" 
+              Click="BtnNextDay_Click" Background="White"
+              MouseEnter="BtnNextDay_Enter"
+              MouseLeave="BtnNextDay_Leave"
               Style="{DynamicResource CircleButton}" >
-                <Image Source="{StaticResource Forward}" Width="25" Height="25" />
+                <Image x:Name="BtnNextDayImage" Source="{StaticResource Forward}" Width="25" Height="25" />
             </Button>
 
         </Grid>
 
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -84,22 +91,11 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <Label Content="Zeitpunkt:" Grid.Column="0" Grid.Row="0"/>
-            <TextBlock x:Name="txtDateTime" Text="Datum" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" />
-
-            <Label Content="Richtung:" Grid.Column="0" Grid.Row="1"/>
-            <TextBlock x:Name="txtDirection" Text="Richtung Text" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" />
-
-            <Label Content="Auge:" Grid.Column="0" Grid.Row="2"/>
-            <TextBlock x:Name="txtWhichEye" Text="Welches Auge" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" />
-
-            <Label x:Name="lblDebugInformation" Content="Debug Informationen:" Grid.Column="0" Grid.Row="3" Visibility="Collapsed" />
-            <TextBlock x:Name="txtDebugInformation" Text="Debug" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Visibility="Collapsed" />
-
-
-
+            <TextBlock x:Name="txtDateTime" Text="Datum" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" FontSize="18" FontWeight="Bold" />
+            <TextBlock x:Name="txtDirection" Text="Richtung Text" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" FontSize="18" FontWeight="Bold" />
+            <TextBlock x:Name="txtWhichEye" Text="Welches Auge" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" FontSize="18" FontWeight="Bold" />
+            <TextBlock x:Name="txtDebugInformation" Text="Debug" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" FontSize="16" />
         </Grid>
-
 
 
         <Grid Grid.Row="2" Visibility="Collapsed" >
@@ -169,12 +165,11 @@
             </Border>
 
             <TextBlock Text="Ausfallbereich" Grid.Row="1" Grid.Column="2" />
-                       
+
         </Grid>
 
         <TextBlock x:Name="txtMinDistance" Text="Minimaler Abstand: 18,75 mm" Grid.Row="4"/>
-        
-        <Canvas Grid.Column="1" Grid.RowSpan="5" Visibility="Visible" Height="650" x:Name="MyCanvas"/>
+        <Canvas Grid.RowSpan="5" Visibility="Visible" Height="650" x:Name="MyCanvas" Grid.ColumnSpan="2" Margin="334,2,0,2"/>
 
     </Grid>
 
