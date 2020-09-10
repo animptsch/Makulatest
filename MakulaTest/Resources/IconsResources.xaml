@@ -7,9 +7,13 @@
     <BitmapImage UriSource="../Images/Diagnose.PNG" x:Key="Diagnose"/>
     <BitmapImage UriSource="../Images/Einstellungen.PNG" x:Key="Settings"/>
     <BitmapImage UriSource="../Images/backward.PNG" x:Key="Backward"/>
+    <BitmapImage UriSource="../Images/backward2.PNG" x:Key="Backward2"/>
     <BitmapImage UriSource="../Images/forward.PNG" x:Key="Forward"/>
+    <BitmapImage UriSource="../Images/forward2.PNG" x:Key="Forward2"/>
     <BitmapImage UriSource="../Images/print.PNG" x:Key="Print"/>
+    <BitmapImage UriSource="../Images/print2.PNG" x:Key="Print2"/>
     <BitmapImage UriSource="../Images/trash.PNG" x:Key="Trash"/>
+    <BitmapImage UriSource="../Images/trash2.PNG" x:Key="Trash2"/>
     <BitmapImage UriSource="../Images/leftEye.PNG" x:Key="LeftEye"/>
     <BitmapImage UriSource="../Images/rightEye.PNG" x:Key="RightEye"/>
     <BitmapImage UriSource="../Images/info.PNG" x:Key="Info"/>
