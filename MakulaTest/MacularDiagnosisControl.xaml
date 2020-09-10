@@ -30,7 +30,7 @@
             <Image Source="{StaticResource Info}" Width="20" Height="20" />
         </StackPanel>
 
-        <GroupBox Margin="5" IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}" Grid.Row="1">
+        <GroupBox Margin="5" IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}" Grid.Row="1" BorderThickness="0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                 <RadioButton Style="{StaticResource Eyes}" IsChecked="{Binding Path=IsLeftEyeChecked}"
                          Content="{StaticResource LeftEye}" Tag="Links" BorderBrush="{StaticResource DarkBrush}"/>
@@ -39,7 +39,7 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Margin="5" IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}" Grid.Row="2" >
+        <GroupBox Margin="5" IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}" Grid.Row="2" BorderThickness="0">
             <StackPanel HorizontalAlignment="Center">
                 <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Freihand"             IsChecked="{Binding Path=IsFreestyleChecked}"/>
                 <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Von außen nach innen" IsChecked="{Binding Path=IsForwardChecked}"/>
@@ -47,7 +47,7 @@
             </StackPanel>
         </GroupBox>
 
-        <Button Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="btnStartDiagnose" Click="btnStartDiagnose_Click">
+        <Button Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="btnStartDiagnose" Click="btnStartDiagnose_Click" BorderThickness="0" Background="Transparent">
             <Image Source="{StaticResource StartDiagnose}" Width="75" Height="75"/>
         </Button>
 
