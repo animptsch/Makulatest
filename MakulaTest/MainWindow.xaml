@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MakulaTest"
         mc:Ignorable="d" Loaded="Window_Loaded" KeyDown="Window_KeyDown"
-        Title="MainWindow" Height="700" Width="700" Background="{StaticResource DarkBrush}" MinWidth="550" MinHeight="250">
+        Title="MakulaTest" Height="700" Width="700" Background="{StaticResource DarkBrush}" MinWidth="550" MinHeight="250">
 
     <TabControl Margin="10" Background="{StaticResource MediumBrush}"  TabStripPlacement="Left" >
         <TabItem>
