@@ -370,49 +370,51 @@ namespace MakulaTest
 
         private void RefreshScreen()
         {
-            TimeMeasureStart();
-
-            //Console.WriteLine("*********** Analyse.MyCanvas.Width (new): " + _windowSize.Width.ToString());
-            //Console.WriteLine("*********** Analyse.MyCanvas.Height (new): " + _windowSize.Height.ToString());
-            _radius = GetRadius(390.0,99.0);
-
-            //Console.WriteLine("MyCanvas.ActualHeight="+ MyCanvas.Width.ToString());
-
-            MyCanvas.Children.Clear();
-
-            /*
-            foreach (var point in data.Points)
+            if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
             {
-              Console.WriteLine(point.ToString());
-            }
-            */
+                TimeMeasureStart();
 
-            if (IsFatalError)
-            {
-                return;
-            }
+                //Console.WriteLine("*********** Analyse.MyCanvas.Width (new): " + _windowSize.Width.ToString());
+                //Console.WriteLine("*********** Analyse.MyCanvas.Height (new): " + _windowSize.Height.ToString());
+                _radius = GetRadius(390.0, 99.0);
 
-            DrawTestfield(40, 40, _draw);
-            DrawTestPolygon(40, 40, _draw);
-            DrawMidPoint(40, 40, _draw);
-            if (_showGrid) DrawGrid(40.0, 40.0, _draw);
+                //Console.WriteLine("MyCanvas.ActualHeight="+ MyCanvas.Width.ToString());
 
-            var a = CalculatePolygonArea();
-            var pct1 = a * 100.0 / (Math.PI * 65 * 65);
-            var pct2 = 100 - pct1;
+                MyCanvas.Children.Clear();
 
-            DrawLegend(80, 20, "Sehbereich:", pct2, "Ausfallbereich:", pct1);
-            txtViewArea.Text = string.Format("{0:N2}%", pct2);
-            txtDefaultArea.Text = string.Format("{0:N2}%", pct1);
-            txtMinDistance.Text = string.Format("minimaler Abstand: {0:N2} mm",_mds.minDistance);
+                /*
+                foreach (var point in data.Points)
+                {
+                  Console.WriteLine(point.ToString());
+                }
+                */
 
-            txtDateTime.Text = _mds.data.actualDate.ToString();
-            txtDirection.Text = _mds.backward ? "von Innen nach Außen" : "von Außen nach Innen";
-            txtWhichEye.Text = _mds.rightEye ? "rechtes Auge" : "linkes Auge";
+                if (IsFatalError)
+                {
+                    return;
+                }
+
+                DrawTestfield(40, 40, _draw);
+                DrawTestPolygon(40, 40, _draw);
+                DrawMidPoint(40, 40, _draw);
+                if (_showGrid) DrawGrid(40.0, 40.0, _draw);
+
+                var a = CalculatePolygonArea();
+                var pct1 = a * 100.0 / (Math.PI * 65 * 65);
+                var pct2 = 100 - pct1;
+
+                DrawLegend(80, 20, "Sehbereich:", pct2, "Ausfallbereich:", pct1);
+                txtViewArea.Text = string.Format("{0:N2}%", pct2);
+                txtDefaultArea.Text = string.Format("{0:N2}%", pct1);
+                txtMinDistance.Text = string.Format("minimaler Abstand: {0:N2} mm", _mds.minDistance);
+
+                txtDateTime.Text = _mds.data.actualDate.ToString();
+                txtDirection.Text = _mds.backward ? "von Innen nach Außen" : "von Außen nach Innen";
+                txtWhichEye.Text = _mds.rightEye ? "rechtes Auge" : "linkes Auge";
 
 
 #if DEBUG
-            txtDebugInformation.Text = "(" + _mds.data.record_no + ", " + _mds.data.deleted + ")";
+                txtDebugInformation.Text = "(" + _mds.data.record_no + ", " + _mds.data.deleted + ")";
 #else
         txtDebugInformation.Visibility = txtDebugInformation.Visibility = Visibility.Collapsed;
 #endif
@@ -421,11 +423,12 @@ namespace MakulaTest
 
 
 
-            //Console.WriteLine("Die Fläche des Polygons beträgt: " + a.ToString());
-            //DrawXAxis(20, 400, cursor_y + 150, 50);
-            //DrawCheckMark(450, 100);
+                //Console.WriteLine("Die Fläche des Polygons beträgt: " + a.ToString());
+                //DrawXAxis(20, 400, cursor_y + 150, 50);
+                //DrawCheckMark(450, 100);
 
-            TimeMeasureStop("Dialog Ende");
+                TimeMeasureStop("Dialog Ende");
+            }
         }
 
 
