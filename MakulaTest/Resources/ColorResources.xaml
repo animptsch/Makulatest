@@ -6,7 +6,7 @@
     <Color x:Key="Dark">#FFFCB558</Color>
     <SolidColorBrush x:Key="LightBrush" Color="{StaticResource Light}"/>
     <SolidColorBrush x:Key="MediumBrush" Color="{StaticResource Medium}" />
-    <SolidColorBrush x:Key="SelectedTabItemBrush" Color="{StaticResource Medium}" Opacity="0.8" />
+    <SolidColorBrush x:Key="SelectedTabItemBrush" Color="{StaticResource Light}" Opacity="0.8" />
 
     <LinearGradientBrush x:Key="DarkBrush"  StartPoint="0,1" EndPoint="1,0">
       <GradientStop Color="#FFFFC058" Offset="0.00" />

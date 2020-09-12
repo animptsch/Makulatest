@@ -120,15 +120,15 @@ namespace MakulaTest
                 }
             }
 
-            if (rect != null)
-            {
-                Application.Current.MainWindow.Height = rect.Height;
-                Application.Current.MainWindow.Left = rect.Left;
-                Application.Current.MainWindow.Top = rect.Top;
-                Application.Current.MainWindow.Width = rect.Width;
-                _canvasHeight = rect.CanvasHeight;
-                _canvasWidth = rect.CanvasWidth;
-            }
+            //if (rect != null)
+            //{
+            //    Application.Current.MainWindow.Height = rect.Height;
+            //    Application.Current.MainWindow.Left = rect.Left;
+            //    Application.Current.MainWindow.Top = rect.Top;
+            //    Application.Current.MainWindow.Width = rect.Width;
+            //    _canvasHeight = rect.CanvasHeight;
+            //    _canvasWidth = rect.CanvasWidth;
+            //}
 
         }
         

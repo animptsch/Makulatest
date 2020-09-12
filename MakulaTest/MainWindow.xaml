@@ -11,9 +11,9 @@
     
    
 
-    <TabItem   HorizontalAlignment="Right" Style="{DynamicResource TabItemStyle1}">
+    <TabItem  Style="{DynamicResource TabItemStyle1}">
             <TabItem.Header>
-                <StackPanel Margin="6" Orientation="Horizontal" Width="256" >
+                <StackPanel Orientation="Horizontal" Width="256" >
                     <Image Source="{StaticResource Analyse}" Height="40" Width="40"/>
                     <TextBlock Text="Analyse" Style="{StaticResource TabItemTextBlock}" />
                 </StackPanel>
