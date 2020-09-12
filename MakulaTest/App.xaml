@@ -9,6 +9,7 @@
                 <ResourceDictionary Source="Resources/ColorResources.xaml"/>
                 <ResourceDictionary Source="Resources/IconsResources.xaml"/>
                 <ResourceDictionary Source="Resources/ControlTemplates.xaml"/>
+                <ResourceDictionary Source="Resources/TestArea.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -85,8 +85,6 @@
         </Setter>
     </Style>
 
-
-
     <SolidColorBrush x:Key="TextBox.Static.Border" Color="#FFABAdB3"/>
     <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="#FF7EB4EA"/>
     <SolidColorBrush x:Key="TextBox.Focus.Border" Color="#FF569DE5"/>
@@ -189,5 +187,53 @@
         </Setter>
     </Style>
 
+  <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
 
+  <SolidColorBrush x:Key="DisabledBorderBrush" Color="#AAA" />
+
+  <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
+
+  <!--<Style TargetType="{x:Type TabItem}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type TabItem}">
+          <Grid Background="Transparent">
+            
+            <Border 
+                            Name="Border"
+                            Margin="0,100,0,0" 
+                            Background="Transparent"
+                            BorderBrush="{StaticResource SolidBorderBrush}" 
+                            BorderThickness="0" 
+                            CornerRadius="25,0,0,20" >
+              <ContentPresenter x:Name="ContentSite"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Center"
+                                 
+                              ContentSource="Header"
+                              Margin="0,0,0,0"
+                              RecognizesAccessKey="True"/>
+            </Border>
+            
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter Property="Panel.ZIndex" Value="100" />
+              <Setter TargetName="Border" Property="Background" Value="{StaticResource MediumBrush}" />
+              <Setter TargetName="Border" Property="CornerRadius" Value ="25,25,25,25" />
+              <Setter TargetName="Border" Property="Margin" Value="0,100,-40,0" />
+              <Setter TargetName="Border" Property="Margin" Value="0,100,-40,0" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}" />
+              <Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}" />
+    
+
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>-->
+  
 </ResourceDictionary>

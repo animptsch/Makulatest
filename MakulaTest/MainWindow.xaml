@@ -5,38 +5,48 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MakulaTest"
         mc:Ignorable="d" Loaded="Window_Loaded" KeyDown="Window_KeyDown"
-        Title="MakulaTest" Height="700" Width="700" Background="{StaticResource DarkBrush}" MinWidth="550" MinHeight="250">
+        Title="MakulaTest"  Height="742" Width="1200" Background="{StaticResource DarkBrush}" MinWidth="550" MinHeight="250">
 
-    <TabControl Margin="10" Background="{StaticResource MediumBrush}"  TabStripPlacement="Left" >
-        <TabItem>
+  <TabControl  SelectedIndex="0" Margin="10,10,10,10"  Background="{StaticResource MediumBrush}"  TabStripPlacement="Left" Style="{DynamicResource TabControlStyle1}" >
+    
+   
+
+    <TabItem   HorizontalAlignment="Right" Style="{DynamicResource TabItemStyle1}">
             <TabItem.Header>
-                <StackPanel Orientation="Horizontal" >
-                    <Image Source="{StaticResource Analyse}" Height="20" Width="20"/>
-                    <TextBlock Text="Analyse" VerticalAlignment="Center"/>
+                <StackPanel Margin="6" Orientation="Horizontal" Width="256" >
+                    <Image Source="{StaticResource Analyse}" Height="40" Width="40"/>
+                    <TextBlock Text="Analyse" Style="{StaticResource TabItemTextBlock}" />
                 </StackPanel>
+                
             </TabItem.Header>
             <TabItem.Content>
                 <local:AnalyseControl x:Name="MyAnalyse" />        
             </TabItem.Content>
-        </TabItem>
+    </TabItem>
 
-        <TabItem>
+
+    <TabItem Style="{DynamicResource TabItemStyle1}">
             <TabItem.Header>
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="{StaticResource Diagnose}" Height="20" Width="20"/>
-                    <TextBlock Text="Diagnose" VerticalAlignment="Center"/>
-                </StackPanel>
+                <StackPanel Orientation="Horizontal" Width="256">
+                    <Image Source="{StaticResource Diagnose}" Height="40" Width="40"/>
+                    <TextBlock Text="Diagnose" Style="{StaticResource TabItemTextBlock}" >
+          </TextBlock>
+        </StackPanel>
             </TabItem.Header>
             <TabItem.Content>
-                <local:MacularDiagnosisControl x:Name="DiagnoseControl"/>        
+                <local:MacularDiagnosisControl x:Name="DiagnoseControl"/>
             </TabItem.Content>
-        </TabItem>
+     </TabItem>
 
-        <TabItem  >
+
+
+        <TabItem   Style="{DynamicResource TabItemStyle1}"
+             
+              >
             <TabItem.Header>
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="{StaticResource Settings}" Height="20" Width="20"/>
-                    <TextBlock Text="Einstellungen" VerticalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" Width="256">
+                    <Image Source="{StaticResource Settings}" Height="40" Width="40"/>
+                    <TextBlock Text="Einstellungen" Style="{StaticResource TabItemTextBlock}" />
                 </StackPanel>
             </TabItem.Header>
             <TabItem.Content>
@@ -44,12 +54,12 @@
             </TabItem.Content>
         </TabItem>
         
-    </TabControl>    
+    </TabControl>
 
-        
-        
 
-        <!--<WrapPanel Margin="10" x:Name="MainWindowToolbar" Orientation="Horizontal" Grid.Row="1" >
+
+
+  <!--<WrapPanel Margin="10" x:Name="MainWindowToolbar" Orientation="Horizontal" Grid.Row="1" >
             <Button x:Name="btnAnalyse" Content="Analyse" Click="BtnAnalyse_Click" />
             <Button x:Name="btnDiagnose" Content="Diagnose" Click="BtnDiagnose_Click"  />
             <Button x:Name="btnSettingSize" Content="Größe speichern" Click="BtnSettingSize_Click"/>
