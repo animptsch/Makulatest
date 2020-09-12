@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Custom-Icon-Design-Mono-General-4-Eye.ico</ApplicationIcon>
+    <ApplicationIcon>eye.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework.Aero" />
@@ -221,6 +221,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\startButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\backward2.PNG" />
+    <Resource Include="Images\forward2.PNG" />
+    <Resource Include="Images\print2.PNG" />
+    <Resource Include="Images\trash2.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="eye.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
