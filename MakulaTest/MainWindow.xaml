@@ -5,15 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MakulaTest"
         mc:Ignorable="d" Loaded="Window_Loaded" KeyDown="Window_KeyDown"
-        Title="MakulaTest"  Height="742" Width="1200" Background="{StaticResource DarkBrush}" MinWidth="550" MinHeight="250">
+        Title="MakulaTest"  Height="780" Width="1214" Background="{StaticResource DarkBrush}" MinWidth="550" MinHeight="250">
 
   <TabControl  SelectedIndex="0" Margin="10,10,10,10"  Background="{StaticResource MediumBrush}"  TabStripPlacement="Left" Style="{DynamicResource TabControlStyle1}" >
-    
-   
+
+
 
     <TabItem  Style="{DynamicResource TabItemStyle1}">
             <TabItem.Header>
-                <StackPanel Orientation="Horizontal" Width="256" >
+                <StackPanel Orientation="Horizontal" Width="150" >
                     <Image Source="{StaticResource Analyse}" Height="40" Width="40"/>
                     <TextBlock Text="Analyse" Style="{StaticResource TabItemTextBlock}" />
                 </StackPanel>
@@ -27,7 +27,7 @@
 
     <TabItem Style="{DynamicResource TabItemStyle1}">
             <TabItem.Header>
-                <StackPanel Orientation="Horizontal" Width="256">
+                <StackPanel Orientation="Horizontal" Width="150">
                     <Image Source="{StaticResource Diagnose}" Height="40" Width="40"/>
                     <TextBlock Text="Diagnose" Style="{StaticResource TabItemTextBlock}" >
           </TextBlock>
@@ -44,7 +44,7 @@
              
               >
             <TabItem.Header>
-                <StackPanel Orientation="Horizontal" Width="256">
+                <StackPanel Orientation="Horizontal" Width="150">
                     <Image Source="{StaticResource Settings}" Height="40" Width="40"/>
                     <TextBlock Text="Einstellungen" Style="{StaticResource TabItemTextBlock}" />
                 </StackPanel>
