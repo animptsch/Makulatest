@@ -6,58 +6,80 @@
              xmlns:local="clr-namespace:MakulaTest"
              mc:Ignorable="d" x:Name="MyUserControl"  Foreground="Black"
              d:DesignHeight="700" d:DesignWidth="700">
-    <Grid>
+    <Grid Margin="10">
         <Grid.Resources>
             <local:BoolToOppositeBoolConverter x:Key="BoolToOppositeBoolConverter_ValueConverter" Inverse="True"/>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="71" />
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Margin="20,10,20,10">
-            <Ellipse Height="50" Width="50" >
+
+        <StackPanel Orientation="Horizontal"  Grid.Row="1" Grid.Column="1" >
+            <Ellipse Height="80" Width="80" >
                 <Ellipse.Fill>
                     <ImageBrush ImageSource="{StaticResource ProfilBild}"/>
                 </Ellipse.Fill>
             </Ellipse>
-            <TextBlock Margin="20,0,10,0" FontSize="25" Text="Hubert Nimptsch" VerticalAlignment="Center"/>
+            <TextBlock Margin="42,0,10,0" FontSize="25" Text="Hubert Nimptsch" VerticalAlignment="Center"/>
             <Image Source="{StaticResource Info}" Width="20" Height="20" />
         </StackPanel>
 
-        <GroupBox Margin="5" IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}" Grid.Row="1" BorderThickness="0">
+        <Grid Margin="10" Grid.Row="3" Grid.Column="1">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+          </Grid.RowDefinitions>
+
+        <GroupBox Margin="5" Grid.Row="3" Grid.Column="1"  IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}" BorderThickness="0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                 <RadioButton Style="{StaticResource Eyes}" IsChecked="{Binding Path=IsLeftEyeChecked}"
-                         Content="{StaticResource LeftEye}" Tag="Links" BorderBrush="{StaticResource DarkBrush}"/>
-                <RadioButton Margin="50,0,0,0" Style="{StaticResource Eyes}" IsChecked="{Binding Path=IsRightEyeChecked}"
-                             Content="{StaticResource RightEye}" Tag="Rechts" BorderBrush="{StaticResource DarkBrush}" />
-            </StackPanel>
-        </GroupBox>
+                         Content="{StaticResource LeftEye}" Tag="Links" BorderBrush="{StaticResource DarkBrush}" Width="91"/>
+                <RadioButton Margin="37,0,0,0" Style="{StaticResource Eyes}" IsChecked="{Binding Path=IsRightEyeChecked}"
+                             Content="{StaticResource RightEye}" Tag="Rechts" BorderBrush="{StaticResource DarkBrush}" Width="91"/>
+      </StackPanel>
+    </GroupBox>
 
-        <GroupBox Margin="5" IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}" Grid.Row="2" BorderThickness="0">
-            <StackPanel HorizontalAlignment="Center">
-                <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Freihand"             IsChecked="{Binding Path=IsFreestyleChecked}"/>
-                <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Von außen nach innen" IsChecked="{Binding Path=IsForwardChecked}"/>
-                <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Von innen nach außen" IsChecked="{Binding Path=IsBackwardChecked}"/>
-            </StackPanel>
-        </GroupBox>
+    <GroupBox Margin="0,10,0,0" IsEnabled="{Binding Path=IsMeasureStarted,
+      Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}"
+              Grid.Row="4"  Grid.Column="1" BorderThickness="0">
+      <StackPanel HorizontalAlignment="Center">
+        <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Freihand"             IsChecked="{Binding Path=IsFreestyleChecked}"/>
+        <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Von außen nach innen" IsChecked="{Binding Path=IsForwardChecked}"/>
+        <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Von innen nach außen" IsChecked="{Binding Path=IsBackwardChecked}"/>
+      </StackPanel>
+    </GroupBox>
 
-        <Button Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="btnStartDiagnose" Click="btnStartDiagnose_Click" BorderThickness="0" Background="Transparent">
-            <Image Source="{StaticResource StartDiagnose}" Width="75" Height="75"/>
-        </Button>
+    <Button Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="btnStartDiagnose" Click="btnStartDiagnose_Click" BorderThickness="0" Background="Transparent">
+      <Image Source="{StaticResource StartDiagnose}" Width="75" Height="75"/>
+    </Button>
 
-        <Canvas Grid.Column="1" Grid.RowSpan="4"
-                Height="300" Width="300"
-                x:Name="MyCanvas" VerticalAlignment="Center"
-                MouseDown="MyCanvas_MouseDown"
-                PreviewMouseWheel="MyCanvas_PreviewMouseWheel"
-                MouseMove="MyCanvas_MouseMove">
-            <Rectangle x:Name="MyRectangle" Stroke="Black" Fill="White" Width="200" Height="200"  Margin="50" />
-        </Canvas>
+
+    <Canvas Grid.Column="3" Grid.RowSpan="5"
+            Margin="130,-90,0,0"
+            x:Name="MyCanvas" VerticalAlignment="Top"
+            MouseDown="MyCanvas_MouseDown"
+            PreviewMouseWheel="MyCanvas_PreviewMouseWheel"
+            MouseMove="MyCanvas_MouseMove">
+        <Rectangle x:Name="MyRectangle" Stroke="Black" Fill="White"  Margin="50" />
+    </Canvas>
+
     </Grid>
+  </Grid>
 </UserControl>
