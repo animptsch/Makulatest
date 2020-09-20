@@ -13,7 +13,9 @@
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="70"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -21,31 +23,32 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto" MinWidth="446"/>
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
 
-        <StackPanel Orientation="Horizontal" Margin="10,10,20,10">
-          <Ellipse Height="80" Width="80" >
-            <Ellipse.Fill>
-              <ImageBrush ImageSource="{StaticResource ProfilBild}"/>
-            </Ellipse.Fill>
-          </Ellipse>
-          <TextBlock Margin="20,0,10,0" FontSize="25" Text="Hubert Nimptsch" VerticalAlignment="Center"/>
-          <Image Source="{StaticResource Info}" Width="20" Height="20" />
+        <StackPanel Orientation="Horizontal" Margin="49,73,20,10">
+            <Ellipse Height="80" Width="80" >
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="{StaticResource ProfilBild}"/>
+                </Ellipse.Fill>
+            </Ellipse>
+            <TextBlock Margin="42,0,10,0" FontSize="25" Text="Hubert Nimptsch" VerticalAlignment="Center"/>
+            <Image Source="{StaticResource Info}" Width="20" Height="20" />
         </StackPanel>
 
-        <Grid Grid.Row="1" VerticalAlignment="Top" >
+        <Grid Grid.Row="2" VerticalAlignment="Top" Height="67" >
 
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="BtnDayBefore" ToolTip="1 Tag zurück"  
+            <Button Grid.Column="1" x:Name="BtnDayBefore" ToolTip="1 Tag zurück"
               Click="BtnDayBefore_Click" Background="White"
               MouseEnter="BtnDayBefore_Enter"
               MouseLeave="BtnDayBefore_Leave"
@@ -53,7 +56,7 @@
                 <Image x:Name="BtnDayBeforeImage" Source="{StaticResource Backward}" Width="25" Height="25" />
             </Button>
 
-            <Button Grid.Column="1" x:Name="BtnPrint" ToolTip="Drucken des Fensters" 
+            <Button Grid.Column="2" x:Name="BtnPrint" ToolTip="Drucken des Fensters"
               Click="BtnPrint_Click" Background="White"
               MouseEnter="BtnPrint_Enter"
               MouseLeave="BtnPrint_Leave"
@@ -61,8 +64,7 @@
                 <Image x:Name="BtnPrintImage" Source="{StaticResource Print}" Width="30" Height="30"/>
             </Button>
 
-
-            <Button Grid.Column="2" x:Name="BtnDaten" ToolTip="Datensatz löschen" 
+            <Button Grid.Column="3" x:Name="BtnDaten" ToolTip="Datensatz löschen"
               Click="BtnDaten_Click" Background="White"
               MouseEnter="BtnDaten_Enter"
               MouseLeave="BtnDaten_Leave"
@@ -70,7 +72,7 @@
                 <Image x:Name="BtnDatenImage" Source="{StaticResource Trash}" Width="25" Height="32" />
             </Button>
 
-            <Button Grid.Column="3" x:Name="BtnNextDay" ToolTip="1 Tag vor" 
+            <Button Grid.Column="4" x:Name="BtnNextDay" ToolTip="1 Tag vor"
               Click="BtnNextDay_Click" Background="White"
               MouseEnter="BtnNextDay_Enter"
               MouseLeave="BtnNextDay_Leave"
@@ -80,7 +82,7 @@
 
         </Grid>
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Top"  Width="400" Margin="42,20,0,40">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
@@ -98,7 +100,7 @@
         </Grid>
 
 
-        <Grid Grid.Row="2" Visibility="Collapsed" >
+        <Grid Grid.Row="5" Visibility="Collapsed" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -142,34 +144,43 @@
 
         </Grid>
 
-        <Grid Grid.Row="3"  HorizontalAlignment="Left" VerticalAlignment="Top">
+    <Grid Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Top"  Width="250" Margin="42,0,0,0">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
+            <ColumnDefinition Width="83"/>
                 <ColumnDefinition Width="30" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
+                <RowDefinition Height="48" />
+                <RowDefinition Height="29" />
+                <RowDefinition Height="48" />
             </Grid.RowDefinitions>
 
-            <Border Background="{StaticResource DarkBrush}" CornerRadius="10" Height="35" Width="75" Margin="0,0,0,20">
-                <TextBlock x:Name="txtViewArea" Text="89,22 %" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="15" />
+            <Border Background="{StaticResource DarkBrush}" CornerRadius="10">
+                <TextBlock x:Name="txtViewArea" Text="89,22 %" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" />
             </Border>
 
-            <TextBlock Text="Sehbereich" Grid.Column="2"  />
+            <TextBlock Text="Sehbereich" Grid.Column="2" VerticalAlignment="Center" />
 
-            <Border Grid.Row="1" Background="DarkGray" CornerRadius="10" Height="35" Width="75">
-                <TextBlock x:Name="txtDefaultArea" Text="89,22 %" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="15" />
+            <Border Grid.Row="2" Background="DarkGray" CornerRadius="10">
+                <TextBlock x:Name="txtDefaultArea" Text="89,22 %" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" />
             </Border>
 
-            <TextBlock Text="Ausfallbereich" Grid.Row="1" Grid.Column="2" />
+            <TextBlock Text="Ausfallbereich" Grid.Row="2" Grid.Column="2"  VerticalAlignment="Center" />
+      </Grid>
+      <Grid Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top"  Width="179" Margin="42,0,0,0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="29" />
+          <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="txtMinDistance" Grid.Row="1" Text="Minimaler Abstand: 18,75 mm" />
+      </Grid>
 
-        </Grid>
-
-        <TextBlock x:Name="txtMinDistance" Text="Minimaler Abstand: 18,75 mm" Grid.Row="4"/>
-        <Canvas Grid.RowSpan="5" Visibility="Visible" Height="650" x:Name="MyCanvas" Grid.ColumnSpan="2" Margin="334,2,0,2"/>
+      <Canvas Grid.RowSpan="5" Visibility="Visible" x:Name="MyCanvas" Grid.ColumnSpan="3" Margin="450,20,0,0"/>
 
     </Grid>
 
