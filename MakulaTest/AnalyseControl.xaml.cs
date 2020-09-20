@@ -376,7 +376,7 @@ namespace MakulaTest
 
                 //Console.WriteLine("*********** Analyse.MyCanvas.Width (new): " + _windowSize.Width.ToString());
                 //Console.WriteLine("*********** Analyse.MyCanvas.Height (new): " + _windowSize.Height.ToString());
-                _radius = GetRadius(390.0, 99.0);
+                _radius = GetRadius(520.0, 99.0);
 
                 //Console.WriteLine("MyCanvas.ActualHeight="+ MyCanvas.Width.ToString());
 
