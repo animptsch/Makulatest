@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" x:Class="MakulaTest.Resources.ColorResources"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:local="clr-namespace:MakulaTest">
     <Color x:Key="Light">#FFFFFEFB</Color>
     <Color x:Key="Medium">#FFFEF4E5</Color>
@@ -14,5 +15,9 @@
       <GradientStop Color="#FFFEC22F" Offset="0.75" />
       <GradientStop Color="#FFF8A78E" Offset="1.00" />
     </LinearGradientBrush>
+
+    <sys:Double x:Key="LargeFontSize" >25</sys:Double>
+    <sys:Double x:Key="MediumFontSize" >18</sys:Double>
+    <sys:Double x:Key="SmallFontSize" >13</sys:Double>
 
 </ResourceDictionary>
