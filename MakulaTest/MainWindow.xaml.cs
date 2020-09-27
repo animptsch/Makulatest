@@ -26,12 +26,12 @@ namespace MakulaTest
             InitializeComponent();
 
             var arrayList = MainMenu.ItemsSource as System.Collections.ArrayList;
-            //MyAnalyse = ((Model.MenuItem)arrayList[0]).Content as AnalyseControl;
-            //DiagnoseControl = ((Model.MenuItem)arrayList[1]).Content as MacularDiagnosisControl;
-            //Settings = ((Model.MenuItem)arrayList[2]).Content as SettingsView;
+            MyAnalyse = ((Model.MenuItem)arrayList[0]).Content as AnalyseControl;
+            DiagnoseControl = ((Model.MenuItem)arrayList[1]).Content as MacularDiagnosisControl;
+            Settings = ((Model.MenuItem)arrayList[2]).Content as SettingsView;
 
             _filePathSettings = FilePathSettings.Instance;
-            //MyAnalyse.Start(_filePathSettings.CSVDataFilePath);
+            MyAnalyse.Start(_filePathSettings.CSVDataFilePath);
         }
 
         private FilePathSettings _filePathSettings;

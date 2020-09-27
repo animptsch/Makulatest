@@ -10,33 +10,29 @@
         Title="MakulaTest"  Height="780" Width="1214" Background="{StaticResource DarkBrush}" MinWidth="550" MinHeight="250">
 
     <Window.Resources>
-        <!--<local:AnalyseControl x:Key="AnalyseContent"/>
+        <local:AnalyseControl x:Key="AnalyseContent"/>
+        <local:MacularDiagnosisControl x:Key="DiagnoseContent"/>
         <local:SettingsView x:Key="SettingsContent"/>
-        <local:MacularDiagnosisControl x:Key="DiagnoseContent"/>-->
-        <local:UserControl1 x:Key="AnalyseContent"/>
-        <local:UserControl2 x:Key="SettingsContent"/>
-        <local:UserControl3 x:Key="DiagnoseContent"/>
+
 
         <col:ArrayList x:Key="TabItemList">
-            <model:MenuItem Name="Einstellungen" ImageLight="{StaticResource SettingsLight}" ImageDark="{StaticResource SettingsDark}" Content="{StaticResource SettingsContent}" />
-            <model:MenuItem Name="Diagnose" ImageLight="{StaticResource DiagnoseLight}" ImageDark="{StaticResource DiagnoseDark}" Content="{StaticResource DiagnoseContent}" />
             <model:MenuItem Name="Analyse" ImageLight="{StaticResource AnalyseLight}" ImageDark="{StaticResource AnalyseDark}" Content="{StaticResource AnalyseContent}" />
-
-
+            <model:MenuItem Name="Diagnose" ImageLight="{StaticResource DiagnoseLight}" ImageDark="{StaticResource DiagnoseDark}" Content="{StaticResource DiagnoseContent}" />
+            <model:MenuItem Name="Einstellungen" ImageLight="{StaticResource SettingsLight}" ImageDark="{StaticResource SettingsDark}" Content="{StaticResource SettingsContent}" />
         </col:ArrayList>
 
     </Window.Resources>
 
-    <TabControl x:Name="MainMenu" SelectedIndex="0" Margin="10,10,10,10"  
+    <TabControl x:Name="MainMenu"  Margin="10,10,10,10"  
                Background="{StaticResource MediumBrush}"
-               TabStripPlacement="Left" 
+               TabStripPlacement="Left"  ContentTemplate="{Binding Path=Content}"
                ItemTemplate="{DynamicResource TabItemTemplate}" 
                ItemsSource="{StaticResource TabItemList}" >
-        <TabControl.ContentTemplate>
+        <!--<TabControl.ContentTemplate>
             <DataTemplate>
-                <ContentControl Content="{Binding Path=Content, Mode=TwoWay}"/>
+                <ContentControl Content="{Binding Path=Content}"/>
             </DataTemplate>
-        </TabControl.ContentTemplate>
+        </TabControl.ContentTemplate>-->
        
     </TabControl>
 
