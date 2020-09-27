@@ -3,70 +3,42 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
+        xmlns:model="clr-namespace:MakulaTest.Model" 
         xmlns:local="clr-namespace:MakulaTest"
         mc:Ignorable="d" Loaded="Window_Loaded" KeyDown="Window_KeyDown"
         Title="MakulaTest"  Height="780" Width="1214" Background="{StaticResource DarkBrush}" MinWidth="550" MinHeight="250">
 
-  <TabControl  SelectedIndex="0" Margin="10,10,10,10"  Background="{StaticResource MediumBrush}"  TabStripPlacement="Left" Style="{DynamicResource TabControlStyle1}" >
+    <Window.Resources>
+        <!--<local:AnalyseControl x:Key="AnalyseContent"/>
+        <local:SettingsView x:Key="SettingsContent"/>
+        <local:MacularDiagnosisControl x:Key="DiagnoseContent"/>-->
+        <local:UserControl1 x:Key="AnalyseContent"/>
+        <local:UserControl2 x:Key="SettingsContent"/>
+        <local:UserControl3 x:Key="DiagnoseContent"/>
+
+        <col:ArrayList x:Key="TabItemList">
+            <model:MenuItem Name="Einstellungen" ImageLight="{StaticResource SettingsLight}" ImageDark="{StaticResource SettingsDark}" Content="{StaticResource SettingsContent}" />
+            <model:MenuItem Name="Diagnose" ImageLight="{StaticResource DiagnoseLight}" ImageDark="{StaticResource DiagnoseDark}" Content="{StaticResource DiagnoseContent}" />
+            <model:MenuItem Name="Analyse" ImageLight="{StaticResource AnalyseLight}" ImageDark="{StaticResource AnalyseDark}" Content="{StaticResource AnalyseContent}" />
 
 
+        </col:ArrayList>
 
-    <TabItem  Style="{DynamicResource TabItemStyle1}">
-            <TabItem.Header>
-                <StackPanel Orientation="Horizontal" Width="150" >
-                    <Image Source="{StaticResource Analyse}" Height="40" Width="40"/>
-                    <TextBlock Text="Analyse" Style="{StaticResource TabItemTextBlock}" />
-                </StackPanel>
-                
-            </TabItem.Header>
-            <TabItem.Content>
-                <local:AnalyseControl x:Name="MyAnalyse" />        
-            </TabItem.Content>
-    </TabItem>
+    </Window.Resources>
 
-
-    <TabItem Style="{DynamicResource TabItemStyle1}">
-            <TabItem.Header>
-                <StackPanel Orientation="Horizontal" Width="150">
-                    <Image Source="{StaticResource Diagnose}" Height="40" Width="40"/>
-                    <TextBlock Text="Diagnose" Style="{StaticResource TabItemTextBlock}" >
-          </TextBlock>
-        </StackPanel>
-            </TabItem.Header>
-            <TabItem.Content>
-                <local:MacularDiagnosisControl x:Name="DiagnoseControl"/>
-            </TabItem.Content>
-     </TabItem>
-
-
-
-        <TabItem   Style="{DynamicResource TabItemStyle1}"
-             
-              >
-            <TabItem.Header>
-                <StackPanel Orientation="Horizontal" Width="150">
-                    <Image Source="{StaticResource Settings}" Height="40" Width="40"/>
-                    <TextBlock Text="Einstellungen" Style="{StaticResource TabItemTextBlock}" />
-                </StackPanel>
-            </TabItem.Header>
-            <TabItem.Content>
-                <local:SettingsView x:Name="Settings"/>
-            </TabItem.Content>
-        </TabItem>
-        
+    <TabControl x:Name="MainMenu" SelectedIndex="0" Margin="10,10,10,10"  
+               Background="{StaticResource MediumBrush}"
+               TabStripPlacement="Left" 
+               ItemTemplate="{DynamicResource TabItemTemplate}" 
+               ItemsSource="{StaticResource TabItemList}" >
+        <TabControl.ContentTemplate>
+            <DataTemplate>
+                <ContentControl Content="{Binding Path=Content, Mode=TwoWay}"/>
+            </DataTemplate>
+        </TabControl.ContentTemplate>
+       
     </TabControl>
 
 
-
-
-  <!--<WrapPanel Margin="10" x:Name="MainWindowToolbar" Orientation="Horizontal" Grid.Row="1" >
-            <Button x:Name="btnAnalyse" Content="Analyse" Click="BtnAnalyse_Click" />
-            <Button x:Name="btnDiagnose" Content="Diagnose" Click="BtnDiagnose_Click"  />
-            <Button x:Name="btnSettingSize" Content="Größe speichern" Click="BtnSettingSize_Click"/>
-            <Button x:Name="btnStartMacularDiagnosis" Content="Start"  Click="BtnStartMacularDiagnosis_Click"/>
-            <Button x:Name="btnSettings" Content="Einstellungen" Click="BtnSettings_Click"/>
-            <Button x:Name="btnScreenCalib" Content="Kalibrieren" Click="BtnScreenCalib_Click"/>
-            <Button x:Name="btnSendMail" Content="Mail senden" Click="btnSendMail_Click"/>
-        </WrapPanel>-->
-    
 </Window>

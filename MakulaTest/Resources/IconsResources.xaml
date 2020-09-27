@@ -1,11 +1,16 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"                    
                     xmlns:vm="clr-namespace:MakulaTest.Model"      
                     xmlns:local="clr-namespace:MakulaTest">
-    <BitmapImage UriSource="../Images/Analyse.PNG" x:Key="Analyse"/>
-    <BitmapImage UriSource="../Images/Diagnose.PNG" x:Key="Diagnose"/>
-    <BitmapImage UriSource="../Images/Einstellungen.PNG" x:Key="Settings"/>
+    <BitmapImage UriSource="../Images/Analyse_Icon_Light.PNG" x:Key="AnalyseLight"/>
+    <BitmapImage UriSource="../Images/Analyse_Icon_Dark.PNG" x:Key="AnalyseDark"/>
+    
+    <BitmapImage UriSource="../Images/Diagnose_Icon_Light.PNG" x:Key="DiagnoseLight"/>
+    <BitmapImage UriSource="../Images/Diagnose_Icon_Dark.PNG" x:Key="DiagnoseDark"/>
+
+    <BitmapImage UriSource="../Images/Einstellungen_Icon_Light.PNG" x:Key="SettingsLight"/>
+    <BitmapImage UriSource="../Images/Einstellungen_Icon_Dark.png" x:Key="SettingsDark"/>
+    
     <BitmapImage UriSource="../Images/backward.PNG" x:Key="Backward"/>
     <BitmapImage UriSource="../Images/backward2.PNG" x:Key="Backward2"/>
     <BitmapImage UriSource="../Images/forward.PNG" x:Key="Forward"/>
@@ -19,4 +24,6 @@
     <BitmapImage UriSource="../Images/info.PNG" x:Key="Info"/>
     <BitmapImage UriSource="../Images/Hubert.PNG" x:Key="ProfilBild"/>
     <BitmapImage UriSource="../Images/StartButton.PNG" x:Key="StartDiagnose"/>
+
+    
 </ResourceDictionary>

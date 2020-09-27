@@ -7,6 +7,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Windows.Media;
+using System.Windows.Controls;
 
 namespace MakulaTest
 {
@@ -16,11 +17,21 @@ namespace MakulaTest
     public partial class MainWindow : Window
     {
 
+        private AnalyseControl MyAnalyse;
+        private MacularDiagnosisControl DiagnoseControl;
+        private SettingsView Settings;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            var arrayList = MainMenu.ItemsSource as System.Collections.ArrayList;
+            //MyAnalyse = ((Model.MenuItem)arrayList[0]).Content as AnalyseControl;
+            //DiagnoseControl = ((Model.MenuItem)arrayList[1]).Content as MacularDiagnosisControl;
+            //Settings = ((Model.MenuItem)arrayList[2]).Content as SettingsView;
+
             _filePathSettings = FilePathSettings.Instance;
-            MyAnalyse.Start(_filePathSettings.CSVDataFilePath);
+            //MyAnalyse.Start(_filePathSettings.CSVDataFilePath);
         }
 
         private FilePathSettings _filePathSettings;

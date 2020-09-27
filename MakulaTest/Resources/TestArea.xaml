@@ -95,6 +95,78 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <DataTemplate x:Key="TabItemTemplate">
+
+        <TabItem Content="{Binding Path=Content}">
+            <TabItem.Header>
+                <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
+                    <Border 
+                            Name="Border"
+                            Margin="0,100,0,0" 
+                            Background="Transparent"                            
+                            BorderBrush="{StaticResource SolidBorderBrush}" 
+                            BorderThickness="0" 
+                            CornerRadius="25,0,0,25" >
+
+                        <StackPanel Orientation="Horizontal" Width="150" >
+                            <Image x:Name="MenuImage"  Source="{Binding Path=ImageDark}" Height="40" Width="40"/>
+                            <TextBlock x:Name="MenuTitle" Text="{Binding Name}" Style="{StaticResource TabItemTextBlock}" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem.Header>
+        </TabItem>
+
+        <!--<DataTemplate.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true"/>
+                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left"/>
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Panel.ZIndex" Value="0" />
+                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource LightBrush}" />
+                <Setter TargetName="Border" Property="CornerRadius" Value ="25,0,0,25" />
+                <Setter TargetName="Border" Property="BorderThickness" Value="1"/>
+
+            </MultiDataTrigger>
+
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
+                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left"/>
+                </MultiDataTrigger.Conditions>
+                <Setter TargetName="Border" Property="Background" Value="{StaticResource DarkBrush}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource MediumBrush}" />
+                <Setter TargetName="Border" Property="CornerRadius" Value ="25,25,25,25" />
+
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="false"/>
+                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left"/>
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Panel.ZIndex" Value="0" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}" />
+                <Setter TargetName="MenuTitle" Property="Foreground" Value="{StaticResource LightBrush}" />
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="true"/>
+                    <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource AncestorType={x:Type TabControl}}}" Value="Left"/>
+                </MultiDataTrigger.Conditions>
+
+                <Setter Property="Panel.ZIndex" Value="200" />
+                <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedTabItemBrush}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}" />
+                <Setter TargetName="Border" Property="CornerRadius" Value ="25,25,25,25" />
+                <Setter TargetName="Border" Property="BorderThickness" Value="0"/>
+                <Setter TargetName="Border" Property="Margin" Value="0,100,-40,0"/>
+                <Setter TargetName="MenuTitle"  Property="Foreground" Value="{StaticResource DarkBrush}" />
+
+            </MultiDataTrigger>
+        </DataTemplate.Triggers>-->
+    </DataTemplate>
 
 
 </ResourceDictionary>

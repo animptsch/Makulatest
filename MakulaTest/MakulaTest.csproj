@@ -85,11 +85,21 @@
     <Compile Include="MailClient.cs" />
     <Compile Include="Model\Draw.cs" />
     <Compile Include="Model\MakulaDataSet.cs" />
+    <Compile Include="Model\MenuItem.cs" />
     <Compile Include="Model\SerializedWindowsState.cs" />
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Model\SettingsViewModel.cs" />
     <Compile Include="SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl1.xaml.cs">
+      <DependentUpon>UserControl1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl2.xaml.cs">
+      <DependentUpon>UserControl2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl3.xaml.cs">
+      <DependentUpon>UserControl3.xaml</DependentUpon>
     </Compile>
     <Page Include="AnalyseControl.xaml">
       <SubType>Designer</SubType>
@@ -142,6 +152,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl3.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -216,11 +238,6 @@
     <Resource Include="Images\trash.PNG" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Analyse.PNG" />
-    <Resource Include="Images\Diagnose.PNG" />
-    <Resource Include="Images\Einstellungen.PNG" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\Hubert.png" />
   </ItemGroup>
   <ItemGroup>
@@ -234,6 +251,14 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="eye.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Analyse_Icon_Dark.png" />
+    <Resource Include="Images\Analyse_Icon_Light.png" />
+    <Resource Include="Images\Diagnose_Icon_Dark.png" />
+    <Resource Include="Images\Diagnose_Icon_Light.png" />
+    <Resource Include="Images\Einstellungen_Icon_Dark.png" />
+    <Resource Include="Images\Einstellungen_Icon_Light.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
