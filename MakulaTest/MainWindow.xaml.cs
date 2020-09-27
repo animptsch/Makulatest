@@ -7,6 +7,8 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Windows.Media;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace MakulaTest
 {
@@ -151,5 +153,42 @@ namespace MakulaTest
         {
 
         }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var arg = e.AddedItems[0] as DependencyObject;
+            
+            Image image = findChild<Image>(arg);
+            if (image != null)
+            {
+                var res = (BitmapSource)Application.Current.Resources["Print2"];
+                image.Source = res;
+            }
+        }
+
+
+        private T findChild<T>(DependencyObject parent)  where T : DependencyObject
+        {
+            object result = null;
+
+            if (parent is T)
+            {
+                return parent as T;
+            }
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                result = findChild<T>(child);
+                if (result != null)
+                {
+                    break;
+                }
+            }
+
+            return result as T;
+        }
+
     }
 }

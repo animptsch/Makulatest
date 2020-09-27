@@ -7,14 +7,14 @@
         mc:Ignorable="d" Loaded="Window_Loaded" KeyDown="Window_KeyDown"
         Title="MakulaTest"  Height="780" Width="1214" Background="{StaticResource DarkBrush}" MinWidth="550" MinHeight="250">
 
-  <TabControl  SelectedIndex="0" Margin="10,10,10,10"  Background="{StaticResource MediumBrush}"  TabStripPlacement="Left" Style="{DynamicResource TabControlStyle1}" >
+  <TabControl  SelectedIndex="0" Margin="10,10,10,10" x:Name="Menu" SelectionChanged="TabControl_SelectionChanged"  Background="{StaticResource MediumBrush}"  TabStripPlacement="Left" Style="{DynamicResource TabControlStyle1}" >
 
 
 
     <TabItem  Style="{DynamicResource TabItemStyle1}">
             <TabItem.Header>
                 <StackPanel Orientation="Horizontal" Width="150" >
-                    <Image Source="{StaticResource Analyse}" Height="40" Width="40"/>
+                    <Image Source="{StaticResource Analyse}" Height="40" Width="40"  Tag="Anaylse"/>
                     <TextBlock Text="Analyse" Style="{StaticResource TabItemTextBlock}" />
                 </StackPanel>
                 
