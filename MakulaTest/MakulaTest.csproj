@@ -216,11 +216,6 @@
     <Resource Include="Images\trash.PNG" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Analyse.PNG" />
-    <Resource Include="Images\Diagnose.PNG" />
-    <Resource Include="Images\Einstellungen.PNG" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\Hubert.png" />
   </ItemGroup>
   <ItemGroup>
@@ -234,6 +229,14 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="eye.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Analyse_Icon_Dark.png" />
+    <Resource Include="Images\Analyse_Icon_Light.png" />
+    <Resource Include="Images\Diagnose_Icon_Dark.png" />
+    <Resource Include="Images\Diagnose_Icon_Light.png" />
+    <Resource Include="Images\Einstellungen_Icon_Dark.png" />
+    <Resource Include="Images\Einstellungen_Icon_Light.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

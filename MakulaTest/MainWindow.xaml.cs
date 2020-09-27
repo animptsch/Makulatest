@@ -156,16 +156,36 @@ namespace MakulaTest
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var arg = e.AddedItems[0] as DependencyObject;
-            
-            Image image = findChild<Image>(arg);
-            if (image != null)
+            var arg = e.AddedItems[0] as FrameworkElement;
+
+            if (arg.Tag != null)
             {
-                var res = (BitmapSource)Application.Current.Resources["Print2"];
-                image.Source = res;
+                string tagName = arg.Tag.ToString();
+
+                setImage(arg, tagName, "Dark");
+
+                foreach (var item in e.RemovedItems)
+                {
+                    var frameworkElement = item as FrameworkElement;
+                    tagName = frameworkElement.Tag.ToString();
+
+                    setImage(frameworkElement, tagName, "Light");
+                }
             }
         }
 
+        private void setImage(FrameworkElement arg, string tagName, string theme)
+        {
+            Image image = findChild<Image>(arg);
+
+            if (image != null)
+            {
+                string resourceName = tagName + theme;
+                BitmapSource source = (BitmapSource)Application.Current.Resources[resourceName];
+                image.Source = source;
+            }
+          
+        }
 
         private T findChild<T>(DependencyObject parent)  where T : DependencyObject
         {
