@@ -7,14 +7,19 @@
         mc:Ignorable="d" Loaded="Window_Loaded" KeyDown="Window_KeyDown"
         Title="MakulaTest"  Height="780" Width="1214" Background="{StaticResource DarkBrush}" MinWidth="550" MinHeight="250">
 
-  <TabControl  SelectedIndex="0" Margin="10,10,10,10" x:Name="Menu" SelectionChanged="TabControl_SelectionChanged"  Background="{StaticResource MediumBrush}"  TabStripPlacement="Left" Style="{DynamicResource TabControlStyle1}" >
+  <TabControl  SelectedIndex="0" Margin="10,10,10,10" x:Name="Menu" 
+               SelectionChanged="TabControl_SelectionChanged"
+               Background="{StaticResource MediumBrush}"
+               HorizontalContentAlignment="Left"
+               TabStripPlacement="Left"
+               Style="{DynamicResource TabControlStyle1}" >
 
 
 
         <TabItem  Style="{DynamicResource TabItemStyle1}" Tag="Analyse" >
             <TabItem.Header>
                 <StackPanel Orientation="Horizontal" Width="150" >
-                    <Image Source="{StaticResource AnalyseDark}" Height="40" Width="40" />
+                    <Image Source="{StaticResource AnalyseDark}" Margin="10,0,0,0" Height="40" Width="40" />
                     <TextBlock Text="Analyse" Style="{StaticResource TabItemTextBlock}" />
                 </StackPanel>
                 
@@ -28,10 +33,9 @@
     <TabItem Style="{DynamicResource TabItemStyle1}" Tag="Diagnose">
             <TabItem.Header>
                 <StackPanel Orientation="Horizontal" Width="150">
-                    <Image Source="{StaticResource DiagnoseLight}" Height="40" Width="40"/>
-                    <TextBlock Text="Diagnose" Style="{StaticResource TabItemTextBlock}" >
-          </TextBlock>
-        </StackPanel>
+                    <Image Source="{StaticResource DiagnoseLight}" Margin="10,0,0,0" Height="40" Width="40"/>
+                    <TextBlock Text="Diagnose" Style="{StaticResource TabItemTextBlock}" />
+                </StackPanel>
             </TabItem.Header>
             <TabItem.Content>
                 <local:MacularDiagnosisControl x:Name="DiagnoseControl"/>
@@ -43,7 +47,7 @@
         <TabItem   Style="{DynamicResource TabItemStyle1}" Tag="Settings">
             <TabItem.Header>
                 <StackPanel Orientation="Horizontal" Width="150">
-                    <Image Source="{StaticResource SettingsLight}" Height="40" Width="40"/>
+                    <Image Source="{StaticResource SettingsLight}" Margin="10,0,0,0" Height="40" Width="40"/>
                     <TextBlock Text="Einstellungen" Style="{StaticResource TabItemTextBlock}" />
                 </StackPanel>
             </TabItem.Header>
