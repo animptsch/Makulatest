@@ -11,9 +11,9 @@
     <SolidColorBrush x:Key="TabItem.Selected.Background" Color="{StaticResource SelectedTabItemBrush}"/>
 
     <Style x:Key="TabItemTextBlock" TargetType="{x:Type TextBlock}">
-        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontFamily" Value="Arial"/>
-        <Setter Property="Margin" Value="20,0,0,0" />
+        <Setter Property="Margin" Value="5,0,0,0" />
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     
@@ -52,8 +52,7 @@
                             <Setter TargetName="Border" Property="Background" Value="Transparent" />
                             <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource LightBrush}" />
                             <Setter TargetName="Border" Property="CornerRadius" Value ="25,0,0,25" />
-                            <Setter TargetName="Border" Property="BorderThickness" Value="1"/>
-                            
+                            <Setter TargetName="Border" Property="BorderThickness" Value="0"/>
                         </MultiDataTrigger>
 
                         <MultiDataTrigger>
@@ -74,6 +73,7 @@
                             <Setter Property="Panel.ZIndex" Value="0" />
                             <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}" />
                             <Setter Property="Foreground" Value="{StaticResource LightBrush}" />
+
                         </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
