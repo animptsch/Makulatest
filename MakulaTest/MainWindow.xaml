@@ -12,6 +12,7 @@
                Background="{StaticResource MediumBrush}"
                HorizontalContentAlignment="Left"
                TabStripPlacement="Left"
+               BorderThickness="0"
                Style="{DynamicResource TabControlStyle1}" >
 
 
