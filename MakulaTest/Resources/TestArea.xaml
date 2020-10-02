@@ -13,7 +13,7 @@
     <Style x:Key="TabItemTextBlock" TargetType="{x:Type TextBlock}">
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontFamily" Value="Arial"/>
-        <Setter Property="Margin" Value="5,0,0,0" />
+        <Setter Property="Margin" Value="15,0,0,0" />
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
     
