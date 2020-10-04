@@ -348,6 +348,12 @@ namespace MakulaTest.Model
                     try
                     {
                         rect = xmlserializer.Deserialize(fileStream) as SerializedWindowsState;
+
+                        Application.Current.MainWindow.Left = rect.Left;
+                        Application.Current.MainWindow.Top= rect.Top;
+                        Application.Current.MainWindow.Width = rect.Width;
+                        Application.Current.MainWindow.Height = rect.Height;
+
                     }
                     catch
                     {

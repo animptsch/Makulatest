@@ -73,6 +73,11 @@ namespace MakulaTest
                 {
                     if (arg.Tag != null)
                     {
+                        if (arg.Tag.ToString() == "Analyse")
+                        {
+                            MyAnalyse.Start(FilePathSettings.Instance.CSVDataFilePath);
+                        }
+
                         string tagName = arg.Tag.ToString();
 
                         setImage(arg, tagName, "Dark");
@@ -93,12 +98,7 @@ namespace MakulaTest
                 if(tab.Tag.ToString() == "Settings")
                 {
                     Settings.ViewModel.SaveSettings();
-                }
-
-                if (tab.Tag.ToString() == "Analyse")
-                {
-                    MyAnalyse.Start(FilePathSettings.Instance.CSVDataFilePath);
-                }
+                }                
             }
         }
 
