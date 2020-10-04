@@ -47,8 +47,12 @@
         <xctk:ColorPicker Grid.Row="6" Grid.Column="1" Margin="5" SelectedColor="{Binding Path=PolygonColor}" />
 
         <StackPanel Margin="20" Orientation="Horizontal" Grid.Row="7" Grid.ColumnSpan="2" HorizontalAlignment="Center"   >
-            <Button Command="{Binding Path=OpenScaleDialogCommand}" x:Name="btnScaleScreen" Height="50"  Width="200" >Bildschrim skalieren</Button>
-            <Button Command="{Binding Path=SaveWindowsSizeCommand}" Margin="20,0,0,0"  x:Name="btnSaveWindowSettings" Height="50" Width="200"  >Windows Postion speichern</Button>
+            <Button Command="{Binding Path=OpenScaleDialogCommand}" x:Name="btnScaleScreen" Style="{DynamicResource CircleButton}" Background="White" >
+                <Image Source="{StaticResource OpenScaleDialog}" Width="25" Height="32" />
+            </Button>
+            <Button Command="{Binding Path=SaveWindowsSizeCommand}" Margin="20,0,0,0"  x:Name="btnSaveWindowSettings" Style="{DynamicResource CircleButton}" Background="White"  >
+                <Image Source="{StaticResource SaveWindowsPos}" Width="25" Height="32" />
+            </Button>
         </StackPanel>
         
 

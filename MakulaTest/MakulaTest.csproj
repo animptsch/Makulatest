@@ -239,5 +239,9 @@
     <Resource Include="Images\Einstellungen_Icon_Dark.png" />
     <Resource Include="Images\Einstellungen_Icon_Light.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\pos.png" />
+    <Resource Include="Images\scale.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
