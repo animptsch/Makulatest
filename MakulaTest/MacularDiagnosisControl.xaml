@@ -23,7 +23,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal"  Grid.Row="1" Grid.Column="1" >
-            <Ellipse Height="90" Width="90" >
+            <Ellipse Style="{StaticResource ProfilbildImage}">
                 <Ellipse.Fill>
                     <ImageBrush ImageSource="{StaticResource ProfilBild}"/>
                 </Ellipse.Fill>

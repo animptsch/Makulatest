@@ -149,6 +149,11 @@
     <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
     <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
     <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+    <Style x:Key="ProfilbildImage" TargetType="{x:Type Ellipse}" >
+        <Setter Property="Height" Value="90"/>
+        <Setter Property="Width" Value="84"/>
+    </Style>
+
     <Style x:Key="CircleButton" TargetType="{x:Type Button}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
         <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>

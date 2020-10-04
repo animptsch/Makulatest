@@ -29,7 +29,7 @@
 
 
         <StackPanel Orientation="Horizontal" Margin="49,73,20,10">
-            <Ellipse Height="90" Width="84" >
+            <Ellipse Style="{StaticResource ProfilbildImage}">
                 <Ellipse.Fill>
                     <ImageBrush ImageSource="{StaticResource ProfilBild}"/>
                 </Ellipse.Fill>
