@@ -2,15 +2,73 @@
 using System.IO;
 using System.Xml.Serialization;
 using System.Windows.Media;
-using System;
+using System.Windows.Input;
+using System.Windows;
+using System.Xml;
 
 namespace MakulaTest.Model
 {
     public class SettingsViewModel :INotifyPropertyChanged
     {
+        private FilePathSettings _filePathSettings;
+
         public const int ModeBackward  = 1;
         public const int ModeForward   = 2;
         public const int ModeFreestyle = 3;
+
+        #region Commands
+
+        public ICommand OpenScaleDialogCommand { get; set; }
+
+        public ICommand SaveWindowsSizeCommand { get; set; }
+
+        private void saveWindowSettings()
+        {
+            SerializedWindowsState rect = new SerializedWindowsState()
+            {
+                Left = Application.Current.MainWindow.Left,
+                Top = Application.Current.MainWindow.Top,
+                Width = Application.Current.MainWindow.Width,
+                Height = Application.Current.MainWindow.Height,
+                IsMaximized = Application.Current.MainWindow.WindowState == WindowState.Maximized,
+                CanvasHeight = size.Height,
+                CanvasWidth = size.Width
+            };
+
+            var xmlserializer = new XmlSerializer(typeof(SerializedWindowsState));
+
+            if (File.Exists(_filePathSettings.WindowsSettingsFilePath))
+            {
+                File.Delete(_filePathSettings.WindowsSettingsFilePath);
+            }
+
+            using (var fileStream = File.Open(_filePathSettings.WindowsSettingsFilePath, FileMode.Create))
+            {
+                using (var xWriter = XmlWriter.Create(fileStream))
+                {
+                    xmlserializer.Serialize(xWriter, rect);
+                }
+            }
+
+            MessageBox.Show("Windowsdaten wurden gespeichert.");
+        }
+
+        private void openScaleDialog()
+        {
+            var calibDlg = new JustifyGridSize();
+
+            var res = calibDlg.ShowDialog();
+
+            if (res == true)
+            {
+                CalibScaleSize = new Size(calibDlg.MyCanvas.ActualWidth, calibDlg.MyCanvas.ActualHeight);
+            }
+
+        }
+
+        #endregion
+
+        #region Duration and StepCount Settings
 
         public int Duration
         {
@@ -36,8 +94,7 @@ namespace MakulaTest.Model
 
         public int SelectedDuration { get; set; }
 
-        private BrushConverter _brushConv;
-
+        
         public int DurationBackwards
         {
             get { return Model.DurationBackwards; }
@@ -50,8 +107,6 @@ namespace MakulaTest.Model
             }
         }
 
-
-
         public int Steps
         {
             get { return Model.Steps; }
@@ -62,6 +117,12 @@ namespace MakulaTest.Model
                 OnPropertyChanged(nameof(Steps));
             }
         }
+        #endregion
+
+        #region Brush and Color Settings
+
+        private BrushConverter _brushConv;
+
 
         public Brush BackgroundBrush { get => (SolidColorBrush)_brushConv.ConvertFrom(BackgroundColor); }
 
@@ -116,6 +177,10 @@ namespace MakulaTest.Model
             }
         }
 
+        #endregion
+
+        #region Left and Right Eye Radio Buttons
+
 
         private bool _isRightEyeChecked;
 
@@ -142,6 +207,10 @@ namespace MakulaTest.Model
                 OnPropertyChanged(nameof(IsLeftEyeChecked));
             }
         }
+
+        #endregion
+
+        #region Diagnose Modes
 
         private int _modus;
 
@@ -188,6 +257,9 @@ namespace MakulaTest.Model
                 OnPropertyChanged(nameof(IsMeasureStarted));
             }
         }
+
+        #endregion
+
         public Settings Model { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -204,8 +276,24 @@ namespace MakulaTest.Model
             
             _settingsFileName = FilePathSettings.Instance.AppSettingsFilePath;
 
+            OpenScaleDialogCommand = new RelayCommand( (object obj) => openScaleDialog());
+            SaveWindowsSizeCommand = new RelayCommand((object obj) => saveWindowSettings());
+            _filePathSettings = FilePathSettings.Instance;            
             loadSettings();
         }
+
+        private Size size;
+
+        public Size CalibScaleSize
+        {
+            get { return size; }
+            set 
+            { 
+                size = value;
+                OnPropertyChanged(nameof(CalibScaleSize));
+            }
+        }
+
 
         public void SaveSettings()
         {
@@ -242,6 +330,42 @@ namespace MakulaTest.Model
             }
 
             return result;
+        }
+
+
+
+
+        public void LoadWindowSettings()
+        {
+            SerializedWindowsState rect = null;
+
+            var xmlserializer = new XmlSerializer(typeof(SerializedWindowsState));
+
+            if (File.Exists(_filePathSettings.WindowsSettingsFilePath))
+            {
+                using (var fileStream = File.OpenRead(_filePathSettings.WindowsSettingsFilePath))
+                {
+                    try
+                    {
+                        rect = xmlserializer.Deserialize(fileStream) as SerializedWindowsState;
+                    }
+                    catch
+                    {
+                        rect = null;
+                    }
+
+                }
+            }
+
+            if (rect != null)
+            {
+                CalibScaleSize = new Size(rect.CanvasWidth, rect.CanvasHeight);
+            }
+            else
+            {
+                CalibScaleSize = new Size(457.0, 457.0);                
+            }
+
         }
 
         private readonly string _settingsFileName;

@@ -21,26 +21,29 @@ namespace MakulaTest
         public MainWindow()
         {
             InitializeComponent();
-            _filePathSettings = FilePathSettings.Instance;
-            MyAnalyse.Start(_filePathSettings.CSVDataFilePath);
+                        
+            MyAnalyse.Start(FilePathSettings.Instance.CSVDataFilePath);
         }
 
-        private FilePathSettings _filePathSettings;
-
+        
         private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            LoadSettings();
-            if (_canvasHeight != 0.0 && _canvasWidth != 0.0)
-            {
-                DiagnoseControl.SetSize(_canvasWidth, _canvasHeight);
-            }            
+        {            
+            Settings.ViewModel = DiagnoseControl.SettingsViewModel;
+            Settings.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            Settings.ViewModel.LoadWindowSettings();
         }
 
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "CalibScaleSize")
+            {                
+                Size size = DiagnoseControl.SettingsViewModel.CalibScaleSize;
+                this.DiagnoseControl.SetSize(size.Width, size.Height);
+            }
+        }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
-        {
-            
-
+        {           
             if (e.Key == Key.Space && DiagnoseControl.SettingsViewModel.IsMeasureStarted)
             {
                 DiagnoseControl.MarkPoint();
@@ -61,115 +64,36 @@ namespace MakulaTest
                 MyAnalyse.GoForwardInTime();
             }
 
-        }
-
-        private void BtnSettingSize_Click(object sender, RoutedEventArgs e)
-        {
-            SaveWindowSettings();
-            MessageBox.Show("Windowsdaten wurden gespeichert.");
-        }
-
-               
-        public void SaveWindowSettings()
-        {
-            SerializedWindowsState rect = new SerializedWindowsState()
-            {
-                Left = Application.Current.MainWindow.Left,
-                Top = Application.Current.MainWindow.Top,
-                Width = Application.Current.MainWindow.Width,
-                Height = Application.Current.MainWindow.Height,
-                IsMaximized = Application.Current.MainWindow.WindowState == WindowState.Maximized,
-                CanvasHeight = _canvasHeight,
-                CanvasWidth = _canvasWidth
-
-            };
-
-            var xmlserializer = new XmlSerializer(typeof(SerializedWindowsState));
-
-            if (File.Exists(_filePathSettings.WindowsSettingsFilePath))
-            {
-                File.Delete(_filePathSettings.WindowsSettingsFilePath);
-            }
-
-            using (var fileStream = File.Open(_filePathSettings.WindowsSettingsFilePath, FileMode.Create))
-            {
-                using (var xWriter = XmlWriter.Create(fileStream))
-                {
-                    xmlserializer.Serialize(xWriter, rect);
-                }
-            }
-        }
-        
-        public void LoadSettings()
-        {
-            SerializedWindowsState rect = null;
-
-            var xmlserializer = new XmlSerializer(typeof(SerializedWindowsState));
-
-            if (File.Exists(_filePathSettings.WindowsSettingsFilePath))
-            {
-                using (var fileStream = File.OpenRead(_filePathSettings.WindowsSettingsFilePath))
-                {
-                    try
-                    {
-                        rect = xmlserializer.Deserialize(fileStream) as SerializedWindowsState;
-                    }
-                    catch
-                    {
-                        rect = null;
-                    }
-
-                }
-            }
-
-            if (rect != null)
-            {
-              _canvasHeight = rect.CanvasHeight;
-              _canvasWidth = rect.CanvasWidth;
-            }
-            else
-            {
-              _canvasHeight = 457.0;
-              _canvasWidth = 457.0;
-            }
-
-        }
-
-        private void BtnScreenCalib_Click(object sender, RoutedEventArgs e)
-        {
-            var calibDlg = new JustifyGridSize();
-
-            calibDlg.ShowDialog();
-
-            _canvasHeight = calibDlg.MyCanvas.ActualHeight;
-            _canvasWidth = calibDlg.MyCanvas.ActualWidth;
-            this.DiagnoseControl.SetSize(_canvasWidth, _canvasHeight);
-        }
-
-        private double _canvasHeight;
-        private double _canvasWidth;
-
-        private void btnSendMail_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        } 
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var arg = e.AddedItems[0] as FrameworkElement;
-
-            if (arg.Tag != null)
-            {
-                string tagName = arg.Tag.ToString();
-
-                setImage(arg, tagName, "Dark");
-
-                foreach (var item in e.RemovedItems)
+        {            
+            if (e.AddedItems.Count > 0)
+            {                
+                if (e.AddedItems[0] is FrameworkElement arg)
                 {
-                    var frameworkElement = item as FrameworkElement;
-                    tagName = frameworkElement.Tag.ToString();
+                    if (arg.Tag != null)
+                    {
+                        string tagName = arg.Tag.ToString();
 
-                    setImage(frameworkElement, tagName, "Light");
+                        setImage(arg, tagName, "Dark");
+
+                        foreach (var item in e.RemovedItems)
+                        {
+                            var frameworkElement = item as FrameworkElement;
+                            tagName = frameworkElement.Tag.ToString();
+
+                            setImage(frameworkElement, tagName, "Light");
+                        }
+                    }                                        
+                }
+            }
+
+            if (e.RemovedItems.Count > 0 && e.RemovedItems[0] is TabItem tab)
+            {
+                if(tab.Tag.ToString() == "Settings")
+                {
+                    Settings.ViewModel.SaveSettings();
                 }
             }
         }

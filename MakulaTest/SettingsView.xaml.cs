@@ -1,6 +1,7 @@
 ﻿using MakulaTest.Model;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,20 +25,20 @@ namespace MakulaTest
         {
             InitializeComponent();
                         
-            _vm = new SettingsViewModel();
-            this.DataContext = _vm;
+            
         }
 
         private SettingsViewModel _vm;
 
-        private void BtnOk_Click(object sender, RoutedEventArgs e)
-        {          
-            _vm.SaveSettings();          
+        public SettingsViewModel ViewModel
+        {
+            get { return _vm; }
+            set 
+            { 
+                _vm = value;
+                this.DataContext = _vm;
+            }
         }
-        
 
-        private void BtnCancel_Click(object sender, RoutedEventArgs e)
-        {            
-        }
     }
 }
