@@ -55,6 +55,7 @@ namespace MakulaTest
         public void Start(string path)
         {
             _draw = new Draw(MyCanvas);
+            this.SizeChanged += MyCanvas_SizeChanged;
             _mds = new MakulaDataSet(path);
 
             //_rect = MyRectangle;
@@ -83,10 +84,10 @@ namespace MakulaTest
             _moveTimer.Start();
             */
 
-            //GenerateTestData();
-
+            //GenerateTestData();            
         }
 
+       
 
         //https://de.cleanpng.com/png-z809ef/download-png.html
 
@@ -666,19 +667,19 @@ namespace MakulaTest
         }
 
 
-        protected override Size ArrangeOverride(Size arrangeBounds)
-        {
-            MyCanvas.Measure(arrangeBounds);
+        //protected override Size ArrangeOverride(Size arrangeBounds)
+        //{
+        //    MyCanvas.Measure(arrangeBounds);
 
-            MyCanvas.Arrange(new Rect(arrangeBounds));
+        //    MyCanvas.Arrange(new Rect(arrangeBounds));
 
-            _windowSize = MyCanvas.RenderSize;
+        //    _windowSize = MyCanvas.RenderSize;
             
-            //RefreshScreen();
+        //    //RefreshScreen();
             
 
-            return base.ArrangeOverride(arrangeBounds);
-        }
+        //    return base.ArrangeOverride(arrangeBounds);
+        //}
 
         public static bool IsFatalError { get; set; }
 

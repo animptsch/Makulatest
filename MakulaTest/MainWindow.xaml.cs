@@ -21,7 +21,6 @@ namespace MakulaTest
         public MainWindow()
         {
             InitializeComponent();
-                        
             MyAnalyse.Start(FilePathSettings.Instance.CSVDataFilePath);
         }
 
@@ -94,6 +93,11 @@ namespace MakulaTest
                 if(tab.Tag.ToString() == "Settings")
                 {
                     Settings.ViewModel.SaveSettings();
+                }
+
+                if (tab.Tag.ToString() == "Analyse")
+                {
+                    MyAnalyse.Start(FilePathSettings.Instance.CSVDataFilePath);
                 }
             }
         }
