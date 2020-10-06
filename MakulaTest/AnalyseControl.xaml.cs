@@ -34,7 +34,7 @@ namespace MakulaTest
         private DispatcherTimer _moveTimer;
         private Rectangle testRect;
         private int maxSequenceId;
-        private Size _windowSize;
+        static private Size _windowSize;
         private bool timeMeasure = false;
         private bool _showGrid = true;
         //private Rectangle _rect;
@@ -74,6 +74,9 @@ namespace MakulaTest
 
             _mds.ReadSequences();
             _mds.ReadData();
+
+            if (_windowSize.Width != 0.0 && _windowSize.Width != 0.0)
+              RefreshScreen();
 
             //TestOffsets();
 
