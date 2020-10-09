@@ -10,6 +10,8 @@
              Foreground="Black"
              Loaded="MyCanvas_Loaded">
 
+    <Border Background="{StaticResource MediumBrush}" BorderThickness="0" CornerRadius="50">
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -182,6 +184,8 @@
 
       <Canvas Grid.RowSpan="5" Visibility="Visible" x:Name="MyCanvas" Grid.ColumnSpan="3" Margin="450,20,0,0"/>
 
+
     </Grid>
+  </Border>
 
 </UserControl>

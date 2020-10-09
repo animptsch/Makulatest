@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:MakulaTest"
              mc:Ignorable="d" x:Name="MyUserControl"  Foreground="Black"
              d:DesignHeight="700" d:DesignWidth="700">
+    <Border Background="{StaticResource MediumBrush}" BorderThickness="0" CornerRadius="50">
+
     <Grid Margin="10">
         <Grid.Resources>
             <local:BoolToOppositeBoolConverter x:Key="BoolToOppositeBoolConverter_ValueConverter" Inverse="True"/>
@@ -82,4 +84,5 @@
 
     </Grid>
   </Grid>
+  </Border>
 </UserControl>

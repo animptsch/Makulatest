@@ -7,9 +7,11 @@
         xmlns:local="clr-namespace:MakulaTest"
         xmlns:model="clr-namespace:MakulaTest.Model" Foreground="Black"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        mc:Ignorable="d" 
-        Height="400" Width="450">
-    <Grid>
+        mc:Ignorable="d">
+
+    <Border Background="{StaticResource MediumBrush}" BorderThickness="0" CornerRadius="50">
+
+    <Grid Margin="250,170,250,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -54,7 +56,8 @@
                 <Image Source="{StaticResource SaveWindowsPos}" Width="25" Height="32" />
             </Button>
         </StackPanel>
-        
+
 
     </Grid>
+    </Border>
 </UserControl>

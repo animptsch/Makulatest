@@ -9,7 +9,7 @@
 
   <TabControl  SelectedIndex="0" Margin="10,10,10,10" x:Name="Menu" 
                SelectionChanged="TabControl_SelectionChanged"
-               Background="{StaticResource MediumBrush}"
+               Background="Transparent"
                HorizontalContentAlignment="Left"
                TabStripPlacement="Left"
                BorderThickness="0"
