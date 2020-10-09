@@ -75,7 +75,7 @@ namespace MakulaTest
             _mds.ReadSequences();
             _mds.ReadData();
 
-            if (_windowSize.Width != 0.0 && _windowSize.Width != 0.0)
+            if (_windowSize.Width != 0.0 && _windowSize.Height != 0.0)
               RefreshScreen();
 
             //TestOffsets();
