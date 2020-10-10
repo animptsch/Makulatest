@@ -15,7 +15,7 @@
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="70"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="50"/>
             <RowDefinition Height="auto"/>
@@ -40,7 +40,7 @@
             <Image Source="{StaticResource Info}" Width="20" Height="20" />
         </StackPanel>
 
-        <Grid Grid.Row="2" VerticalAlignment="Top" Height="67" >
+        <Grid Grid.Row="2" VerticalAlignment="Top" Height="87" >
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="40"/>
@@ -55,7 +55,7 @@
               MouseEnter="BtnDayBefore_Enter"
               MouseLeave="BtnDayBefore_Leave"
               Style="{DynamicResource CircleButton}">
-                <Image x:Name="BtnDayBeforeImage" Source="{StaticResource Backward}" Width="25" Height="25" />
+                <Image x:Name="BtnDayBeforeImage" Source="{StaticResource Backward}" Width="50" />
             </Button>
 
             <Button Grid.Column="2" x:Name="BtnPrint" ToolTip="Drucken des Fensters"
@@ -63,7 +63,7 @@
               MouseEnter="BtnPrint_Enter"
               MouseLeave="BtnPrint_Leave"
               Style="{DynamicResource CircleButton}">
-                <Image x:Name="BtnPrintImage" Source="{StaticResource Print}" Width="30" Height="30"/>
+                <Image x:Name="BtnPrintImage" Source="{StaticResource Print}" Width="50" />
             </Button>
 
             <Button Grid.Column="3" x:Name="BtnDaten" ToolTip="Datensatz löschen"
@@ -71,7 +71,7 @@
               MouseEnter="BtnDaten_Enter"
               MouseLeave="BtnDaten_Leave"
               Style="{DynamicResource CircleButton}">
-                <Image x:Name="BtnDatenImage" Source="{StaticResource Trash}" Width="25" Height="32" />
+                <Image x:Name="BtnDatenImage" Source="{StaticResource Trash}" Width="50" />
             </Button>
 
             <Button Grid.Column="4" x:Name="BtnNextDay" ToolTip="1 Tag vor"
@@ -79,7 +79,7 @@
               MouseEnter="BtnNextDay_Enter"
               MouseLeave="BtnNextDay_Leave"
               Style="{DynamicResource CircleButton}" >
-                <Image x:Name="BtnNextDayImage" Source="{StaticResource Forward}" Width="25" Height="25" />
+                <Image x:Name="BtnNextDayImage" Source="{StaticResource Forward}" Width="50" />
             </Button>
 
         </Grid>
