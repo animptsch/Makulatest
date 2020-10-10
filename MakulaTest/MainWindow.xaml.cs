@@ -66,7 +66,7 @@ namespace MakulaTest
         } 
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {            
+        {
             if (e.AddedItems.Count > 0)
             {                
                 if (e.AddedItems[0] is FrameworkElement arg)
@@ -95,7 +95,7 @@ namespace MakulaTest
 
             if (e.RemovedItems.Count > 0 && e.RemovedItems[0] is TabItem tab)
             {
-                if(tab.Tag.ToString() == "Settings")
+                if(tab.Tag != null && tab.Tag.ToString() == "Settings")
                 {
                     Settings.ViewModel.SaveSettings();
                 }                
