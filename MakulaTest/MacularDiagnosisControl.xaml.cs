@@ -32,7 +32,8 @@ namespace MakulaTest
         private MakulaSession _session;
         private Draw _draw;
         private MakulaDataSet _mds;
-
+        private int _mouseWheelPos;
+        private MediaPlayer _mediaPlayer;
 
         public MacularDiagnosisControl()
         {
@@ -47,6 +48,9 @@ namespace MakulaTest
             _draw = new Draw(MyCanvas);
             _session = new MakulaSession();
             _mds = new MakulaDataSet(FilePathSettings.Instance.CSVDataFilePath);
+            _mouseWheelPos = 85;
+            _mediaPlayer = new MediaPlayer();
+
         }
 
         public void SetSize(double width, double height)
@@ -71,15 +75,6 @@ namespace MakulaTest
 
         public void StartDiagnosis()
         {
-
-        //SystemSounds.Beep.Play();
-        /*
-        MediaPlayer mediaPlayer = new MediaPlayer();
-
-        mediaPlayer.Open(new Uri(@"C:\Users\Jörg\source\repos\Makulatest\MakulaTest\SoundFiles\losgehts.mp3"));
-        mediaPlayer.Play();
-        */
-
             if (!SettingsViewModel.IsMeasureStarted)
             {
                 MyCanvas.Background = SettingsViewModel.BackgroundBrush;                
@@ -347,7 +342,10 @@ namespace MakulaTest
                 MyCanvas.Children.Remove(_ellipse);
 
                 if (SettingsViewModel.IsFreestyleChecked)
-                  CheckMousePosition();
+                {
+                  _mouseWheelPos = 85;
+                  CheckMouseWheel();
+                }
 
                 if (SettingsViewModel.IsMeasureStarted)
                 {
@@ -358,6 +356,7 @@ namespace MakulaTest
 
         public void StopDiagnosis()
         {
+            TestCompleteSound();
             Mouse.OverrideCursor = Cursors.Arrow;
 
             SettingsViewModel.IsMeasureStarted = false;
@@ -511,10 +510,12 @@ namespace MakulaTest
             _draw.DrawCircle(_center.X, _center.Y, CircleSize, SettingsViewModel.LinesBrush);
         }
 
-        private void MyCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Diagnosis_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!SettingsViewModel.IsMeasureStarted) 
                 return;
+
+            ClickSound();
 
             if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -549,16 +550,35 @@ namespace MakulaTest
             _ellipse = null;
 
             if (SettingsViewModel.IsFreestyleChecked)
-              CheckMousePosition();
+              CheckMouseWheel();
           }
         }
 
-        private void MyCanvas_MouseMove(object sender, MouseEventArgs e)
+        private void Diagnosis_MouseMove(object sender, MouseEventArgs e)
         {
           if (!SettingsViewModel.IsFreestyleChecked) return;
           if (_session.StartingPoints.Count <= 0) return;
 
-          CheckMousePosition();
+          //CheckMousePosition();
+          CheckMouseWheel();
+        }
+
+        private void CheckMouseWheel()
+        {
+          if (_currentPointIndex < 0 || _currentPointIndex >= _session.StartingPoints.Count) return;
+
+          Point endPoint = _session.StartingPoints[_currentPointIndex];
+          Point ip;
+
+          Vector targetVector = endPoint - _center;
+
+          ip = _center + targetVector * _mouseWheelPos / 100.0;
+
+          drawLines();
+          drawCenterCircle();
+          // Mouse.OverrideCursor = Cursors.None;
+
+          _ellipse = _draw.DrawCircle(ip.X, ip.Y, CircleSize, SettingsViewModel.MovedBallBrush);
         }
 
         private void CheckMousePosition()
@@ -608,9 +628,19 @@ namespace MakulaTest
             }
         }
 
-        private void MyCanvas_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        private void Diagnosis_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (e.Delta < 0 && _currentPointIndex > 0)
+          if (_session.StartingPoints.Count <= 0) return;
+          if (SettingsViewModel.IsFreestyleChecked)
+          {
+            _mouseWheelPos += e.Delta / 100;
+            _mouseWheelPos = Math.Max(0, Math.Min(100, _mouseWheelPos));
+
+            Console.WriteLine("_mouseWheelPos (2)=" + _mouseWheelPos.ToString());
+            CheckMouseWheel();
+          }
+          else
+          { if (e.Delta < 0 && _currentPointIndex > 0)
             {
                 double pos = 2.0 / (double)SettingsViewModel.Steps;
                 RemoveLastPoint();
@@ -618,15 +648,31 @@ namespace MakulaTest
 
             resetAnimation();
             resetTimer();
+          }
 
             e.Handled = true;
         }
 
         private void btnStartDiagnose_Click(object sender, RoutedEventArgs e)
         {
+           //SystemSounds.Beep.Play();
+            ClickSound();
+
             btnStartDiagnose.IsEnabled = false;
             StartDiagnosis();
         }
+
+        private void ClickSound()  //http://soundbible.com/tags-bing.html
+        { _mediaPlayer.Open(new Uri(@"../../Sounds/Click.wav", UriKind.Relative));
+          _mediaPlayer.Play();
+        }
+
+        private void TestCompleteSound() 
+        { _mediaPlayer.Open(new Uri(@"../../Sounds/TestComplete.wav", UriKind.Relative)); // Air Plane Ding
+          _mediaPlayer.Play();
+        }
+
+
     }
 
     /*
