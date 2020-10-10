@@ -12,7 +12,7 @@
         <TextBlock Text="{Binding Message}" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="20" Margin="10" Foreground="Red" FontWeight="Bold"/>
         <Border Height="150" Margin="10" BorderBrush="Black" BorderThickness="3">
             <ScrollViewer>
-                <TextBlock Margin="10" HorizontalAlignment="Center" Text="{Binding StackTrace}" FontSize="16" />        
+                <TextBox Margin="0,0,0,0" HorizontalAlignment="Center" Text="{Binding StackTrace, Mode=OneWay}" FontSize="10" BorderThickness="0" IsReadOnly="True" />
             </ScrollViewer>
         </Border>
 

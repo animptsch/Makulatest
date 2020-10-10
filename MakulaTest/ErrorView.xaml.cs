@@ -27,6 +27,7 @@ namespace MakulaTest
         public ErrorView(Exception ex) : this()
         {
             DataContext = ex;
+            Clipboard.SetText(DataContext.ToString());
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
