@@ -71,8 +71,13 @@
       </StackPanel>
     </GroupBox>
 
-    <Button Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="btnStartDiagnose" Click="btnStartDiagnose_Click" BorderThickness="0" Background="Transparent">
-      <Image Source="{StaticResource StartDiagnose}" Width="75" Height="75"/>
+    <Button Style="{StaticResource ButtonType}"  Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center"
+            VerticalAlignment="Center" x:Name="btnStartDiagnose"
+            Click="btnStartDiagnose_Click"
+            MouseEnter="btnStartDiagnose_Enter"
+            MouseLeave="btnStartDiagnose_Leave"
+            BorderThickness="0" Background="Transparent">
+        <Image x:Name="btnStartImage" Source="{StaticResource StartDiagnose}"/>
     </Button>
 
 

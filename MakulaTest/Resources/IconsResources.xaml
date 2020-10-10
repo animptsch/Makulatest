@@ -25,6 +25,7 @@
     <BitmapImage UriSource="../Images/info.PNG" x:Key="Info"/>
     <BitmapImage UriSource="../Images/Hubert.PNG" x:Key="ProfilBild"/>
     <BitmapImage UriSource="../Images/StartButton.PNG" x:Key="StartDiagnose"/>
+    <BitmapImage UriSource="../Images/StartButtonDark.PNG" x:Key="StartDiagnoseDark"/>
     <BitmapImage UriSource="../Images/pos.png" x:Key="SaveWindowsPos"/>
     <BitmapImage UriSource="../Images/scale.png" x:Key="OpenScaleDialog"/>
 </ResourceDictionary>

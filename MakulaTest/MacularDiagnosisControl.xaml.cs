@@ -662,6 +662,16 @@ namespace MakulaTest
             StartDiagnosis();
         }
 
+        private void btnStartDiagnose_Enter(object sender, RoutedEventArgs e)
+        {
+            btnStartImage.Source = (ImageSource) Application.Current.Resources["StartDiagnoseDark"];
+        }
+
+        private void btnStartDiagnose_Leave(object sender, RoutedEventArgs e)
+        {
+            btnStartImage.Source = (ImageSource) Application.Current.Resources["StartDiagnose"];
+        }
+
         private void ClickSound()  //http://soundbible.com/tags-bing.html
         { _mediaPlayer.Open(new Uri(@"../../Sounds/Click.wav", UriKind.Relative));
           _mediaPlayer.Play();
