@@ -54,9 +54,9 @@
 
         <GroupBox Margin="5" Grid.Row="3" Grid.Column="1"  IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}" BorderThickness="0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-                <RadioButton Style="{StaticResource Eyes}" IsChecked="{Binding Path=IsLeftEyeChecked}"
+                <RadioButton Style="{StaticResource Eyes}" IsChecked="{Binding Path=IsLeftEyeChecked}" ToolTip="das linke Auge testen"
                          Content="{StaticResource LeftEye}" Tag="Links" BorderBrush="{StaticResource DarkBrush}" Width="91"/>
-                <RadioButton Margin="37,0,0,0" Style="{StaticResource Eyes}" IsChecked="{Binding Path=IsRightEyeChecked}"
+                <RadioButton Margin="37,0,0,0" Style="{StaticResource Eyes}" IsChecked="{Binding Path=IsRightEyeChecked}" ToolTip="das rechte Auge testen"
                              Content="{StaticResource RightEye}" Tag="Rechts" BorderBrush="{StaticResource DarkBrush}" Width="91"/>
       </StackPanel>
     </GroupBox>
@@ -65,9 +65,9 @@
       Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}"
               Grid.Row="4"  Grid.Column="1" BorderThickness="0">
       <StackPanel HorizontalAlignment="Center">
-        <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Freihand"             IsChecked="{Binding Path=IsFreestyleChecked}"/>
-        <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Von außen nach innen" IsChecked="{Binding Path=IsForwardChecked}"/>
-        <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Von innen nach außen" IsChecked="{Binding Path=IsBackwardChecked}"/>
+        <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Freihand"             IsChecked="{Binding Path=IsFreestyleChecked}" ToolTip="Markierungspunkte mit dem Mausrad bewegen" />
+        <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Von außen nach innen" IsChecked="{Binding Path=IsForwardChecked}"   ToolTip="Markierungspunkte bewegen sich von außen nach innen" />
+        <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Von innen nach außen" IsChecked="{Binding Path=IsBackwardChecked}"  ToolTip="Markierungspunkte bewegen sich von innen nach außen" />
       </StackPanel>
     </GroupBox>
 
@@ -76,7 +76,8 @@
             Click="btnStartDiagnose_Click"
             MouseEnter="btnStartDiagnose_Enter"
             MouseLeave="btnStartDiagnose_Leave"
-            BorderThickness="0" Background="Transparent">
+            BorderThickness="0" Background="Transparent"
+            ToolTip="Test starten">
         <Image x:Name="btnStartImage" Source="{StaticResource StartDiagnose}"/>
     </Button>
 

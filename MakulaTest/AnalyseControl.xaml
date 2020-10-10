@@ -50,7 +50,7 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="1" x:Name="BtnDayBefore" ToolTip="1 Tag zurück"
+            <Button Grid.Column="1" x:Name="BtnDayBefore" ToolTip="vorherigen Datensatz anzeigen"
               Click="BtnDayBefore_Click" Background="White"
               MouseEnter="BtnDayBefore_Enter"
               MouseLeave="BtnDayBefore_Leave"
@@ -74,7 +74,7 @@
                 <Image x:Name="BtnDatenImage" Source="{StaticResource Trash}" Width="50" />
             </Button>
 
-            <Button Grid.Column="4" x:Name="BtnNextDay" ToolTip="1 Tag vor"
+            <Button Grid.Column="4" x:Name="BtnNextDay" ToolTip="nächsten Datensatz anzeigen"
               Click="BtnNextDay_Click" Background="White"
               MouseEnter="BtnNextDay_Enter"
               MouseLeave="BtnNextDay_Leave"
