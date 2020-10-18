@@ -243,5 +243,10 @@
     <Resource Include="Images\pos.png" />
     <Resource Include="Images\scale.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\StartButtonDark.png" />
+    <Content Include="Sounds\Click.wav" />
+    <Content Include="Sounds\TestComplete.wav" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

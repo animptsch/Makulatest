@@ -21,13 +21,21 @@ namespace MakulaTest.Model
   {
     private readonly string pathInternal;
     private List<int> _sequences;
-
-    public bool backward;
+    
     public bool rightEye;
     public double minDistance; // point distance to center
     public MakulaDataSetInternal data;
 
-    public MakulaDataSet(string path)
+        private MeasureMode _measureMode;
+
+        public MeasureMode Mode
+        {
+            get { return _measureMode; }
+            set { _measureMode = value; }
+        }
+
+
+        public MakulaDataSet(string path)
     {
       pathInternal = path;
       data = new MakulaDataSetInternal();
@@ -35,7 +43,7 @@ namespace MakulaTest.Model
     }
 
 
-    public void SaveData(List<Point> Points, bool backward, bool rightEye, int circleSize, Rectangle MyRectangle)
+    public void SaveData(List<Point> Points, MeasureMode measureMode, bool rightEye, int circleSize, Rectangle MyRectangle)
     {
       var day = DateTime.Now;
       var maxSequenceId = GetMaxSequenceIdFromFile();
@@ -47,7 +55,7 @@ namespace MakulaTest.Model
       {
         var realPoint = ConvertScreenToMillimeters(point, MyRectangle, circleSize);
 
-        WriteCSV(fs, maxSequenceId + 1, entryId, day, backward, rightEye, realPoint);
+        WriteCSV(fs, maxSequenceId + 1, entryId, day, measureMode, rightEye, realPoint);
         entryId++;
       }
 
@@ -149,10 +157,10 @@ namespace MakulaTest.Model
       return sequenceIdMax;
     }
 
-    private void WriteCSV(FileStream fs, int sequenceId, int entryId, DateTime day, bool backward, bool rightEye, Point point)
+    private void WriteCSV(FileStream fs, int sequenceId, int entryId, DateTime day, MeasureMode measure, bool rightEye, Point point)
     {
       string csv_line = sequenceId.ToString() + ";" + entryId.ToString() + ";" + day.ToString() + ";" +
-                        backward.ToString() + ";" + rightEye.ToString() + ";" +
+                        measure.ToString() + ";" + rightEye.ToString() + ";" +
                         Math.Round(point.X,1).ToString() + ";" + Math.Round(point.Y,1).ToString() + "\n";
       byte[] bytes = Encoding.UTF8.GetBytes(csv_line);
       fs.Write(bytes, 0, bytes.Length);
@@ -234,7 +242,20 @@ namespace MakulaTest.Model
             {
               entry_id = int.Parse(elements[1]);
               Date = DateTime.Parse(elements[2]);
-              backward = Boolean.Parse(elements[3]);
+
+                try
+                {
+                    _measureMode = (MeasureMode)Enum.Parse(typeof(MeasureMode), elements[3]);
+                }
+                catch (Exception)
+                {
+                    bool backward = false;
+                    if(Boolean.TryParse(elements[3], out backward))
+                    {
+                        _measureMode = backward ? MeasureMode.Backward : MeasureMode.Forward;
+                    }                                                               
+                }                            
+              
               rightEye = Boolean.Parse(elements[4]);
 
               p.X = double.Parse(elements[5]);
@@ -269,11 +290,11 @@ namespace MakulaTest.Model
       }
     }
 
-    public bool ReadNewestData(bool forward, bool rightEye)
+    public bool ReadNewestData(MeasureMode measureMode, bool rightEye)
     {
       data.actualSequence = -1;
 
-      if (forward && File.Exists(pathInternal)) // forward only!
+      if (measureMode == MeasureMode.Forward && File.Exists(pathInternal)) // forward only!
       {
         ReadSequences();
 
@@ -289,7 +310,7 @@ namespace MakulaTest.Model
 
           try
           {
-            if (Boolean.Parse(elements[3]) == backward &&
+            if (((MeasureMode)Enum.Parse(typeof(MeasureMode), elements[3])) == _measureMode &&
                 Boolean.Parse(elements[4]) == rightEye &&
                 (elements.Length < 8 || Boolean.Parse(elements[7]) == false)) // not deleted?
               recordNo = int.Parse(elements[0]);

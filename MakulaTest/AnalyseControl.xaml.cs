@@ -344,7 +344,7 @@ namespace MakulaTest
 
             printer.DrawStringAtPos(_mds.data.actualDate.ToString(), xPos, lineSize * 20.0, 16);
 
-            if (_mds.backward)
+            if (_mds.Mode == MeasureMode.Backward)
               printer.DrawStringAtPos("von Innen nach Außen", xPos, lineSize * 20.5, 16);
             else
               printer.DrawStringAtPos("von Außen nach Innen", xPos, lineSize * 20.5, 16);
@@ -413,7 +413,21 @@ namespace MakulaTest
                 txtMinDistance.Text = string.Format("minimaler Abstand: {0:N2} mm", _mds.minDistance);
 
                 txtDateTime.Text = _mds.data.actualDate.ToString();
-                txtDirection.Text = _mds.backward ? "von Innen nach Außen" : "von Außen nach Innen";
+                
+                switch (_mds.Mode)
+                {
+                    case MeasureMode.Backward:
+                        txtDirection.Text = "von Innen nach Außen";
+                        break;
+                    case MeasureMode.Forward:
+                        txtDirection.Text = "von Außen nach Innen";
+                        break;
+                    case MeasureMode.FreeStyle:
+                        txtDirection.Text = "Freihand Modus";
+                        break;
+                    default:
+                        break;
+                }
                 txtWhichEye.Text = _mds.rightEye ? "rechtes Auge" : "linkes Auge";
 
 
@@ -463,7 +477,7 @@ namespace MakulaTest
             _draw.DrawStringAtPos(string.Format("{0:N2} mm", _mds.minDistance), x_pos + 160, y_pos2+30, 16);
 
             var textBelowPicture = _mds.data.actualDate.ToString();
-            if (_mds.backward)
+            if (_mds.Mode == MeasureMode.Backward)
                 textBelowPicture += " von Innen nach Außen";
             else
                 textBelowPicture += " von Außen nach Innen";

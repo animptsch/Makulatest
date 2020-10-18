@@ -42,8 +42,8 @@ namespace MakulaTest
             SettingsViewModel = new SettingsViewModel();            
             DataContext = SettingsViewModel;
             SettingsViewModel.IsRightEyeChecked = true;
-            SettingsViewModel.IsBackwardChecked = true;
-
+            SettingsViewModel.Mode = MeasureMode.Backward;
+            
             SettingsViewModel.IsMeasureStarted = false;
             _draw = new Draw(MyCanvas);
             _session = new MakulaSession();
@@ -85,7 +85,7 @@ namespace MakulaTest
 
                 SettingsViewModel.IsMeasureStarted = true;
 
-                if (!SettingsViewModel.IsFreestyleChecked)
+                if (SettingsViewModel.Mode != MeasureMode.FreeStyle)
                 {
                   _removeTimer = new DispatcherTimer();
                   _removeTimer.Interval = new TimeSpan(0, 0, SettingsViewModel.SelectedDuration);
@@ -108,7 +108,7 @@ namespace MakulaTest
                 Point start = getCurrentStartPoint();
                 Point end   = getCurrentEndPoint();
                 
-                if (!SettingsViewModel.IsFreestyleChecked)
+                if (SettingsViewModel.Mode != MeasureMode.FreeStyle)
                   _ellipse = moveCircle(start, end);
             }
         }
@@ -121,7 +121,7 @@ namespace MakulaTest
 
           bool useNewestData = false;
       
-          if (_mds.ReadNewestData(SettingsViewModel.IsForwardChecked, SettingsViewModel.IsRightEyeChecked))
+          if (_mds.ReadNewestData(SettingsViewModel.Mode, SettingsViewModel.IsRightEyeChecked))
           { _mds.data.Points = ConvertDataToScreen(_mds.data.Points);
             useNewestData = true;
           }
@@ -237,7 +237,7 @@ namespace MakulaTest
                 _removeTimer.Start();
                 _moveTimer.Start();
 
-                if (!SettingsViewModel.IsFreestyleChecked)
+                if (SettingsViewModel.Mode != MeasureMode.FreeStyle)
                   _ellipse = moveCircle(start, end);
             }
         }
@@ -341,7 +341,7 @@ namespace MakulaTest
 
                 MyCanvas.Children.Remove(_ellipse);
 
-                if (SettingsViewModel.IsFreestyleChecked)
+                if (SettingsViewModel.Mode == MeasureMode.FreeStyle)
                 {
                   _mouseWheelPos = 85;
                   CheckMouseWheel();
@@ -387,7 +387,7 @@ namespace MakulaTest
             MyCanvas.Children.Add(_polygon);
 
             _mds.SaveData(_session.Points,                
-                         SettingsViewModel.IsBackwardChecked,  // direction
+                         SettingsViewModel.Mode,  // direction
                          SettingsViewModel.IsRightEyeChecked,  // rightEye
                          CircleSize,
                          MyRectangle);
@@ -411,11 +411,7 @@ namespace MakulaTest
           Point pt = _center;
           double amount = 0.10; // 10% (not 5%) - do we need a new property?
 
-          if (SettingsViewModel.IsBackwardChecked || SettingsViewModel.IsFreestyleChecked)
-          { // from inside to outside (backward)
-            //_session.StartingPoints[_currentPointIndex] = ExtendLine(_session.StartingPoints[_currentPointIndex], _center, 1.0-amount);
-          }
-          else
+          if (SettingsViewModel.Mode == MeasureMode.Forward)
           { // from outside to midpoint (forward)
             pt =  ExtendLine(_session.StartingPoints[_currentPointIndex], _center, 1.0+amount);
             _session.StartingPoints[_currentPointIndex] = pt;
@@ -438,7 +434,7 @@ namespace MakulaTest
             _currentPointIndex = 0;
           }
 
-          if (SettingsViewModel.IsBackwardChecked || SettingsViewModel.IsFreestyleChecked)
+          if (SettingsViewModel.Mode == MeasureMode.Backward || SettingsViewModel.Mode == MeasureMode.FreeStyle)
             pt = GetPointOnEllipse(_currentPointIndex, MyRectangle.Width / 2 + 30, MyRectangle.Height / 2 + 30);
 
           return pt;
@@ -526,7 +522,7 @@ namespace MakulaTest
             {
                 RemoveLastPoint();
 
-                if (!SettingsViewModel.IsFreestyleChecked)
+                if (SettingsViewModel.Mode != MeasureMode.FreeStyle)
                   cancelMovement();
             }
 
@@ -549,14 +545,14 @@ namespace MakulaTest
             MyCanvas.Children.Remove(_ellipse);
             _ellipse = null;
 
-            if (SettingsViewModel.IsFreestyleChecked)
+            if (SettingsViewModel.Mode == MeasureMode.FreeStyle)
               CheckMouseWheel();
           }
         }
 
         private void Diagnosis_MouseMove(object sender, MouseEventArgs e)
         {
-          if (!SettingsViewModel.IsFreestyleChecked) return;
+          if (SettingsViewModel.Mode != MeasureMode.FreeStyle) return;
           if (_session.StartingPoints.Count <= 0) return;
 
           //CheckMousePosition();
@@ -631,7 +627,7 @@ namespace MakulaTest
         private void Diagnosis_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
           if (_session.StartingPoints.Count <= 0) return;
-          if (SettingsViewModel.IsFreestyleChecked)
+          if (SettingsViewModel.Mode == MeasureMode.FreeStyle)
           {
             _mouseWheelPos += e.Delta / 100;
             _mouseWheelPos = Math.Max(0, Math.Min(100, _mouseWheelPos));

@@ -8,14 +8,19 @@ using System.Xml;
 
 namespace MakulaTest.Model
 {
+    public enum MeasureMode
+    {
+        Backward,
+        Forward,
+        FreeStyle
+    }
+
+
+
     public class SettingsViewModel :INotifyPropertyChanged
     {
         private FilePathSettings _filePathSettings;
-
-        public const int ModeBackward  = 1;
-        public const int ModeForward   = 2;
-        public const int ModeFreestyle = 3;
-
+        
         #region Commands
 
         public ICommand OpenScaleDialogCommand { get; set; }
@@ -83,7 +88,7 @@ namespace MakulaTest.Model
 
         private void UpdateSelectedDuration()
         {
-            int selectedDuration = IsBackwardChecked ? DurationBackwards : Duration;
+            int selectedDuration = Mode == MeasureMode.Backward ? DurationBackwards : Duration;
 
             if (selectedDuration != SelectedDuration)
             {
@@ -210,16 +215,14 @@ namespace MakulaTest.Model
 
         #endregion
 
-        #region Diagnose Modes
-
-        private int _modus;
+        #region Diagnose Modes        
 
         public bool IsFreestyleChecked
         {
-            get { return (_modus == ModeFreestyle); }
+            get { return (measureMode == MeasureMode.FreeStyle); }
             set
             {
-              if (value) _modus = ModeFreestyle;
+              if (value) measureMode = MeasureMode.FreeStyle;
               OnPropertyChanged(nameof(IsFreestyleChecked));
               UpdateSelectedDuration();
             }
@@ -227,22 +230,38 @@ namespace MakulaTest.Model
 
         public bool IsBackwardChecked
         {
-            get { return (_modus == ModeBackward); }
+            get { return (measureMode == MeasureMode.Backward); }
             set
             {
-                if (value) _modus = ModeBackward;
+                if (value) measureMode = MeasureMode.Backward;
                 OnPropertyChanged(nameof(IsBackwardChecked));
                 UpdateSelectedDuration();
             }
         }
 
+
         public bool IsForwardChecked
         {
-            get { return (_modus == ModeForward); }
+            get { return (measureMode == MeasureMode.Forward); }
             set
             {
-               if (value) _modus = ModeForward;
-               OnPropertyChanged(nameof(IsForwardChecked));
+                if (value) measureMode = MeasureMode.Forward;
+                OnPropertyChanged(nameof(IsForwardChecked));
+                UpdateSelectedDuration();
+            }
+        }
+
+
+        private MeasureMode measureMode;
+
+        
+        public MeasureMode Mode
+        {
+            get { return measureMode; }
+            set 
+            {
+                measureMode = value;
+                OnPropertyChanged(nameof(Mode));
             }
         }
 
