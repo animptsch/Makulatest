@@ -42,8 +42,8 @@ namespace MakulaTest
             SettingsViewModel = new SettingsViewModel();            
             DataContext = SettingsViewModel;
             SettingsViewModel.IsRightEyeChecked = true;
-            SettingsViewModel.Mode = MeasureMode.Backward;
-            
+            SettingsViewModel.Mode = MeasureMode.Backward;            
+
             SettingsViewModel.IsMeasureStarted = false;
             _draw = new Draw(MyCanvas);
             _session = new MakulaSession();

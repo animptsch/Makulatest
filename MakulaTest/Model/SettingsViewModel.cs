@@ -32,13 +32,12 @@ namespace MakulaTest.Model
         {
             MeasureMode measureMode = MeasureMode.Backward;
 
-            try
+
+            bool backward = false;
+            bool parsed = Enum.TryParse<MeasureMode>(text, out measureMode);
+
+            if (!parsed)
             {
-                measureMode = (MeasureMode)Enum.Parse(typeof(MeasureMode), text);
-            }
-            catch (Exception)
-            {
-                bool backward = false;
                 if (Boolean.TryParse(text, out backward))
                 {
                     measureMode = backward ? MeasureMode.Backward : MeasureMode.Forward;
@@ -305,6 +304,7 @@ namespace MakulaTest.Model
             {
                 measureMode = value;
                 OnPropertyChanged(nameof(Mode));
+                UpdateSelectedDuration();
             }
         }
 
