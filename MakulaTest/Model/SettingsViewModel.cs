@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows;
 using System.Xml;
+using System;
 
 namespace MakulaTest.Model
 {
@@ -26,6 +27,48 @@ namespace MakulaTest.Model
         public ICommand OpenScaleDialogCommand { get; set; }
 
         public ICommand SaveWindowsSizeCommand { get; set; }
+
+        public static MeasureMode ParseMeasureMode(string text)
+        {
+            MeasureMode measureMode = MeasureMode.Backward;
+
+            try
+            {
+                measureMode = (MeasureMode)Enum.Parse(typeof(MeasureMode), text);
+            }
+            catch (Exception)
+            {
+                bool backward = false;
+                if (Boolean.TryParse(text, out backward))
+                {
+                    measureMode = backward ? MeasureMode.Backward : MeasureMode.Forward;
+                }
+            }
+
+            return measureMode;
+        }
+
+
+        public static string GetMeasureModeText(MeasureMode measureMode)
+        {
+            string result;
+
+            switch (measureMode)
+            {
+                case MeasureMode.Backward:
+                    result = "von Innen nach Außen";
+                    break;
+                case MeasureMode.Forward:
+                    result = "von Außen nach Innen";
+                    break;
+                case MeasureMode.FreeStyle:
+                default:
+                    result = "Freihand Modus";                                    
+                    break;
+            }
+
+            return result;
+        }
 
         private void saveWindowSettings()
         {

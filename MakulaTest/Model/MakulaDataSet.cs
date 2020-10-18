@@ -233,7 +233,6 @@ namespace MakulaTest.Model
         {
           var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
 
-
           DateTime Date;
 
           try
@@ -243,19 +242,7 @@ namespace MakulaTest.Model
               entry_id = int.Parse(elements[1]);
               Date = DateTime.Parse(elements[2]);
 
-                try
-                {
-                    _measureMode = (MeasureMode)Enum.Parse(typeof(MeasureMode), elements[3]);
-                }
-                catch (Exception)
-                {
-                    bool backward = false;
-                    if(Boolean.TryParse(elements[3], out backward))
-                    {
-                        _measureMode = backward ? MeasureMode.Backward : MeasureMode.Forward;
-                    }                                                               
-                }                            
-              
+              _measureMode = SettingsViewModel.ParseMeasureMode(elements[3]);              
               rightEye = Boolean.Parse(elements[4]);
 
               p.X = double.Parse(elements[5]);
@@ -307,10 +294,12 @@ namespace MakulaTest.Model
         while ((csv_line = fs.ReadLine()) != null)
         {
           var elements = csv_line.Split(charSeparators, StringSplitOptions.None);
-
+        
           try
           {
-            if (((MeasureMode)Enum.Parse(typeof(MeasureMode), elements[3])) == _measureMode &&
+            MeasureMode mode = SettingsViewModel.ParseMeasureMode(elements[3]);
+        
+            if (mode == _measureMode &&
                 Boolean.Parse(elements[4]) == rightEye &&
                 (elements.Length < 8 || Boolean.Parse(elements[7]) == false)) // not deleted?
               recordNo = int.Parse(elements[0]);
