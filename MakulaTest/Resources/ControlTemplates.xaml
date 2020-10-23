@@ -5,6 +5,38 @@
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" x:Class="WpfApp2.MainWindow"
         mc:Ignorable="d" >
 
+
+
+    <Style TargetType="{x:Type Popup}" x:Key="PopupType">
+        <Setter Property="AllowsTransparency" Value="True"/>
+        <Setter Property="Placement" Value="Relative"/>
+        <Setter Property="HorizontalOffset" Value="50"/>
+        <Setter Property="VerticalOffset" Value="0"/>
+
+        <Style.Triggers>
+             <DataTrigger Binding="{Binding IsMouseOver, ElementName=InfoPicture}" Value="True">
+               <DataTrigger.EnterActions>
+                 <BeginStoryboard>
+                   <Storyboard>
+                     <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsOpen" FillBehavior="HoldEnd">
+                       <DiscreteBooleanKeyFrame Value="True" KeyTime="0:0:0" />
+                     </BooleanAnimationUsingKeyFrames>
+                   </Storyboard>
+                 </BeginStoryboard>
+               </DataTrigger.EnterActions>
+               <DataTrigger.ExitActions>
+                 <BeginStoryboard>
+                   <Storyboard>
+                     <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsOpen" FillBehavior="HoldEnd">
+                       <DiscreteBooleanKeyFrame Value="False" KeyTime="0:0:2" />
+                     </BooleanAnimationUsingKeyFrames>
+                   </Storyboard>
+                 </BeginStoryboard>
+               </DataTrigger.ExitActions>
+             </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="{x:Type Button}" x:Key="ButtonType">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>

@@ -32,7 +32,17 @@
 
         <StackPanel Orientation="Horizontal" Margin="49,73,20,10">
             <TextBlock Margin="0,0,10,0" FontSize="25" Text="Hubert Nimptsch" VerticalAlignment="Center" FontWeight="Bold" />
-            <Image Source="{StaticResource Info}" Width="20" Height="20" />
+            <Image x:Name="InfoPicture" Source="{StaticResource Info}" Width="20" Height="20" />
+
+            <Popup x:Name="InfoPopup" PlacementTarget="{Binding ElementName=InfoPicture}" Style="{DynamicResource PopupType}">
+                <Border CornerRadius="25" Background="White" BorderBrush="Transparent" BorderThickness="0" Width="160"  Height="80" Panel.ZIndex="10">
+                    <StackPanel Margin="20,15,0,0"  >
+                        <TextBlock Text="Angerweg 2" />
+                        <TextBlock Text="31028 Gronau/Leine" />
+                        <TextBlock Text="Mobil: 01575 1086320" />
+                    </StackPanel>
+                </Border>
+            </Popup>
         </StackPanel>
 
         <Grid Grid.Row="2" VerticalAlignment="Top" Height="87" >
