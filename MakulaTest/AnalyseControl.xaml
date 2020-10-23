@@ -31,12 +31,7 @@
 
 
         <StackPanel Orientation="Horizontal" Margin="49,73,20,10">
-            <Ellipse Style="{StaticResource ProfilbildImage}">
-                <Ellipse.Fill>
-                    <ImageBrush ImageSource="{StaticResource ProfilBild}"/>
-                </Ellipse.Fill>
-            </Ellipse>
-            <TextBlock Margin="42,0,10,0" FontSize="25" Text="Hubert Nimptsch" VerticalAlignment="Center"/>
+            <TextBlock Margin="0,0,10,0" FontSize="25" Text="Hubert Nimptsch" VerticalAlignment="Center" FontWeight="Bold" />
             <Image Source="{StaticResource Info}" Width="20" Height="20" />
         </StackPanel>
 
@@ -163,15 +158,15 @@
                 <TextBlock x:Name="txtViewArea" Text="89,22 %" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" />
             </Border>
 
-            <TextBlock Text="Sehbereich" Grid.Column="2" VerticalAlignment="Center" />
+            <TextBlock Text="Testbereich" Grid.Column="2" VerticalAlignment="Center"  FontSize="18" FontWeight="Bold" />
 
             <Border Grid.Row="2" Background="DarkGray" CornerRadius="10">
                 <TextBlock x:Name="txtDefaultArea" Text="89,22 %" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="20" />
             </Border>
 
-            <TextBlock Text="Ausfallbereich" Grid.Row="2" Grid.Column="2"  VerticalAlignment="Center" />
+            <TextBlock Text="Ausfallbereich" Grid.Row="2" Grid.Column="2"  VerticalAlignment="Center"  FontSize="18" FontWeight="Bold" />
       </Grid>
-      <Grid Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top"  Width="179" Margin="42,0,0,0">
+      <Grid Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top"  Width="379" Margin="42,0,0,0">
         <Grid.ColumnDefinitions>
           <ColumnDefinition />
         </Grid.ColumnDefinitions>
@@ -179,7 +174,7 @@
           <RowDefinition Height="29" />
           <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <TextBlock x:Name="txtMinDistance" Grid.Row="1" Text="Minimaler Abstand: 18,75 mm" />
+        <TextBlock x:Name="txtMinDistance" Grid.Row="1" Text="Minimaler Abstand: 18,75 mm"  FontSize="18" FontWeight="Bold" />
       </Grid>
 
       <Canvas Grid.RowSpan="5" Visibility="Visible" x:Name="MyCanvas" Grid.ColumnSpan="3" Margin="450,20,0,0"/>
