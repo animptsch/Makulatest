@@ -7,6 +7,11 @@
 
 
 
+    <Style TargetType="{x:Type Label}" x:Key="LabelType">
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
     <Style TargetType="{x:Type Popup}" x:Key="PopupType">
         <Setter Property="AllowsTransparency" Value="True"/>
         <Setter Property="Placement" Value="Relative"/>
@@ -124,7 +129,8 @@
         <Setter Property="Background" Value="DarkGray"/>
         <Setter Property="BorderBrush" Value="{StaticResource TextBox.Static.Border}"/>
         <Setter Property="Foreground" Value="White"/>
-        
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
