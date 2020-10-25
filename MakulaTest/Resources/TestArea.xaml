@@ -11,11 +11,13 @@
     <SolidColorBrush x:Key="TabItem.Selected.Background" Color="{StaticResource SelectedTabItemBrush}"/>
 
     <Style x:Key="TabItemTextBlock" TargetType="{x:Type TextBlock}">
-        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontSize" Value="20"/>
         <Setter Property="FontFamily" Value="Arial"/>
-        <Setter Property="Margin" Value="15,0,0,0" />
-        <Setter Property="VerticalAlignment" Value="Center"/>
-    </Style>
+    <Setter Property="Margin" Value="15,0,0,0" />
+    <Setter Property="Foreground" Value="Black" />
+     <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="HorizontalAlignment" Value="Center"/>
+  </Style>
     
     <Style x:Key="TabItemStyle1" TargetType="{x:Type TabItem}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
@@ -35,7 +37,6 @@
                         <Border 
                             Name="Border"
                             Margin="0,100,0,0" 
-                            Background="Transparent"                            
                             BorderBrush="{StaticResource SolidBorderBrush}" 
                             BorderThickness="0" 
                             CornerRadius="25,0,0,25" >
