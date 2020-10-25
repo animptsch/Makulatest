@@ -28,6 +28,8 @@ namespace MakulaTest.Model
 
         public ICommand SaveWindowsSizeCommand { get; set; }
 
+        public ICommand SavePrinterSettingsCommand { get; set; }
+
         public static MeasureMode ParseMeasureMode(string text)
         {
             MeasureMode measureMode = MeasureMode.Backward;
@@ -340,8 +342,15 @@ namespace MakulaTest.Model
 
             OpenScaleDialogCommand = new RelayCommand( (object obj) => openScaleDialog());
             SaveWindowsSizeCommand = new RelayCommand((object obj) => saveWindowSettings());
+            SavePrinterSettingsCommand = new RelayCommand((object obj ) => savePrinterSettings());
+
             _filePathSettings = FilePathSettings.Instance;            
             loadSettings();
+        }
+
+        private void savePrinterSettings()
+        {
+            throw new NotImplementedException();
         }
 
         private Size size;
