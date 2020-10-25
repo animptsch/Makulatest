@@ -20,35 +20,20 @@
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="71" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="20" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal"  Grid.Row="1" Grid.Column="1" >
+        <StackPanel Orientation="Horizontal"  Grid.Row="0" Grid.Column="1" Margin="0,73,0,20">
             <TextBlock Margin="0,0,10,0" FontSize="25" Text="Hubert Nimptsch" VerticalAlignment="Center" FontWeight="Bold" />
             <Image Source="{StaticResource Info}" Width="20" Height="20" />
         </StackPanel>
 
-        <Grid Margin="10" Grid.Row="3" Grid.Column="1">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="70"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="*"/>
-          </Grid.ColumnDefinitions>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-          </Grid.RowDefinitions>
-
-        <GroupBox Margin="5" Grid.Row="3" Grid.Column="1"  IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}" BorderThickness="0">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+        <GroupBox Grid.Row="1" Grid.Column="1"  IsEnabled="{Binding Path=IsMeasureStarted, Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}" BorderThickness="0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
                 <RadioButton Style="{StaticResource Eyes}" IsChecked="{Binding Path=IsLeftEyeChecked}" ToolTip="das linke Auge testen"
                          Content="{StaticResource LeftEye}" Tag="Links" BorderBrush="{StaticResource DarkBrush}" Width="91" FontSize="20" FontWeight="Bold"/>
                 <RadioButton Margin="37,0,0,0" Style="{StaticResource Eyes}" IsChecked="{Binding Path=IsRightEyeChecked}" ToolTip="das rechte Auge testen"
@@ -58,15 +43,15 @@
 
     <GroupBox Margin="0,10,0,0" IsEnabled="{Binding Path=IsMeasureStarted,
       Converter={StaticResource BoolToOppositeBoolConverter_ValueConverter}}"
-              Grid.Row="4"  Grid.Column="1" BorderThickness="0">
-      <StackPanel HorizontalAlignment="Center">
+              Grid.Row="2"  Grid.Column="1" BorderThickness="0" >
+      <StackPanel HorizontalAlignment="Left">
         <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Freihand"             IsChecked="{Binding Path=IsFreestyleChecked}" ToolTip="Markierungspunkte mit dem Mausrad bewegen" />
         <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Von außen nach innen" IsChecked="{Binding Path=IsForwardChecked}"   ToolTip="Markierungspunkte bewegen sich von außen nach innen" />
         <RadioButton Style="{StaticResource ToggleRadioButton}" Content="Von innen nach außen" IsChecked="{Binding Path=IsBackwardChecked}"  ToolTip="Markierungspunkte bewegen sich von innen nach außen" />
       </StackPanel>
     </GroupBox>
 
-    <Button Style="{StaticResource ButtonType}"  Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center"
+    <Button Style="{StaticResource ButtonType}"  Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center"
             VerticalAlignment="Center" x:Name="btnStartDiagnose"
             Click="btnStartDiagnose_Click"
             MouseEnter="btnStartDiagnose_Enter"
@@ -77,13 +62,12 @@
     </Button>
 
 
-    <Canvas Grid.Column="3" Grid.RowSpan="5"
-            Margin="130,-90,0,0"
+    <Canvas Grid.Column="2" Grid.RowSpan="4" Grid.Row="0" 
+            Margin="130,50,0,0"
             x:Name="MyCanvas" VerticalAlignment="Top">
         <Rectangle x:Name="MyRectangle" Stroke="Black" Fill="White"  Margin="50" />
     </Canvas>
 
-    </Grid>
   </Grid>
   </Border>
 </UserControl>

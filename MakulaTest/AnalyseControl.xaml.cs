@@ -42,7 +42,9 @@ namespace MakulaTest
         private MakulaDataSet _mds;
         private double _radius;
 
-        private bool _rightEyeFilter;        
+        private bool _rightEyeFilter;
+
+        public SettingsViewModel Settings { get; set; }
 
         public AnalyseControl()
         {

@@ -27,7 +27,7 @@ namespace MakulaTest
         
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {            
-            Settings.ViewModel = DiagnoseControl.SettingsViewModel;
+            MyAnalyse.Settings = Settings.ViewModel = DiagnoseControl.SettingsViewModel;
             Settings.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
             Settings.ViewModel.LoadWindowSettings();
         }
