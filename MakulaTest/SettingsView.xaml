@@ -50,19 +50,19 @@
 
         <StackPanel Margin="20" Orientation="Horizontal" Grid.Row="7" Grid.ColumnSpan="2" HorizontalAlignment="Center"   >
             <Button Command="{Binding Path=OpenScaleDialogCommand}" x:Name="btnScaleScreen" Style="{DynamicResource CircleButton}" Background="White" >
-                <Image Source="{StaticResource OpenScaleDialog}" Width="25" Height="32" />
+                <Image Source="{StaticResource OpenScaleDialog}" Width="48" />
             </Button>
-            <Button Command="{Binding Path=SaveWindowsSizeCommand}" Margin="20,0,0,0"  x:Name="btnSaveWindowSettings" Style="{DynamicResource CircleButton}" Background="White"  >
-                <Image Source="{StaticResource SaveWindowsPos}" Width="25" Height="32" />
+            <Button Command="{Binding Path=SaveWindowsSizeCommand}" Margin="60,0,0,0"  x:Name="btnSaveWindowSettings" Style="{DynamicResource CircleButton}" Background="White"  >
+                <Image Source="{StaticResource SaveWindowsPos}" Width="48"  />
             </Button>
-                <Button Command="{Binding Path=SavePrinterSettingsCommand}" Margin="20,0,0,0"  x:Name="btnSavePrinterSettings" Style="{DynamicResource CircleButton}" Background="White"  >
+                <Button Command="{Binding Path=SavePrinterSettingsCommand}" Margin="60,0,0,0"  x:Name="btnSavePrinterSettings" Style="{DynamicResource CircleButton}" Background="White"  >
                     <Button.ToolTip>
                         <StackPanel>
                             <TextBlock Text="Set" />
                             <TextBlock Text="Window Settings" />
                         </StackPanel>
                     </Button.ToolTip>
-                <Image Source="{StaticResource Print}" Width="25" Height="32" />
+                <Image Source="{StaticResource Print}" Width="50" />
             </Button>
         </StackPanel>
 
