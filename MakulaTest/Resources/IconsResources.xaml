@@ -28,4 +28,5 @@
     <BitmapImage UriSource="../Images/StartButtonDark.PNG" x:Key="StartDiagnoseDark"/>
     <BitmapImage UriSource="../Images/pos.png" x:Key="SaveWindowsPos"/>
     <BitmapImage UriSource="../Images/scale.png" x:Key="OpenScaleDialog"/>
+    <BitmapImage UriSource="../Images/SpeechBubble.png" x:Key="SpeechBubble"/>
 </ResourceDictionary>
