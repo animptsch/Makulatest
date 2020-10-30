@@ -33,7 +33,7 @@
     <TabItem Style="{DynamicResource TabItemStyle1}" Tag="Diagnose">
             <TabItem.Header>
                 <StackPanel Orientation="Horizontal" Width="215">
-                    <Image Source="{StaticResource DiagnoseLight}" Margin="15,0,0,0" Height="60" />
+                    <Image Source="{StaticResource DiagnoseLight}" Margin="15,0,14,0" Height="60" />
                     <TextBlock Text="Diagnose" Style="{StaticResource TabItemTextBlock}" />
                 </StackPanel>
             </TabItem.Header>
