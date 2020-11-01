@@ -6,6 +6,8 @@ using System.Windows.Input;
 using System.Windows;
 using System.Xml;
 using System;
+using System.Windows.Controls;
+
 
 namespace MakulaTest.Model
 {
@@ -347,10 +349,21 @@ namespace MakulaTest.Model
             _filePathSettings = FilePathSettings.Instance;            
             loadSettings();
         }
+        public PrintDialog Printer
+        {
+            get { return Model.Printer; }
+            set
+            {
+                Model.Printer = value;
+                OnPropertyChanged(nameof(Printer));
+            }
+        }
 
         private void savePrinterSettings()
         {
-            throw new NotImplementedException();
+            Printer = new PrintDialog();
+            Printer.ShowDialog();
+            OnPropertyChanged(nameof(Printer));
         }
 
         private Size size;

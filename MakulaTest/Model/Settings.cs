@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace MakulaTest.Model
 {
@@ -20,6 +21,7 @@ namespace MakulaTest.Model
         public string LineColor { get; set; }
         public string BallColor { get; set; }
         public string PolygonColor { get; set; }
+        public PrintDialog Printer { get; set; }
 
         public Settings()
         {                        
