@@ -245,6 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\StartButtonDark.png" />
+    <Resource Include="Images\speechbubble.png" />
     <Content Include="Sounds\Click.wav" />
     <Content Include="Sounds\TestComplete.wav" />
   </ItemGroup>
