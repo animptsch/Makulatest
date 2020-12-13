@@ -10,6 +10,36 @@
              Foreground="Black"
              Loaded="MyCanvas_Loaded">
 
+    <UserControl.Resources>
+        <Style x:Key="CircleToolTip" TargetType="{x:Type ToolTip}">
+            
+            <Setter Property="Margin" Value="750,50"/>
+            <!--<Setter Property="HorizontalOffset" Value="-20" />
+            <Setter Property="VerticalOffset" Value="35" />-->
+            <Setter Property="HasDropShadow" Value="True" />
+            <!--<Setter Property="PlacementRectangle" Value="50,150,600,100"/>-->
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="BorderThickness" Value="0"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToolTip">
+
+                        <Grid>
+                            <Image Source="{StaticResource SpeechBubble}"  Width="340" Height="200" />
+
+                            <TextBlock FontWeight="Bold" Foreground="Black" FontSize="14"  TextWrapping="Wrap" 
+                                       Text="{TemplateBinding Content}" Margin="50,100" Width="340" Height="200">
+                                
+                            </TextBlock>
+                            
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Border Background="{StaticResource MediumBrush}" BorderThickness="0" CornerRadius="50">
 
     <Grid Margin="10">
@@ -61,51 +91,50 @@
               MouseLeave="BtnDayBefore_Leave"
               ToolTipService.ShowDuration="5000"
               Style="{DynamicResource CircleButton}">
-                <Image x:Name="BtnDayBeforeImage" Source="{StaticResource Backward}" Width="50" />
-
-                <Button.ToolTip>
-                    <ToolTip Placement="Right"
-                             PlacementRectangle="50,0,0,0"
-                             HorizontalOffset="-20"
-                             VerticalOffset="35"
-                             HasDropShadow="True"
-                             Background="Transparent"
-                             BorderThickness="0">
-
-                    <Grid>
-                        <Image Source="{StaticResource SpeechBubble}" Margin="0,0,5,0"  Width="240"/>
-                        <TextBlock FontWeight="Bold" Foreground="Black" FontSize="14" Margin="75,55,0,5"
-                                   HorizontalAlignment="Left" >
-                            vorherigen<LineBreak />Datensatz<LineBreak />anzeigen
-                        </TextBlock>
-                    </Grid>
-                    </ToolTip>
-                </Button.ToolTip>
+                    <Image x:Name="BtnDayBeforeImage" Source="{StaticResource Backward}" Width="50" />
+                    <Button.ToolTip>
+                        <ToolTip Style="{StaticResource CircleToolTip}">
+                            vorherigen Datensatz anzeigen
+                        </ToolTip>
+                    </Button.ToolTip>
             </Button>
 
-            <Button Grid.Column="2" x:Name="BtnPrint" ToolTip="Drucken des Fensters"
+            <Button Grid.Column="2" x:Name="BtnPrint" 
               Click="BtnPrint_Click" Background="White"
               MouseEnter="BtnPrint_Enter"
               MouseLeave="BtnPrint_Leave"
               Style="{DynamicResource CircleButton}">
-                <Image x:Name="BtnPrintImage" Source="{StaticResource Print}" Width="50" />
-            </Button>
+                    <Image x:Name="BtnPrintImage" Source="{StaticResource Print}" Width="50" />
+                    <Button.ToolTip>
+                        <ToolTip Style="{StaticResource CircleToolTip}" >Drucken des Fensters</ToolTip>
+                    </Button.ToolTip>
+                </Button>
 
-            <Button Grid.Column="3" x:Name="BtnDaten" ToolTip="Datensatz löschen"
+            <Button Grid.Column="3" x:Name="BtnDaten" 
               Click="BtnDaten_Click" Background="White"
               MouseEnter="BtnDaten_Enter"
               MouseLeave="BtnDaten_Leave"
               Style="{DynamicResource CircleButton}">
                 <Image x:Name="BtnDatenImage" Source="{StaticResource Trash}" Width="50" />
-            </Button>
+                    <Button.ToolTip>
+                        <ToolTip Style="{StaticResource CircleToolTip}">
+                            Datensatz löschen
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
 
-            <Button Grid.Column="4" x:Name="BtnNextDay" ToolTip="nächsten Datensatz anzeigen"
+            <Button Grid.Column="4" x:Name="BtnNextDay" 
               Click="BtnNextDay_Click" Background="White"
               MouseEnter="BtnNextDay_Enter"
               MouseLeave="BtnNextDay_Leave"
               Style="{DynamicResource CircleButton}" >
                 <Image x:Name="BtnNextDayImage" Source="{StaticResource Forward}" Width="50" />
-            </Button>
+                    <Button.ToolTip>
+                        <ToolTip Style="{StaticResource CircleToolTip}">
+                            nächsten Datensatz anzeigen
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
 
         </Grid>
 
